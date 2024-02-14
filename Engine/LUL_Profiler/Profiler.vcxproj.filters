@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="LUL_Profiler">
+      <UniqueIdentifier>{6d54e197-cd00-41fb-a5ac-60fe2eb2db63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private">
+      <UniqueIdentifier>{c203d1c7-7d6f-4aca-b047-aa8dcefe03b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Core">
+      <UniqueIdentifier>{777fcd1b-76b0-421a-a5af-2cceb066273b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\LUL_Profiler.h">
+      <Filter>LUL_Profiler</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Core\Timer.cpp">
+      <Filter>Private\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

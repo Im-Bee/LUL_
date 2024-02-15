@@ -14,18 +14,15 @@
         #endif // !_LUL_EXPORTS
 
         #if 1
-            #define LUL_PROFILER_TIMER_SET_OUTPUT_DIR(path) LUL_::Profiler::SetTimerResultDir(path)
-
-            #define LUL_PROFILER_TIMER_START() LUL_::Profiler::StartTimer(__FUNCSIG__, _getpid())
-            #define LUL_PROFILER_TIMER_STOP() LUL_::Profiler::StopTimer(__FUNCSIG__, _getpid())
+            #define LUL_PROFILER_TIMER_SET_OUTPUT_DIR(path) LUL_::Profiler::Timer::Get().SetPath(path)
+            #define LUL_PROFILER_TIMER_START() LUL_::Profiler::Snapshot ProfilerSnapshot(__FUNCSIG__, _getpid())
 
             /*
             * @param path: Optional */
-            #define LUL_PROFILER_TIMER_RESULTS() LUL_::Profiler::OutputTimerResults()
+            #define LUL_PROFILER_TIMER_RESULTS() LUL_::Profiler::Timer::Get().OutputResults()
         #else
             #define LUL_PROFILER_TIMER_SET_OUTPUT_DIR(path) 
             #define LUL_PROFILER_TIMER_START() 
-            #define LUL_PROFILER_TIMER_STOP()
             #define LUL_PROFILER_TIMER_RESULTS()
         #endif // LUL_PROFILING
 
@@ -34,23 +31,39 @@
         // - 26495 - Variable is uninitialized. Always initialize a member variable(type.6).
         #pragma warning(disable : 4251 26495)
 
-        namespace LUL_::Profiler::Detail
+        namespace LUL_::Profiler
         {
-            struct Snapshot
+            struct SnapshotData
             {
                 char const* const Name;
-                char const* const File;
                 int PID;
                 unsigned long TID;
-                std::chrono::time_point<std::chrono::steady_clock> Point;
+                std::chrono::time_point<std::chrono::steady_clock> Start, Stop;
             };
 
-            class Timer
+            struct LUL_EXPORT Snapshot
+            {
+            public:
+                Snapshot() = default;
+                Snapshot(Snapshot&&) = default;
+                Snapshot(const Snapshot&) = default;
+
+                Snapshot(char const* const fnsig, int pid) noexcept;
+
+                ~Snapshot() noexcept;
+
+            private:
+
+                SnapshotData m_Data;
+            };
+
+            class LUL_EXPORT Timer
             {
             private:
 
-                std::vector<Snapshot> m_StartSnapshots = std::vector<Snapshot>();
-                std::vector<Snapshot> m_StopSnapshots = std::vector<Snapshot>();
+                friend Snapshot;
+
+                std::vector<SnapshotData> m_Snapshots = std::vector<SnapshotData>();
                 std::wstring m_OutputPath = L"";
 
             private:
@@ -73,10 +86,6 @@
 
             public:
 
-                void Start(Snapshot s);
-
-                void Stop(Snapshot s);
-
                 void OutputResults();
 
             public:
@@ -87,28 +96,21 @@
 
             private:
 
+                void AddSnapshot(SnapshotData s);
+
+            private:
+
                 /*
                 * @returns Path to directory with results */
                 static const wchar_t* CreateResultDir();
 
                 void WriteToJson(std::wofstream& fst,
-                    const Snapshot& s,
+                    const SnapshotData& s,
                     const long long& dur,
                     const long long& start);
                 
                 void WriteToFile(std::wstring path);
             };
-        }
-
-        namespace LUL_::Profiler
-        {
-            LUL_EXPORT inline void SetTimerResultDir(const wchar_t* path);
-
-            LUL_EXPORT inline void StartTimer(char const* const fnsig, int pid);
-
-            LUL_EXPORT inline void StopTimer(char const* const fnsig, int pid);
-
-            LUL_EXPORT inline void OutputTimerResults();
         }
 
         #pragma warning(pop)

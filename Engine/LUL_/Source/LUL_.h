@@ -9,6 +9,7 @@
             #include <fstream>
             #include <future>
             #include <memory>
+            #include <queue>
             #include <string>
             #include <thread>
         #else // C -------------------------------------------------------------
@@ -74,6 +75,15 @@
         #else
             #define LUL_CORE_MULTITHREADED false
         #endif // !_SINGLE_THREADED_APP
+
+        #ifdef _DEBUG
+            #ifdef __cplusplus
+                #define L_LOG(...) LUL_::Logger::Get().Log(__VA_ARGS__)
+            #else // C -------------------------------------------------------------
+            #endif // __cplusplus
+        #else
+            #define L_LOG(...)
+        #endif // _DEBUG
 
         #ifdef __cplusplus
             #define LUL_INITIALIZE(...)   LUL::AppProperties::Get().InitCoreLULComponents(__VA_ARGS__);

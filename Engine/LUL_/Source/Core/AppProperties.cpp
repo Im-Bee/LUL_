@@ -13,8 +13,7 @@ bool LUL_::AppProperties::DoesExist(const std::wstring& path)
         return false;
     if (path.size() >= LUL_PATH)
     {
-        // LOG WARNING
-        return false;
+        L_LOG(Warning, L"%s | Passed path out side of range LUL_PATH", __FUNCSIG__);
     }
 
 #ifdef _WIN32
@@ -42,12 +41,10 @@ const std::wstring& LUL_::AppProperties::CreatePath(const std::wstring& path)
 
     if (path.empty())
     {
-        LUL_PROFILER_TIMER_STOP();
         return path;
     }
     if (DoesExist(path))
     {
-        LUL_PROFILER_TIMER_STOP();
         return path;
     }
 
@@ -73,7 +70,6 @@ const std::wstring& LUL_::AppProperties::CreatePath(const std::wstring& path)
         MakeDir(path);
     }
 
-    LUL_PROFILER_TIMER_STOP();
     return path;
 }
 
@@ -101,7 +97,7 @@ std::wstring LUL_::AppProperties::CreatePathInKnownDir(const KnownDirs& kd, cons
     }
     default:
     {
-        // Log warn
+        L_LOG(Warning, L"%s | Unkown directory passed", __FUNCSIG__);
         result = path;
     }
     }
@@ -112,7 +108,7 @@ std::wstring LUL_::AppProperties::CreatePathInKnownDir(const KnownDirs& kd, cons
 // -----------------------------------------------------------------------------
 void LUL_::AppProperties::TryQuitApplication()
 {
-    // Log quitting
+    L_LOG(Info, L"Shuting down application");
 
 #ifdef _WIN32
     PostQuitMessage(0);
@@ -125,7 +121,7 @@ void LUL_::AppProperties::TryQuitApplication()
 // -----------------------------------------------------------------------------
 void LUL_::AppProperties::ForceQuitApplication() noexcept
 {
-    // Log force quitting
+    L_LOG(Warning, L"Forcing shut down on application");
 
     // Set global app ptr to null
 
@@ -139,13 +135,13 @@ void LUL_::AppProperties::SetAppName(char const* const n)
 {
     if (!LUL_IS_STR_BUF_NULL(m_AppName))
     {
-        // Log warn
+        L_LOG(Warning, L"App name is already set?");
         return;
     }
 
     if (strcpy_s(m_AppName, n) == ERANGE)
     {
-        // Log warn
+        L_LOG(Warning, L"Passed app name was outsied of range");
         return;
     }
 }
@@ -155,13 +151,13 @@ void LUL_::AppProperties::SetAppClass(char const* const cl)
 {
     if (!LUL_IS_STR_BUF_NULL(m_AppClass))
     {
-        // Log warn
+        L_LOG(Warning, L"App class is already set?");
         return;
     }
 
     if (strcpy_s(m_AppClass, cl) == ERANGE)
     {
-        // Log warn
+        L_LOG(Warning, L"Passed app class was outsied of range");
         return;
     }
 }
@@ -171,13 +167,13 @@ void LUL_::AppProperties::SetAppVersion(char const* const v)
 {
     if (!LUL_IS_STR_BUF_NULL(m_AppVersion))
     {
-        // Log warn
+        L_LOG(Warning, L"App version is already set?");
         return;
     }
     
     if (strcpy_s(m_AppVersion, v) == ERANGE)
     {
-        // Log warn
+        L_LOG(Warning, L"Passed app version was outsied of range");
         return;
     }
 }
@@ -205,7 +201,7 @@ bool LUL_::AppProperties::MakeFile(const std::wstring& path)
 
     if (!file.is_open())
     {
-        // LOG WARN
+        L_LOG(Warning, L"Couldn't create file | %ls ", path.c_str());
         return false;
     }
 
@@ -221,8 +217,8 @@ void LUL_::AppProperties::FindAppdataPath() noexcept
 
     PWSTR appDataPath = nullptr;
     SHGetKnownFolderPath(FOLDERID_RoamingAppData,
-        0,
-        nullptr,
+        KF_FLAG_DEFAULT,
+        NULL,
         &appDataPath);
 
     // Copy path, free the memory, add suffix
@@ -232,7 +228,6 @@ void LUL_::AppProperties::FindAppdataPath() noexcept
 
     MakeDir(m_AppdataPath);
 
-    LUL_PROFILER_TIMER_STOP();
     return;
 #else
     throw Exceptions::NotImplemented(LUL_EXCPT_HELPER());
@@ -258,7 +253,6 @@ void LUL_::AppProperties::FindCurrentPath() noexcept
 
     m_CurPath.erase(m_CurPath.find_last_of(L'\\'));
 
-    LUL_PROFILER_TIMER_STOP();
     return;
 #else
     throw Exceptions::NotImplemented(LUL_EXCPT_HELPER());
@@ -276,7 +270,6 @@ void LUL_::AppProperties::FindCurrentProjectPath() noexcept
     m_CurPrjPath = m_CurPrjPath.substr(0, m_CurPrjPath.find_last_of('\\'));
     m_CurPrjPath = m_CurPrjPath.substr(0, m_CurPrjPath.size() - std::string("Bin64\\Projects\\Debug\\").size()) + L"\\";
 
-    LUL_PROFILER_TIMER_STOP();
     return;
 #else
     throw Exceptions::NotImplemented(LUL_EXCPT_HELPER());

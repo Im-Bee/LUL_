@@ -6,25 +6,26 @@
 #include <fstream>
 #include <thread>
 
+// Snapshot --------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
+LUL_::Profiler::Snapshot::Snapshot(char const* const fnsig, int pid) noexcept
+    : m_Data({ fnsig, pid, __threadid() })
+{
+    m_Data.Start = std::chrono::high_resolution_clock::now();
+}
+
+// -----------------------------------------------------------------------------
+LUL_::Profiler::Snapshot::~Snapshot() noexcept
+{
+    m_Data.Stop = std::chrono::high_resolution_clock::now();
+    Timer::Get().AddSnapshot(m_Data);
+}
+
+
 // Timer -----------------------------------------------------------------------
-
 // Public ----------------------------------------------------------------------
-
 // -----------------------------------------------------------------------------
-void LUL_::Profiler::Detail::Timer::Start(LUL_::Profiler::Detail::Snapshot s)
-{
-    m_StartSnapshots.push_back(s);
-    m_StartSnapshots.back().Point = std::chrono::high_resolution_clock::now();
-}
-
-// -----------------------------------------------------------------------------
-void LUL_::Profiler::Detail::Timer::Stop(LUL_::Profiler::Detail::Snapshot s)
-{
-    m_StopSnapshots.push_back(s);
-}
-
-// -----------------------------------------------------------------------------
-void LUL_::Profiler::Detail::Timer::OutputResults()
+void LUL_::Profiler::Timer::OutputResults()
 {
     if (!m_OutputPath.empty())
         WriteToFile(m_OutputPath);
@@ -33,9 +34,8 @@ void LUL_::Profiler::Detail::Timer::OutputResults()
 }
 
 // Setters ---------------------------------------------------------------------
-
 // -----------------------------------------------------------------------------
-void LUL_::Profiler::Detail::Timer::SetPath(const wchar_t* path)
+void LUL_::Profiler::Timer::SetPath(const wchar_t* path)
 {
     namespace fs = std::filesystem;
 
@@ -45,10 +45,15 @@ void LUL_::Profiler::Detail::Timer::SetPath(const wchar_t* path)
     m_OutputPath = path;
 }
 
-// Private ---------------------------------------------------------------------
-
 // -----------------------------------------------------------------------------
-const wchar_t* LUL_::Profiler::Detail::Timer::CreateResultDir()
+void LUL_::Profiler::Timer::AddSnapshot(SnapshotData s)
+{
+    m_Snapshots.push_back(s);
+}
+
+// Private ---------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+const wchar_t* LUL_::Profiler::Timer::CreateResultDir()
 {
     namespace fs = std::filesystem;
     
@@ -61,8 +66,8 @@ const wchar_t* LUL_::Profiler::Detail::Timer::CreateResultDir()
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Profiler::Detail::Timer::WriteToJson(std::wofstream& fst, 
-    const Snapshot& s, 
+void LUL_::Profiler::Timer::WriteToJson(std::wofstream& fst, 
+    const SnapshotData& s,
     const long long& dur, 
     const long long& start)
 {
@@ -78,17 +83,14 @@ void LUL_::Profiler::Detail::Timer::WriteToJson(std::wofstream& fst,
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Profiler::Detail::Timer::WriteToFile(std::wstring path)
+void LUL_::Profiler::Timer::WriteToFile(std::wstring path)
 {
     namespace ch = std::chrono;
 
-    if (m_StartSnapshots.empty())
+    if (m_Snapshots.empty())
         return;
     
-    bool wrote = false;
-    // In cases where LUL_PROFILER_TIMER_STOP wasn't called
-    const long long artificialStop = ch::time_point_cast<ch::microseconds>(
-        ch::high_resolution_clock::now()).time_since_epoch().count();
+    bool wroteAnything = false;
     std::wofstream outFile(path + 
         std::to_wstring(ch::high_resolution_clock::now().time_since_epoch().count()) + 
         L"-Results.json");
@@ -97,80 +99,28 @@ void LUL_::Profiler::Detail::Timer::WriteToFile(std::wstring path)
         throw;
 
     outFile << "{\"otherData\": {},\"traceEvents\":[";
-    for (size_t i = 0; i < m_StartSnapshots.size(); i++)
+    for (auto& i : m_Snapshots)
     {
-        // Reset value
-        wrote = false;
-        long long start = std::chrono::time_point_cast<std::chrono::microseconds>(
-            m_StartSnapshots[i].Point).time_since_epoch().count();
-
-        for (size_t k = 0; k < m_StopSnapshots.size(); k++)
-        {
-            if (m_StartSnapshots[i].PID != m_StopSnapshots[k].PID ||
-                strcmp(m_StartSnapshots[i].Name, m_StopSnapshots[k].Name) != 0 ||
-                strcmp(m_StartSnapshots[i].File, m_StopSnapshots[k].File) != 0)
-                continue;
-
-            long long stop = std::chrono::time_point_cast<std::chrono::microseconds>(
-                m_StopSnapshots[k].Point).time_since_epoch().count();
-            long long dur = stop - start;
-            if (dur < 0)
-                continue;
-
-            WriteToJson(outFile, 
-                m_StartSnapshots[i],
-                dur,
-                start);
-            
-            wrote = true;
-
-            // Go to the next StartSnapshot
-            break;
-        }
+        wroteAnything = true;
         
-         // Try to write it with artificialStop as stop point
-        if (!wrote)
-        {
-            wrote = true;
-            WriteToJson(outFile, 
-                m_StartSnapshots[i],
-                artificialStop - start,
-                start);
-        }
+        long long start = std::chrono::time_point_cast<std::chrono::microseconds>(
+            i.Start).time_since_epoch().count();
+        long long stop = std::chrono::time_point_cast<std::chrono::microseconds>(
+            i.Stop).time_since_epoch().count();
+
+        long long dur = stop - start;
+
+        WriteToJson(outFile, 
+            i,
+            dur,
+            start);
+            
     }
-    if (wrote)
+    if (wroteAnything)
         outFile.seekp(-1, std::ios::cur);
     outFile << "]}";
 
     outFile.close();
 
-    m_StartSnapshots.clear();
-    m_StopSnapshots.clear();
-}
-
-// LUL_::Profiler --------------------------------------------------------------
-
-// -----------------------------------------------------------------------------
-void LUL_::Profiler::SetTimerResultDir(const wchar_t* path)
-{
-    LUL_::Profiler::Detail::Timer::Get().SetPath(path);
-}
-
-// -----------------------------------------------------------------------------
-void LUL_::Profiler::StartTimer(char const* const fnsig, int pid)
-{
-    LUL_::Profiler::Detail::Timer::Get().Start({ fnsig, __FILE__, pid, __threadid() });
-}
-
-// -----------------------------------------------------------------------------
-void LUL_::Profiler::StopTimer(char const* const fnsig, int pid)
-{
-    auto p = std::chrono::high_resolution_clock::now();
-    LUL_::Profiler::Detail::Timer::Get().Stop({ fnsig, __FILE__, pid, __threadid(), p });
-}
-
-// -----------------------------------------------------------------------------
-void LUL_::Profiler::OutputTimerResults()
-{
-    LUL_::Profiler::Detail::Timer::Get().OutputResults();
+    m_Snapshots.clear();
 }

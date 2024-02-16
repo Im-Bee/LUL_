@@ -105,6 +105,8 @@
             // Warning C4275 Non dll-interface class used as base.
             #pragma warning ( disable : 4251 4275)
             #include "Exceptions/LUL_Exceptions.hpp"        
+
+            #include "Interfaces/IWindow.hpp"
     
             #include "Core/AppProperties.hpp"    
             #include "Core/Logger.hpp"

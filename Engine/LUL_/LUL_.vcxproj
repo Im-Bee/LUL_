@@ -23,13 +23,17 @@
     <ClCompile Include="Source\Core\CoreLoading.cpp" />
     <ClCompile Include="Source\Core\Logger.cpp" />
     <ClCompile Include="Source\Exceptions\LUL_Exceptions.cpp" />
+    <ClCompile Include="Source\Interfaces\IWindow.cpp" />
+    <ClCompile Include="Source\Primitives\EmptyWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\AppProperties.hpp" />
     <ClInclude Include="Source\Core\CoreLoading.hpp" />
     <ClInclude Include="Source\Core\Logger.hpp" />
     <ClInclude Include="Source\Exceptions\LUL_Exceptions.hpp" />
+    <ClInclude Include="Source\Interfaces\IWindow.hpp" />
     <ClInclude Include="Source\LUL_.h" />
+    <ClInclude Include="Source\Primitives\EmptyWindow.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LUL_Profiler\Profiler.vcxproj">

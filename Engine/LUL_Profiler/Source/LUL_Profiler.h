@@ -38,15 +38,15 @@
                 char const* const Name;
                 int PID;
                 unsigned long TID;
-                std::chrono::time_point<std::chrono::steady_clock> Start, Stop;
+                std::chrono::time_point<std::chrono::high_resolution_clock> Start, Stop;
             };
 
             struct LUL_EXPORT Snapshot
             {
             public:
-                Snapshot() = default;
+                Snapshot() = delete;
                 Snapshot(Snapshot&&) = default;
-                Snapshot(const Snapshot&) = default;
+                Snapshot(const Snapshot&) = delete;
 
                 Snapshot(char const* const fnsig, int pid) noexcept;
 

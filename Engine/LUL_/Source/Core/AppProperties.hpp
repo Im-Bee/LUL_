@@ -20,7 +20,8 @@ namespace LUL_
             m_AppBootTime[LUL_STRING_V_SMALL] = { 0 },
             m_AppVersion[LUL_STRING_V_SMALL] = { 0 };
 
-        // std::vector<windows>
+        std::list<LUL_::IWindow*> m_Windows =
+            std::list<LUL_::IWindow*>();
         
     private:
 
@@ -71,6 +72,10 @@ namespace LUL_
         std::wstring CreatePathInKnownDir(const KnownDirs& kd, 
             const std::wstring& path = 0);
 
+        int AddIWindow(LUL_::IWindow* pW);
+
+        void RemoveIWindow(LUL_::IWindow* pW);
+        
         static void TryQuitApplication();
 
         static void ForceQuitApplication() noexcept;

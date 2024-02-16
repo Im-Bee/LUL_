@@ -28,6 +28,18 @@
     <Filter Include="Public\Exceptions">
       <UniqueIdentifier>{71fc49f7-ea18-4d50-b62c-a640b981a1bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Public\Primitives">
+      <UniqueIdentifier>{7f3aff1b-cb63-4966-8f75-279ea395ea14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Primitives">
+      <UniqueIdentifier>{1be20846-afe7-4261-89e8-f24818781ce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Interfaces">
+      <UniqueIdentifier>{43b4c740-6dc1-466c-b607-2e91f6bd5a30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Interfaces">
+      <UniqueIdentifier>{f146412e-2520-4970-b770-cb9015abd0fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\AppProperties.cpp">
@@ -41,6 +53,12 @@
     </ClCompile>
     <ClCompile Include="Source\Core\Logger.cpp">
       <Filter>Private\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Primitives\EmptyWindow.cpp">
+      <Filter>Private\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Interfaces\IWindow.cpp">
+      <Filter>Private\Interfaces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +76,12 @@
     </ClInclude>
     <ClInclude Include="Source\Core\Logger.hpp">
       <Filter>Public\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Primitives\EmptyWindow.hpp">
+      <Filter>Public\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Interfaces\IWindow.hpp">
+      <Filter>Public\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

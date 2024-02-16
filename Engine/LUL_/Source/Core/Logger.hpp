@@ -1,15 +1,25 @@
 #pragma once
 
+#define LUL_LOG_DIR L"\\Logs\\"
+#define LUL_LOG_PATH_IF_ERROR L".\\Error.log"
+#define LUL_LOG_RETRIES_AMOUNT 100
+
+#define L_INFO    LUL_::Severity::Info
+#define L_WARNING LUL_::Severity::Warning
+#define L_ERROR   LUL_::Severity::Error
+
 namespace LUL_
 {
     enum LUL_EXPORT Severity
     {
-        Info,
-        Warning,
-        Error
+        Info = 0x10,
+        Warning = 0x20,
+        Error = 0x30
     };
 
-    typedef std::pair<Severity, std::wstring> LogData;
+    typedef std::tuple<Severity, 
+        std::wstring,
+        std::chrono::time_point<std::chrono::system_clock>> LogData;
 
     class LUL_EXPORT Logger
     {
@@ -23,8 +33,8 @@ namespace LUL_
 
         Logger() noexcept
         {
-            CreateOutFile();
             CreateThread();
+            CreateOutPath();
         }
 
     public:
@@ -40,26 +50,38 @@ namespace LUL_
         ~Logger() noexcept
         {
             KillThread();
+            DumpQueue();
         }
 
     public:
 
-        void Log(const Severity& s, wchar_t const* const msg, ...);
+        void Log(const Severity s, wchar_t const* const msg, ...);
 
     private:
 
-        void CreateOutFile() noexcept;
+        std::wstring CreateOutFile();
         
-        void CreateThread();
+        void CreateOutPath() noexcept;
+
+        void CreateThread() noexcept;
+
+        void TagFmt(const Severity& s, 
+            std::wstring& msg, 
+            const std::chrono::time_point<std::chrono::system_clock>& time = std::chrono::system_clock::now());
+
+        bool LogFmtMsg(std::wstring& msg);
 
         void ThreadLoop();
 
-        void KillThread();
+        void KillThread() noexcept;
+
+        void DumpQueue() noexcept;
 
     private:
 
         std::atomic_bool m_Thread = std::atomic_bool(false);
-        std::thread m_LogThread;
-        // std::atomic<std::queue<LogData>> m_ThreadQueue = std::atomic<std::queue<LogData>>();
+        std::thread m_LogThread = std::thread();
+        std::atomic_bool m_QueueLock = std::atomic_bool(false);
+        std::queue<LogData> m_ThreadQueue = std::queue<LogData>();
     };
 }

@@ -13,7 +13,7 @@ bool LUL_::AppProperties::DoesExist(const std::wstring& path)
         return false;
     if (path.size() >= LUL_PATH)
     {
-        L_LOG(Warning, L"%s | Passed path out side of range LUL_PATH", __FUNCSIG__);
+        L_LOG(Warning, L"Passed path is out of range for LUL_PATH for checking if path exists \"%s\"", __FUNCSIG__);
     }
 
 #ifdef _WIN32
@@ -97,12 +97,29 @@ std::wstring LUL_::AppProperties::CreatePathInKnownDir(const KnownDirs& kd, cons
     }
     default:
     {
-        L_LOG(Warning, L"%s | Unkown directory passed", __FUNCSIG__);
+        L_LOG(Warning, L"Unkown directory passed fore creating in known dir \"%lS\" | kd = %d", path.c_str(), kd);
         result = path;
     }
     }
 
     return AppProperties::CreatePath(result);
+}
+
+// -----------------------------------------------------------------------------
+int LUL_::AppProperties::AddIWindow(LUL_::IWindow* pW)
+{
+    m_Windows.push_back(pW);
+    return static_cast<int>(m_Windows.size() - 1); // As index
+}
+
+// -----------------------------------------------------------------------------
+void LUL_::AppProperties::RemoveIWindow(LUL_::IWindow* pW)
+{
+    size_t i = m_Windows.remove(pW);
+    if (i)
+        throw Exceptions::ItemNotFound(0, 
+            static_cast<void*>(pW),
+            LUL_EXCPT_HELPER());
 }
 
 // -----------------------------------------------------------------------------
@@ -141,7 +158,7 @@ void LUL_::AppProperties::SetAppName(char const* const n)
 
     if (strcpy_s(m_AppName, n) == ERANGE)
     {
-        L_LOG(Warning, L"Passed app name was outsied of range");
+        L_LOG(Warning, L"Passed app name str was outsied of range");
         return;
     }
 }
@@ -157,7 +174,7 @@ void LUL_::AppProperties::SetAppClass(char const* const cl)
 
     if (strcpy_s(m_AppClass, cl) == ERANGE)
     {
-        L_LOG(Warning, L"Passed app class was outsied of range");
+        L_LOG(Warning, L"Passed app class str was outsied of range");
         return;
     }
 }
@@ -173,7 +190,7 @@ void LUL_::AppProperties::SetAppVersion(char const* const v)
     
     if (strcpy_s(m_AppVersion, v) == ERANGE)
     {
-        L_LOG(Warning, L"Passed app version was outsied of range");
+        L_LOG(Warning, L"Passed app version str was outsied of range");
         return;
     }
 }
@@ -189,7 +206,7 @@ bool LUL_::AppProperties::MakeDir(const std::wstring& path)
     }
     catch (std::exception e)
     {
-        // LOG WARN e.what()
+        L_LOG(L_WARNING, L"%S", e.what());
         return false;
     }
 }
@@ -201,7 +218,7 @@ bool LUL_::AppProperties::MakeFile(const std::wstring& path)
 
     if (!file.is_open())
     {
-        L_LOG(Warning, L"Couldn't create file | %ls ", path.c_str());
+        L_LOG(Warning, L"Couldn't create file \"%lS\"", path.c_str());
         return false;
     }
 

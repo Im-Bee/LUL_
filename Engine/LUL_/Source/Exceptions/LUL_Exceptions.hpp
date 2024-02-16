@@ -5,7 +5,7 @@
 namespace LUL_::Exceptions
 {
     class LUL_EXPORT Exception 
-        : private std::exception
+        : public std::exception
     {
     public:
 
@@ -13,9 +13,7 @@ namespace LUL_::Exceptions
         
         explicit Exception(char const* const msg,
             char const* const file = 0,
-            const int& line = -1) noexcept
-            : exception(msg)
-        {}
+            const int& line = -1) noexcept;
 
         ~Exception() noexcept = default;
 
@@ -34,6 +32,7 @@ namespace LUL_::Exceptions
         {}
 
         ~NotImplemented() noexcept = default;
+
     };
 
     class LUL_EXPORT Internal
@@ -49,5 +48,38 @@ namespace LUL_::Exceptions
         {}
 
         ~Internal() noexcept = default;
+
+    };
+
+
+    class LUL_EXPORT ItemNotFound
+        : public LUL_::Exceptions::Exception
+    {
+    public:
+
+        ItemNotFound(size_t index,
+            void* pointer = nullptr,
+            char const* const file = 0,
+            const int& line = -1) noexcept
+            : Exception("Item with provided index/pointer didn't exist",
+                file,
+                line),
+            m_Index(index),
+            m_Ptr(pointer)
+        {}
+
+        ~ItemNotFound() noexcept = default;
+
+    public:
+
+        void const* GetPtr() { return m_Ptr; }
+
+        const size_t& GetIndex() { return m_Index; }
+
+    private:
+
+        void* m_Ptr = nullptr;
+        size_t m_Index = 0;
+
     };
 }

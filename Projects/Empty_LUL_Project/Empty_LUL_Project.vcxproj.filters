@@ -16,18 +16,27 @@
     <Filter Include="PCH">
       <UniqueIdentifier>{d0704d48-c604-47d1-a7a3-9c0620333619}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Private\Core">
+      <UniqueIdentifier>{f931391c-31c5-4ab7-a4b9-048a4772e9a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Core">
+      <UniqueIdentifier>{0af72217-a3ea-4876-a5c7-29631e406c07}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\PCH.cpp">
       <Filter>PCH</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Main.hpp">
-      <Filter>Private</Filter>
+    <ClCompile Include="Source\Core\Application.cpp">
+      <Filter>Private\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\PCH.hpp">
       <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Application.hpp">
+      <Filter>Public\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

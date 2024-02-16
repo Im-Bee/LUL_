@@ -116,10 +116,16 @@ int LUL_::AppProperties::AddIWindow(LUL_::IWindow* pW)
 void LUL_::AppProperties::RemoveIWindow(LUL_::IWindow* pW)
 {
     size_t i = m_Windows.remove(pW);
-    if (i)
+    if (!i)
         throw Exceptions::ItemNotFound(0, 
             static_cast<void*>(pW),
             LUL_EXCPT_HELPER());
+    else if (i > 1)
+    {
+        L_LOG(L_WARNING, L"Removed more than one windows? | amount = %llu| ptr = %p",
+            i,
+            pW);
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -224,6 +230,27 @@ bool LUL_::AppProperties::MakeFile(const std::wstring& path)
 
     file.close();
     return true;
+}
+
+// -----------------------------------------------------------------------------
+void LUL_::AppProperties::FindBootTime() noexcept
+{
+    time_t tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    tm localt;
+    if (localtime_s(&localt, &tt) == EINVAL)
+    {
+        m_AppBootTime[0] = L'0';
+        return;
+    }
+
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(2) << std::to_string(localt.tm_hour)
+        << ":"
+        << std::setfill('0') << std::setw(2) << std::to_string(localt.tm_min)
+        << ":"
+        << std::setfill('0') << std::setw(2) << std::to_string(localt.tm_sec);
+
+    strcpy_s(m_AppBootTime, ss.str().c_str());
 }
 
 // -----------------------------------------------------------------------------

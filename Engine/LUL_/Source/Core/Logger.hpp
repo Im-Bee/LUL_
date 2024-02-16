@@ -4,6 +4,7 @@
 #define LUL_LOG_PATH_IF_ERROR L".\\Error.log"
 #define LUL_LOG_RETRIES_AMOUNT 100
 
+#define L_PLAIN   LUL_::Severity::Plain
 #define L_INFO    LUL_::Severity::Info
 #define L_WARNING LUL_::Severity::Warning
 #define L_ERROR   LUL_::Severity::Error
@@ -12,6 +13,7 @@ namespace LUL_
 {
     enum LUL_EXPORT Severity
     {
+        Plain = 0x00,
         Info = 0x10,
         Warning = 0x20,
         Error = 0x30
@@ -35,6 +37,7 @@ namespace LUL_
         {
             CreateThread();
             CreateOutPath();
+            PrintHeader();
         }
 
     public:
@@ -50,6 +53,7 @@ namespace LUL_
         ~Logger() noexcept
         {
             KillThread();
+            PrintFooter();
             DumpQueue();
         }
 
@@ -64,6 +68,10 @@ namespace LUL_
         void CreateOutPath() noexcept;
 
         void CreateThread() noexcept;
+
+        void PrintHeader() noexcept;
+
+        void PrintFooter() noexcept;
 
         void TagFmt(const Severity& s, 
             std::wstring& msg, 

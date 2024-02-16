@@ -16,7 +16,7 @@ void LUL_::Logger::Log(const Severity s, wchar_t const* const msg, ...)
     va_end(args);
 
 #if LUL_CORE_MULTITHREADED
-    while(m_QueueLock.load())
+    while (m_QueueLock.load())
     {
         std::this_thread::sleep_for(1ns);
     }
@@ -29,11 +29,11 @@ void LUL_::Logger::Log(const Severity s, wchar_t const* const msg, ...)
     TagFmt(s, str);
     if (!LogFmtMsg(str))
     {
-        #ifdef _DEBUG
-            throw Exceptions::Internal(LUL_EXCPT_HELPER());
-        #else
-            retrun;
-        #endif // _DEBUG
+#ifdef _DEBUG
+        throw Exceptions::Internal(LUL_EXCPT_HELPER());
+#else
+        retrun;
+#endif // _DEBUG
     }
 #endif // LUL_CORE_MULTITHREADED
 }
@@ -42,6 +42,8 @@ void LUL_::Logger::Log(const Severity s, wchar_t const* const msg, ...)
 // -----------------------------------------------------------------------------
 std::wstring LUL_::Logger::CreateOutFile()
 {
+    LUL_PROFILER_TIMER_START();
+
     std::wstringstream fileNamePath;
 
     time_t tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -51,19 +53,18 @@ std::wstring LUL_::Logger::CreateOutFile()
         throw Exceptions::Internal(LUL_EXCPT_HELPER());
     }
 
-    fileNamePath << std::to_wstring(localt.tm_year + 1900);
-    fileNamePath << L"-";
-    fileNamePath << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_mon + 1);
-    fileNamePath << L"-";
-    fileNamePath << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_mday);
-    
-    fileNamePath << L"\\";
-    fileNamePath << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_hour);
-    fileNamePath << L"-";
-    fileNamePath << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_min);
-    fileNamePath << L"-";
-    fileNamePath << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_sec);
-    fileNamePath << L".log";
+    fileNamePath << std::to_wstring(localt.tm_year + 1900)
+        << L"-"
+        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_mon + 1)
+        << L"-"
+        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_mday)
+        << L"\\"
+        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_hour)
+        << L"-"
+        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_min)
+        << L"-"
+        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_sec)
+        << L".log";
 
     return fileNamePath.str();
 }
@@ -74,14 +75,14 @@ void LUL_::Logger::CreateOutPath() noexcept
     LUL_PROFILER_TIMER_START();
     try
     {
-        m_OutFilePath = AppProperties::Get().CreatePathInKnownDir(KnownDirs::Appdata, 
+        m_OutFilePath = AppProperties::Get().CreatePathInKnownDir(KnownDirs::Appdata,
             std::wstring(LUL_LOG_DIR) + CreateOutFile());
     }
     catch (std::exception e)
     {
         m_OutFilePath = LUL_LOG_PATH_IF_ERROR;
         Log(Warning, L"%S", e.what());
-    } 
+    }
     catch (...)
     {
         m_OutFilePath = LUL_LOG_PATH_IF_ERROR;
@@ -92,6 +93,8 @@ void LUL_::Logger::CreateOutPath() noexcept
 // -----------------------------------------------------------------------------
 void LUL_::Logger::CreateThread() noexcept
 {
+    LUL_PROFILER_TIMER_START();
+
 #if LUL_CORE_MULTITHREADED
     m_Thread.store(true);
     m_LogThread = std::thread(&LUL_::Logger::ThreadLoop, this);
@@ -101,7 +104,32 @@ void LUL_::Logger::CreateThread() noexcept
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Logger::TagFmt(const Severity& s, 
+void LUL_::Logger::PrintHeader() noexcept
+{
+    LUL_PROFILER_TIMER_START();
+
+    Log(L_PLAIN,
+        L"----------------------------------------------------------------\n\
+Application: %S\n\
+Boot time: %S\n\
+Version: %S\n\
+----------------------------------------------------------------",
+LUL_::AppProperties::Get().GetAppName(),
+LUL_::AppProperties::Get().GetAppBootTime(),
+LUL_::AppProperties::Get().GetAppVersion());
+}
+
+// -----------------------------------------------------------------------------
+void LUL_::Logger::PrintFooter() noexcept
+{
+    Log(L_PLAIN,
+        L"----------------------------------------------------------------\n\
+Im-Bee 2024\n\
+----------------------------------------------------------------");
+}
+
+// -----------------------------------------------------------------------------
+void LUL_::Logger::TagFmt(const Severity& s,
     std::wstring& msg,
     const std::chrono::time_point<std::chrono::system_clock>& time)
 {
@@ -113,50 +141,54 @@ void LUL_::Logger::TagFmt(const Severity& s,
         !failed)
     {
         failed = true;
-        
+
         L_LOG(Error, L"Couldn't convert to localtime_s");
-        #ifdef _DEBUG
-            throw Exceptions::Internal(LUL_EXCPT_HELPER());
-        #endif // _DEBUG
+#ifdef _DEBUG
+        throw Exceptions::Internal(LUL_EXCPT_HELPER());
+#endif // _DEBUG
     }
 
     std::wstringstream raw;
 
-    raw << L"[";
-    raw << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_hour);
-    raw << L":";
-    raw << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_min);
-    raw << L":";
-    raw << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_sec);
-    raw << L"]";
+    raw << L"["
+        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_hour)
+        << L":"
+        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_min)
+        << L":"
+        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_sec)
+        << L"]";
 
     switch (s)
     {
+    case (Plain):
+    {
+        return;
+    }
     case (Info):
     {
-        raw << " [Info] ";
-        raw << msg;
+        raw << " [Info] "
+            << msg;
 
         break;
     }
     case (Warning):
     {
-        raw << L" [Warning] ";
-        raw << msg;
+        raw << L" [Warning] "
+            << msg;
 
         break;
     }
     case (Error):
     {
-        raw << L" [Error] ";
-        raw << msg;
+        raw << L" [Error] "
+            << msg;
 
         break;
     }
     default:
     {
-        raw << L" [Unknown] ";
-        raw << msg;
+        raw << L" [Unknown] "
+            << msg;
 
         break;
     }
@@ -175,17 +207,17 @@ bool LUL_::Logger::LogFmtMsg(std::wstring& msg)
 
     std::wofstream out(m_OutFilePath, std::ios::out | std::ios::app);
     if (!out.is_open())
-    { 
+    {
         redo = true;
         retries++;
 
         if (retries >= LUL_LOG_RETRIES_AMOUNT)
         {
-            #ifdef _DEBUG
-                throw Exceptions::Internal(LUL_EXCPT_HELPER());
-            #else
-                return false;
-            #endif // _DEBUG
+#ifdef _DEBUG
+            throw Exceptions::Internal(LUL_EXCPT_HELPER());
+#else
+            return false;
+#endif // _DEBUG
         }
 
         std::this_thread::sleep_for(1ns);
@@ -194,7 +226,7 @@ bool LUL_::Logger::LogFmtMsg(std::wstring& msg)
 
     if (redo)
     {
-        static std::wstring errorMsg = L"The following string couldn't be logged through " + 
+        static std::wstring errorMsg = L"The following string couldn't be logged through " +
             std::to_wstring(retries) + L"retries \"" + msg + L'\"';
         TagFmt(Error, errorMsg);
 

@@ -20,17 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\AppProperties.cpp" />
-    <ClCompile Include="Source\Core\CoreLoading.cpp" />
+    <ClCompile Include="Source\Core\LoadCore.cpp" />
     <ClCompile Include="Source\Core\Logger.cpp" />
     <ClCompile Include="Source\Exceptions\LUL_Exceptions.cpp" />
+    <ClCompile Include="Source\Interfaces\IApplication.cpp" />
     <ClCompile Include="Source\Interfaces\IWindow.cpp" />
     <ClCompile Include="Source\Primitives\EmptyWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\AppProperties.hpp" />
-    <ClInclude Include="Source\Core\CoreLoading.hpp" />
+    <ClInclude Include="Source\Core\LoadCore.hpp" />
     <ClInclude Include="Source\Core\Logger.hpp" />
+    <ClInclude Include="Source\EntryPoint\Win32\Entry.hpp" />
     <ClInclude Include="Source\Exceptions\LUL_Exceptions.hpp" />
+    <ClInclude Include="Source\Interfaces\IApplication.hpp" />
     <ClInclude Include="Source\Interfaces\IWindow.hpp" />
     <ClInclude Include="Source\LUL_.h" />
     <ClInclude Include="Source\Primitives\EmptyWindow.hpp" />

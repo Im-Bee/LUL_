@@ -107,7 +107,8 @@
             #include "Exceptions/LUL_Exceptions.hpp"        
 
             #include "Interfaces/IWindow.hpp"
-    
+            #include "Interfaces/IApplication.hpp"    
+
             #include "Core/AppProperties.hpp"    
             #include "Core/Logger.hpp"
             #pragma warning ( pop )
@@ -117,7 +118,7 @@
 
     #pragma region Engine loading
         #ifdef __cplusplus
-            #include "Core/CoreLoading.hpp"
+            #include "Core/LoadCore.hpp"
         #else // C -------------------------------------------------------------
         #endif // __cplusplus
     #pragma endregion

@@ -29,6 +29,7 @@ namespace LUL_
 
         AppProperties() noexcept
         {
+            FindBootTime();
             FindAppdataPath();
             FindCurrentPath();
             FindCurrentProjectPath();
@@ -107,6 +108,8 @@ namespace LUL_
         static bool MakeDir(const std::wstring& path);
 
         static bool MakeFile(const std::wstring& path);
+
+        void FindBootTime() noexcept;
 
         void FindAppdataPath() noexcept;
 

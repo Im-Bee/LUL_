@@ -40,12 +40,18 @@
     <Filter Include="Private\Interfaces">
       <UniqueIdentifier>{f146412e-2520-4970-b770-cb9015abd0fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Public\EntryPoint">
+      <UniqueIdentifier>{df921f52-14d5-402e-9f16-e2b6baafabba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\EntryPoint\Win32">
+      <UniqueIdentifier>{70bfd175-ad8d-407d-98e0-3038ff989d15}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\AppProperties.cpp">
       <Filter>Private\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\CoreLoading.cpp">
+    <ClCompile Include="Source\Core\LoadCore.cpp">
       <Filter>Private\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Exceptions\LUL_Exceptions.cpp">
@@ -60,6 +66,9 @@
     <ClCompile Include="Source\Interfaces\IWindow.cpp">
       <Filter>Private\Interfaces</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Interfaces\IApplication.cpp">
+      <Filter>Private\Interfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LUL_.h">
@@ -68,7 +77,7 @@
     <ClInclude Include="Source\Core\AppProperties.hpp">
       <Filter>Public\Core</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Core\CoreLoading.hpp">
+    <ClInclude Include="Source\Core\LoadCore.hpp">
       <Filter>Public\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Exceptions\LUL_Exceptions.hpp">
@@ -81,6 +90,12 @@
       <Filter>Public\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="Source\Interfaces\IWindow.hpp">
+      <Filter>Public\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EntryPoint\Win32\Entry.hpp">
+      <Filter>Public\EntryPoint\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Interfaces\IApplication.hpp">
       <Filter>Public\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>

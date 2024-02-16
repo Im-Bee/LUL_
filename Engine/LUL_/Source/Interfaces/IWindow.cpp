@@ -32,7 +32,7 @@ void LUL_::IWindow::RemoveItselfFromAppProperties() noexcept
     catch (Exceptions::ItemNotFound e)
     {
         L_LOG(L_ERROR, 
-            L"%S | I = %d | Ptr = %p", 
+            L"%S | I = %d | Ptr = 0x%p", 
             e.what(),
             m_WindowIndex,
             e.GetPtr());

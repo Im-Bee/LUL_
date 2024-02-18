@@ -44,8 +44,8 @@
 
         #define LUL_PATH 260
 
-        #define LUL_MAIN_WINDOW_INDEX -1
-        #define LUL_UNINITIALIZED_WINDOW_INDEX -2
+        #define LUL_MAIN_WINDOW_INDEX 0
+        #define LUL_WINDOW_UNITIALIZED_INDEX -1
 
         #define LUL_EXCPT_HELPER() __FILE__, __LINE__
 
@@ -96,7 +96,6 @@
     #pragma endregion
 
     #pragma region Engine includes
-#include "LUL_.h"
         #include "LUL_Profiler.h"
 
         #ifdef __cplusplus
@@ -105,6 +104,8 @@
             // Warning C4275 Non dll-interface class used as base.
             #pragma warning ( disable : 4251 4275)
             #include "Exceptions/LUL_Exceptions.hpp"        
+
+            #include "Core/DataTypes.hpp"
 
             #include "Interfaces/IWindow.hpp"
             #include "Interfaces/IApplication.hpp"    

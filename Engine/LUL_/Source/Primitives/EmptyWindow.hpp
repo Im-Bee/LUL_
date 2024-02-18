@@ -1,53 +1,65 @@
 #pragma once
 
-#include "Interfaces/IWindow.hpp"
-
 namespace LUL_
 {
     class LUL_EXPORT EmptyWindow
         : public LUL_::IWindow
     {
-    public:
-
-        EmptyWindow() = default;
-
-        ~EmptyWindow() = default;
-
-    public:
-
-#ifdef _WIN32
-        static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-        {
-            EmptyWindow* pThis = NULL;
-
-            if (uMsg == WM_NCCREATE)
-            {
-                CREATESTRUCT* pCreate = (CREATESTRUCT*)lParam;
-                pThis = (EmptyWindow*)pCreate->lpCreateParams;
-                SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pThis);
-
-                pThis->m_HWND = hwnd;
-            }
-            else
-            {
-                pThis = (EmptyWindow*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-            }
-            // if (pThis)
-            // {
-            //     return pThis->HandleMessage(uMsg, wParam, lParam);
-            // }
-            // else
-            {
-                return DefWindowProc(hwnd, uMsg, wParam, lParam);
-            }
-        }
-#endif // _WIN32
-
     protected:
 
 #ifdef _WIN32
         HWND m_HWND = nullptr;
 #endif // _WIN32
 
+    public:
+
+        EmptyWindow();
+        EmptyWindow(wchar_t const* const windowName,
+            wchar_t const* const windowClass);
+
+        ~EmptyWindow() = default;
+
+    public:
+
+        void Show();
+
+        void Close();
+
+    public:
+
+        // Getters ---------------------------------------------------------------------
+
+#ifdef _WIN32
+        HWND GetHWND() { return m_HWND; }
+#endif // _WIN32
+
+    public:
+
+        // Setters ---------------------------------------------------------------------
+
+        void SetDimensions(L_Vec2<uint32_t> d);
+
+        void SetDimensions(uint32_t width, uint32_t height)
+        {
+            return SetDimensions({ width, height });
+        }
+
+    protected:
+
+#ifdef _WIN32
+        virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
+#endif // _WIN32
+
+    private:
+
+        bool Create();
+
+#ifdef _WIN32
+        static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+        
+        LRESULT OnResizeMessage(LPARAM lParam);
+
+        LRESULT OnDestroyMessage();
+#endif // _WIN32
     };
 }

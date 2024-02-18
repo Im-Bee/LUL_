@@ -35,6 +35,22 @@ namespace LUL_::Exceptions
 
     };
 
+    class LUL_EXPORT InvalidArg
+        : public LUL_::Exceptions::Exception
+    {
+    public:
+
+        InvalidArg(char const* const file = 0,
+            const int& line = -1) noexcept
+            : Exception("Argument passed to this function was invalid",
+                file,
+                line)
+        {}
+
+        ~InvalidArg() noexcept = default;
+
+    };
+
     class LUL_EXPORT Internal
         : public LUL_::Exceptions::Exception
     {

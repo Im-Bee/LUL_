@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\Application.cpp" />
+    <ClCompile Include="Source\Core\Window.cpp" />
     <ClCompile Include="Source\PCH.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\Application.hpp" />
+    <ClInclude Include="Source\Core\Window.hpp" />
     <ClInclude Include="Source\PCH.hpp" />
   </ItemGroup>
   <ItemGroup>

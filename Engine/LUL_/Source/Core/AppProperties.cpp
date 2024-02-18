@@ -6,6 +6,8 @@
 
 #include "AppProperties.hpp"
 
+// AppProperties ---------------------------------------------------------------
+// Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 bool LUL_::AppProperties::DoesExist(const std::wstring& path)
 {
@@ -121,11 +123,9 @@ void LUL_::AppProperties::RemoveIWindow(LUL_::IWindow* pW)
             static_cast<void*>(pW),
             LUL_EXCPT_HELPER());
     else if (i > 1)
-    {
-        L_LOG(L_WARNING, L"Removed more than one windows? | amount = %llu| ptr = %p",
+        L_LOG(L_WARNING, L"Removed more than one window? | amount = %llu | ptr = %p",
             i,
             pW);
-    }
 }
 
 // -----------------------------------------------------------------------------
@@ -202,34 +202,30 @@ void LUL_::AppProperties::SetAppVersion(char const* const v)
 }
 
 // Private ---------------------------------------------------------------------
-
 // -----------------------------------------------------------------------------
-bool LUL_::AppProperties::MakeDir(const std::wstring& path)
+void LUL_::AppProperties::MakeDir(const std::wstring& path)
 {
     try
     {
-        return std::filesystem::create_directory(path);
+        std::filesystem::create_directory(path);
     }
     catch (std::exception e)
     {
-        L_LOG(L_WARNING, L"%S", e.what());
-        return false;
+        throw e;
     }
 }
 
 // -----------------------------------------------------------------------------
-bool LUL_::AppProperties::MakeFile(const std::wstring& path)
+void LUL_::AppProperties::MakeFile(const std::wstring& path)
 {
     std::fstream file(path, std::ios::out | std::ios::trunc);
 
     if (!file.is_open())
     {
-        L_LOG(Warning, L"Couldn't create file \"%lS\"", path.c_str());
-        return false;
+        throw LUL_::Exceptions::InvalidArg(LUL_EXCPT_HELPER());
     }
 
     file.close();
-    return true;
 }
 
 // -----------------------------------------------------------------------------
@@ -245,9 +241,9 @@ void LUL_::AppProperties::FindBootTime() noexcept
 
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(2) << std::to_string(localt.tm_hour)
-        << ":"
+        << "-"
         << std::setfill('0') << std::setw(2) << std::to_string(localt.tm_min)
-        << ":"
+        << "-"
         << std::setfill('0') << std::setw(2) << std::to_string(localt.tm_sec);
 
     strcpy_s(m_AppBootTime, ss.str().c_str());

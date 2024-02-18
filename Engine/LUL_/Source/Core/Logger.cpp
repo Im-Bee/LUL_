@@ -2,6 +2,7 @@
 
 #include <cstdarg>
 
+// Logger ----------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LUL_::Logger::Log(const Severity s, wchar_t const* const msg, ...)
@@ -29,11 +30,11 @@ void LUL_::Logger::Log(const Severity s, wchar_t const* const msg, ...)
     TagFmt(s, str);
     if (!LogFmtMsg(str))
     {
-#ifdef _DEBUG
+    #ifdef _DEBUG
         throw Exceptions::Internal(LUL_EXCPT_HELPER());
-#else
+    #else
         retrun;
-#endif // _DEBUG
+    #endif // _DEBUG
     }
 #endif // LUL_CORE_MULTITHREADED
 }
@@ -59,11 +60,7 @@ std::wstring LUL_::Logger::CreateOutFile()
         << L"-"
         << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_mday)
         << L"\\"
-        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_hour)
-        << L"-"
-        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_min)
-        << L"-"
-        << std::setfill(L'0') << std::setw(2) << std::to_wstring(localt.tm_sec)
+        << LUL_::AppProperties::Get().GetAppBootTime()
         << L".log";
 
     return fileNamePath.str();

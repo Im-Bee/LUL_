@@ -3,8 +3,12 @@
 // IWindow ---------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-LUL_::IWindow::IWindow() noexcept
+LUL_::IWindow::IWindow(wchar_t const* const windowName,
+    wchar_t const* const windowClass) noexcept
 {
+    wcscpy_s(m_WindowName, windowName);
+    wcscpy_s(m_WindowClass, windowClass);
+
     AddItselfToAppProperties();
 }
 

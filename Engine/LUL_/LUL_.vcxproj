@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Core\AppProperties.cpp" />
+    <ClCompile Include="Source\Core\DataTypes.cpp" />
     <ClCompile Include="Source\Core\LoadCore.cpp" />
     <ClCompile Include="Source\Core\Logger.cpp" />
     <ClCompile Include="Source\Exceptions\LUL_Exceptions.cpp" />
@@ -29,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Core\AppProperties.hpp" />
+    <ClInclude Include="Source\Core\DataTypes.hpp" />
     <ClInclude Include="Source\Core\LoadCore.hpp" />
     <ClInclude Include="Source\Core\Logger.hpp" />
     <ClInclude Include="Source\EntryPoint\Win32\Entry.hpp" />

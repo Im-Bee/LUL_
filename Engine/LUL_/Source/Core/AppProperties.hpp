@@ -105,9 +105,9 @@ namespace LUL_
 
     private:
 
-        static bool MakeDir(const std::wstring& path);
+        static void MakeDir(const std::wstring& path);
 
-        static bool MakeFile(const std::wstring& path);
+        static void MakeFile(const std::wstring& path);
 
         void FindBootTime() noexcept;
 

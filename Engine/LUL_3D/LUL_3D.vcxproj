@@ -19,40 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Core\AppProperties.cpp" />
-    <ClCompile Include="Source\Core\DataTypes.cpp" />
-    <ClCompile Include="Source\Core\Logger.cpp" />
-    <ClCompile Include="Source\Exceptions\LUL_Exceptions.cpp" />
-    <ClCompile Include="Source\Interfaces\IApplication.cpp" />
-    <ClCompile Include="Source\Interfaces\IWindow.cpp" />
-    <ClCompile Include="Source\Primitives\EmptyRendererWindow.cpp" />
-    <ClCompile Include="Source\Primitives\EmptyWindow.cpp" />
+    <ClInclude Include="Source\Interfaces\IRenderer.hpp" />
+    <ClInclude Include="Source\LUL_3D.hpp" />
+    <ClInclude Include="Source\Platform\Win64\DirectX12\Renderer.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Core\AppProperties.hpp" />
-    <ClInclude Include="Source\Core\DataTypes.hpp" />
-    <ClInclude Include="Source\Core\Logger.hpp" />
-    <ClInclude Include="Source\EntryPoint\Win32\Entry.hpp" />
-    <ClInclude Include="Source\Exceptions\LUL_Exceptions.hpp" />
-    <ClInclude Include="Source\Interfaces\IApplication.hpp" />
-    <ClInclude Include="Source\Interfaces\IWindow.hpp" />
-    <ClInclude Include="Source\LUL_.h" />
-    <ClInclude Include="Source\Primitives\EmptyRendererWindow.hpp" />
-    <ClInclude Include="Source\Primitives\EmptyWindow.hpp" />
+    <ClCompile Include="Source\Interfaces\IRenderer.cpp" />
+    <ClCompile Include="Source\Platform\Win64\DirectX12\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LUL_Profiler\Profiler.vcxproj">
-      <Project>{87a0c469-fbfb-4fe3-963a-4e99c257fa7e}</Project>
+    <ProjectReference Include="..\LUL_\LUL_.vcxproj">
+      <Project>{0cf9b103-d39a-4589-a7a2-1407b61c1911}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="Assets\LUL_.manifest" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{0cf9b103-d39a-4589-a7a2-1407b61c1911}</ProjectGuid>
-    <RootNamespace>LUL_</RootNamespace>
+    <ProjectGuid>{92270fa4-db59-424d-8ebd-45cd3153aa55}</ProjectGuid>
+    <RootNamespace>LUL_3D</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,25 +88,21 @@
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
-    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
-    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
-    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
-    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -132,9 +112,9 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source\;$(ProjectDir)\Source\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source\;$(ProjectDir)\Source\;$(SolutionDir)\Engine\LUL_\Source</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>LUL_.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>LUL_3D.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,10 +123,6 @@
     <PostBuildEvent>
       <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)</Command>
     </PostBuildEvent>
-    <Manifest>
-      <AdditionalManifestFiles>
-      </AdditionalManifestFiles>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -158,9 +134,9 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source\;$(ProjectDir)\Source\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source\;$(ProjectDir)\Source\;$(SolutionDir)\Engine\LUL_\Source</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>LUL_.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>LUL_3D.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -171,10 +147,6 @@
     <PostBuildEvent>
       <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)</Command>
     </PostBuildEvent>
-    <Manifest>
-      <AdditionalManifestFiles>
-      </AdditionalManifestFiles>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -184,9 +156,9 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source\;$(ProjectDir)\Source\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source\;$(ProjectDir)\Source\;$(SolutionDir)\Engine\LUL_\Source</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>LUL_.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>LUL_3D.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -195,10 +167,6 @@
     <PostBuildEvent>
       <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)</Command>
     </PostBuildEvent>
-    <Manifest>
-      <AdditionalManifestFiles>
-      </AdditionalManifestFiles>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -210,9 +178,9 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source\;$(ProjectDir)\Source\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source\;$(ProjectDir)\Source\;$(SolutionDir)\Engine\LUL_\Source</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>LUL_.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>LUL_3D.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -223,10 +191,6 @@
     <PostBuildEvent>
       <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)</Command>
     </PostBuildEvent>
-    <Manifest>
-      <AdditionalManifestFiles>
-      </AdditionalManifestFiles>
-    </Manifest>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

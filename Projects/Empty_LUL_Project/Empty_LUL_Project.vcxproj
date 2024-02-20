@@ -29,6 +29,9 @@
     <ClInclude Include="Source\PCH.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Engine\LUL_3D\LUL_3D.vcxproj">
+      <Project>{92270fa4-db59-424d-8ebd-45cd3153aa55}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Engine\LUL_Profiler\Profiler.vcxproj">
       <Project>{87a0c469-fbfb-4fe3-963a-4e99c257fa7e}</Project>
     </ProjectReference>
@@ -92,21 +95,25 @@
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Projects\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Projects\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Projects\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Projects\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -116,7 +123,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source;$(SolutionDir)\Engine\LUL_\Source;$(ProjectDir)\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source;$(SolutionDir)\Engine\LUL_3D\Source;$(SolutionDir)\Engine\LUL_\Source;$(ProjectDir)\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -138,7 +145,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source;$(SolutionDir)\Engine\LUL_\Source;$(ProjectDir)\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source;$(SolutionDir)\Engine\LUL_3D\Source;$(SolutionDir)\Engine\LUL_\Source;$(ProjectDir)\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -160,7 +167,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source;$(SolutionDir)\Engine\LUL_\Source;$(ProjectDir)\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source;$(SolutionDir)\Engine\LUL_3D\Source;$(SolutionDir)\Engine\LUL_\Source;$(ProjectDir)\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>
@@ -182,7 +189,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source;$(SolutionDir)\Engine\LUL_\Source;$(ProjectDir)\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Engine\LUL_Profiler\Source;$(SolutionDir)\Engine\LUL_3D\Source;$(SolutionDir)\Engine\LUL_\Source;$(ProjectDir)\Source\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.hpp</PrecompiledHeaderFile>
     </ClCompile>

@@ -16,10 +16,17 @@ namespace LUL_
     public:
 
         IWindow() = delete;
-        IWindow(wchar_t const* const windowName,
+        IWindow(
+            wchar_t const* const windowName,
             wchar_t const* const windowClass) noexcept;
 
         ~IWindow() noexcept;
+
+    public:
+
+        virtual void Show() = 0;
+
+        virtual void Close() = 0;
 
     public:
 

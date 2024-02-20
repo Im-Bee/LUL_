@@ -12,7 +12,8 @@ LUL_::EmptyWindow::EmptyWindow()
 }
 
 // -----------------------------------------------------------------------------
-LUL_::EmptyWindow::EmptyWindow(wchar_t const* const windowName, 
+LUL_::EmptyWindow::EmptyWindow(
+    wchar_t const* const windowName, 
     wchar_t const* const windowClass)
     : LUL_::IWindow(windowName, windowClass)
 {
@@ -21,14 +22,19 @@ LUL_::EmptyWindow::EmptyWindow(wchar_t const* const windowName,
 // -----------------------------------------------------------------------------
 void LUL_::EmptyWindow::Show()
 {
+    LUL_PROFILER_TIMER_START();
+
     L_LOG(L_INFO, L"Showind window | %lS", GetWindowName());
 
-    if (!Create())
+    if (!m_HWND)
     {
-        L_LOG(L_ERROR, L"Couldn't create a window | %lS", GetWindowName());
-        DWORD e = GetLastError();
-        L_LOG(L_ERROR, L"Error: %u", e);
-        return;
+        if (!Create())
+        {
+            L_LOG(L_ERROR, L"Couldn't create a window | %lS", GetWindowName());
+            DWORD e = GetLastError();
+            L_LOG(L_ERROR, L"Error: %u", e);
+            return;
+        }
     }
 
     ShowWindow(m_HWND, SW_NORMAL);
@@ -85,6 +91,11 @@ LRESULT LUL_::EmptyWindow::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARA
     {
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
+}
+
+LRESULT LUL_::EmptyWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    return DefWindowProc(m_HWND, uMsg, wParam, lParam);
 }
 
 // -----------------------------------------------------------------------------

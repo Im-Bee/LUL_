@@ -5,6 +5,13 @@
 // Logger ----------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+LUL_::Logger& LUL_::Logger::Get() noexcept
+{
+    static Logger instance;
+    return instance;
+}
+
+// -----------------------------------------------------------------------------
 void LUL_::Logger::Log(const Severity s, wchar_t const* const msg, ...)
 {
     using namespace std::chrono_literals;
@@ -72,7 +79,8 @@ void LUL_::Logger::CreateOutPath() noexcept
     LUL_PROFILER_TIMER_START();
     try
     {
-        m_OutFilePath = AppProperties::Get().CreatePathInKnownDir(KnownDirs::Appdata,
+        m_OutFilePath = AppProperties::Get().CreatePathInKnownDir(
+            KnownDirs::Appdata,
             std::wstring(LUL_LOG_DIR) + CreateOutFile());
     }
     catch (std::exception e)

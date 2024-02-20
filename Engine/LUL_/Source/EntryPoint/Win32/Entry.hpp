@@ -3,8 +3,6 @@
 #ifdef _WIN32
 #include "LUL_.h"
 
-#include "Primitives/EmptyWindow.hpp"
-
 INT CALLBACK wWinMain(HINSTANCE hInst, HINSTANCE hInstPrev, LPWSTR cmdline, INT cmdshow)
 {
     LUL_::AppProperties::Get();
@@ -27,5 +25,7 @@ INT CALLBACK wWinMain(HINSTANCE hInst, HINSTANCE hInstPrev, LPWSTR cmdline, INT 
     }
 
     app->Destroy();
+
+    LUL_PROFILER_TIMER_RESULTS();
 }
 #endif // _WIN32

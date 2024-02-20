@@ -12,13 +12,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\LUL_Profiler.h">
-      <Filter>LUL_Profiler</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Source\Core\Timer.cpp">
       <Filter>Private\Core</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\LUL_Profiler.h">
+      <Filter>LUL_Profiler</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

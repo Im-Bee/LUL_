@@ -16,9 +16,6 @@
         #if 1
             #define LUL_PROFILER_TIMER_SET_OUTPUT_DIR(path) LUL_::Profiler::Timer::Get().SetPath(path)
             #define LUL_PROFILER_TIMER_START() LUL_::Profiler::Snapshot ProfilerSnapshot(__FUNCSIG__, _getpid())
-
-            /*
-            * @param path: Optional */
             #define LUL_PROFILER_TIMER_RESULTS() LUL_::Profiler::Timer::Get().OutputResults()
         #else
             #define LUL_PROFILER_TIMER_SET_OUTPUT_DIR(path) 
@@ -77,11 +74,8 @@
                 Timer(Timer&&) = delete;
                 Timer(const Timer&) = delete;
 
-                static Timer& Get() noexcept
-                {
-                    static Timer instance;
-                    return instance;
-                }
+                static Timer& Get() noexcept;
+
                 ~Timer() noexcept = default;
 
             public:

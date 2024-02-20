@@ -11,7 +11,8 @@ namespace LUL_::Exceptions
 
         Exception() noexcept = default;
         
-        explicit Exception(char const* const msg,
+        explicit Exception(
+            char const* const msg,
             char const* const file = 0,
             const int& line = -1) noexcept;
 
@@ -24,7 +25,8 @@ namespace LUL_::Exceptions
     {
     public:
 
-        NotImplemented(char const* const file = 0,
+        NotImplemented(
+            char const* const file = 0,
             const int& line = -1) noexcept
             : Exception("This function isn't implemented on current system", 
                 file, 
@@ -40,7 +42,8 @@ namespace LUL_::Exceptions
     {
     public:
 
-        InvalidArg(char const* const file = 0,
+        InvalidArg(
+            char const* const file = 0,
             const int& line = -1) noexcept
             : Exception("Argument passed to this function was invalid",
                 file,
@@ -56,7 +59,8 @@ namespace LUL_::Exceptions
     {
     public:
 
-        Internal(char const* const file = 0,
+        Internal(
+            char const* const file = 0,
             const int& line = -1) noexcept
             : Exception("LUL_ coulnd't handle the heat and failed somewhere along the way", 
                 file, 
@@ -73,7 +77,8 @@ namespace LUL_::Exceptions
     {
     public:
 
-        ItemNotFound(size_t index,
+        ItemNotFound(
+            size_t index,
             void* pointer = nullptr,
             char const* const file = 0,
             const int& line = -1) noexcept

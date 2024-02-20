@@ -1,6 +1,9 @@
 #include "LUL_.h"
 
-LUL_::Exceptions::Exception::Exception(char const* const msg, char const* const file, const int& line) noexcept
+LUL_::Exceptions::Exception::Exception(
+    char const* const msg, 
+    char const* const file, 
+    const int& line) noexcept
     : exception(msg)
 {
     if (line <= -1)

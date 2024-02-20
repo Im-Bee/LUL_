@@ -75,21 +75,25 @@
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\Bin$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)\Obj$(PlatformArchitecture)\Engine\$(Configuration)\$(ProjectName)\</IntDir>
     <TargetName>$(ProjectName)_x$(PlatformArchitecture)</TargetName>
+    <EmbedManifest>true</EmbedManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -106,7 +110,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin64\Projects\$(Configuration)</Command>
+      <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -128,7 +132,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin64\Projects\$(Configuration)</Command>
+      <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -148,7 +152,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin64\Projects\$(Configuration)</Command>
+      <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,7 +176,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin64\Projects\$(Configuration)</Command>
+      <Command>powershell.exe -file $(SolutionDir)Scripts\PostBuild_LUL_Dll.ps1 -dll $(TargetName) -src $(OutputPath)$(TargetName).dll -dst $(SolutionDir)\Bin$(PlatformArchitecture)\Projects\$(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

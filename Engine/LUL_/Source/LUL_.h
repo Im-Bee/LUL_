@@ -1,6 +1,25 @@
 #ifndef LUL_H
     #define LUL_H
 
+    // Check windows
+    #if _WIN32 || _WIN64
+        #if _WIN64
+            #define LUL_ENVIRONMENT 64
+        #else
+            #define LUL_ENVIRONMENT 32
+        #endif
+    #endif
+
+    // Check GCC
+    #if __GNUC__
+        #if __x86_64__ || __ppc64__
+            #define LUL_ENVIRONMENT 64
+        #else
+            #define LUL_ENVIRONMENT 32
+        #endif
+    #endif
+
+
     #pragma region Standard libs
         #ifdef __cplusplus
             #include <chrono>
@@ -116,12 +135,4 @@
         #else // C -------------------------------------------------------------
         #endif // __cplusplus
     #pragma endregion
-
-    #pragma region Engine loading
-        #ifdef __cplusplus
-            #include "Core/LoadCore.hpp"
-        #else // C -------------------------------------------------------------
-        #endif // __cplusplus
-    #pragma endregion
-
 #endif // !LUL_H

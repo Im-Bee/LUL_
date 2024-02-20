@@ -51,9 +51,6 @@
     <ClCompile Include="Source\Core\AppProperties.cpp">
       <Filter>Private\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\LoadCore.cpp">
-      <Filter>Private\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Exceptions\LUL_Exceptions.cpp">
       <Filter>Private\Exceptions</Filter>
     </ClCompile>
@@ -72,15 +69,15 @@
     <ClCompile Include="Source\Core\DataTypes.cpp">
       <Filter>Private\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Primitives\EmptyRendererWindow.cpp">
+      <Filter>Private\Primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LUL_.h">
       <Filter>LUL_</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\AppProperties.hpp">
-      <Filter>Public\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\LoadCore.hpp">
       <Filter>Public\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Exceptions\LUL_Exceptions.hpp">
@@ -104,5 +101,13 @@
     <ClInclude Include="Source\Core\DataTypes.hpp">
       <Filter>Public\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Primitives\EmptyRendererWindow.hpp">
+      <Filter>Public\Primitives</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="Assets\LUL_.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
   </ItemGroup>
 </Project>

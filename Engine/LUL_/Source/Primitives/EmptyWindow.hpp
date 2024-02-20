@@ -14,16 +14,17 @@ namespace LUL_
     public:
 
         EmptyWindow();
-        EmptyWindow(wchar_t const* const windowName,
+        EmptyWindow(
+            wchar_t const* const windowName,
             wchar_t const* const windowClass);
 
         ~EmptyWindow() = default;
 
     public:
 
-        void Show();
+        void Show() override;
 
-        void Close();
+        void Close() override;
 
     public:
 
@@ -47,7 +48,7 @@ namespace LUL_
     protected:
 
 #ifdef _WIN32
-        virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
+        virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
 #endif // _WIN32
 
     private:

@@ -40,11 +40,8 @@ namespace LUL_
         AppProperties(AppProperties&&) = delete;
         AppProperties(const AppProperties&) = delete;
 
-        static AppProperties& Get() noexcept
-        {
-            static AppProperties instance;
-            return instance;
-        }
+        static AppProperties& Get() noexcept;
+
         ~AppProperties() noexcept = default;
 
     public:
@@ -70,7 +67,8 @@ namespace LUL_
         * @param Optional - path: If the path ends with '/' or '\\' then creates a new dir
         * otherwise creates new file.
         * @returns The path. */
-        std::wstring CreatePathInKnownDir(const KnownDirs& kd, 
+        std::wstring CreatePathInKnownDir(
+            const KnownDirs& kd, 
             const std::wstring& path = 0);
 
         int AddIWindow(LUL_::IWindow* pW);

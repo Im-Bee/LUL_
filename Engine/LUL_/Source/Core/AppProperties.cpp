@@ -9,13 +9,20 @@
 // AppProperties ---------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+LUL_::AppProperties& LUL_::AppProperties::Get() noexcept
+{
+    static AppProperties instance;
+    return instance;
+}
+
+// -----------------------------------------------------------------------------
 bool LUL_::AppProperties::DoesExist(const std::wstring& path)
 {
     if (path.empty())
         return false;
     if (path.size() >= LUL_PATH)
     {
-        L_LOG(Warning, L"Passed path is out of range for LUL_PATH for checking if path exists \"%s\"", __FUNCSIG__);
+        L_LOG(Warning, L"Passed path is out of range for LUL_PATH \"%s\"", __FUNCSIG__);
     }
 
 #ifdef _WIN32
@@ -119,11 +126,13 @@ void LUL_::AppProperties::RemoveIWindow(LUL_::IWindow* pW)
 {
     size_t i = m_Windows.remove(pW);
     if (!i)
-        throw Exceptions::ItemNotFound(0, 
+        throw Exceptions::ItemNotFound(
+            0, 
             static_cast<void*>(pW),
             LUL_EXCPT_HELPER());
     else if (i > 1)
-        L_LOG(L_WARNING, L"Removed more than one window? | amount = %llu | ptr = %p",
+        L_LOG(
+            L_WARNING, L"Removed more than one window? | amount = %llu | ptr = %p",
             i,
             pW);
 }
@@ -256,7 +265,8 @@ void LUL_::AppProperties::FindAppdataPath() noexcept
     LUL_PROFILER_TIMER_START();
 
     PWSTR appDataPath = nullptr;
-    SHGetKnownFolderPath(FOLDERID_RoamingAppData,
+    SHGetKnownFolderPath(
+        FOLDERID_RoamingAppData,
         KF_FLAG_DEFAULT,
         NULL,
         &appDataPath);

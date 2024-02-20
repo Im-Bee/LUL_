@@ -45,11 +45,8 @@ namespace LUL_
         Logger(Logger&&) = delete;
         Logger(const Logger&) = delete;
 
-        static Logger& Get() noexcept
-        {
-            static Logger instance;
-            return instance;
-        }
+        static Logger& Get() noexcept;
+
         ~Logger() noexcept
         {
             KillThread();
@@ -73,7 +70,8 @@ namespace LUL_
 
         void PrintFooter() noexcept;
 
-        void TagFmt(const Severity& s, 
+        void TagFmt(
+            const Severity& s, 
             std::wstring& msg, 
             const std::chrono::time_point<std::chrono::system_clock>& time = std::chrono::system_clock::now());
 

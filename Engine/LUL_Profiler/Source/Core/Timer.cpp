@@ -21,9 +21,15 @@ LUL_::Profiler::Snapshot::~Snapshot() noexcept
     Timer::Get().AddSnapshot(m_Data);
 }
 
-
 // Timer -----------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+LUL_::Profiler::Timer& LUL_::Profiler::Timer::Get() noexcept
+{
+    static Timer instance;
+    return instance;
+}
+
 // -----------------------------------------------------------------------------
 void LUL_::Profiler::Timer::OutputResults()
 {

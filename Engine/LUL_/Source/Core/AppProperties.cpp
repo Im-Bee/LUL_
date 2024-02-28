@@ -131,16 +131,19 @@ void LUL_::AppProperties::RemoveIWindow(LUL_::IWindow* pW)
             static_cast<void*>(pW),
             LUL_EXCPT_HELPER());
     else if (i > 1)
+    {
         L_LOG(
             L_WARNING, L"Removed more than one window? | amount = %llu | ptr = %p",
             i,
             pW);
+        return;
+    }
 }
 
 // -----------------------------------------------------------------------------
 void LUL_::AppProperties::TryQuitApplication()
 {
-    L_LOG(Info, L"Shuting down application");
+    L_LOG(Info, L"Post shut down on application");
 
 #ifdef _WIN32
     PostQuitMessage(0);

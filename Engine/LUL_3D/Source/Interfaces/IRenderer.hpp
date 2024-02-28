@@ -51,7 +51,7 @@ namespace LUL_::Graphics
 
         // Getters ---------------------------------------------------------------------
 
-        std::shared_ptr<LUL_::IWindow>& GetTarget() noexcept { return m_pTarget; }
+        const std::shared_ptr<LUL_::IWindow>& GetTarget() const noexcept { return m_pTarget; }
 
     private:
 

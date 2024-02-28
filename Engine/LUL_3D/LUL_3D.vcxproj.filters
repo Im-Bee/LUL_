@@ -9,36 +9,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Public">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="PCH">
       <UniqueIdentifier>{8ece2a83-b779-47c7-88ad-c1d4dc1824dc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Private\Interfaces">
       <UniqueIdentifier>{4d484497-d59d-4f45-956d-04a0c2d70de8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Private\Graphics">
+      <UniqueIdentifier>{adcc72ef-e4f4-41a0-ab55-7f8c78b2ee9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Graphics\DirectX12">
+      <UniqueIdentifier>{5ccd7e28-5186-4adf-bce8-97e07f49890a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
     <Filter Include="Public\Interfaces">
       <UniqueIdentifier>{bd4d1b93-a615-4ba9-bbe3-bb80e8e79367}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Private\Platform">
-      <UniqueIdentifier>{1b73ce93-ddb3-43c7-bffd-59b73b5f3336}</UniqueIdentifier>
+    <Filter Include="Public\Graphics">
+      <UniqueIdentifier>{526af11f-4f47-41f5-be68-69870813911b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Public\Platform">
-      <UniqueIdentifier>{251c69c0-0080-4d4b-b111-1d25efe1aa17}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\Platform\Win64">
-      <UniqueIdentifier>{1fe74c08-4dfc-499d-afa2-7ef58d12ad30}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Public\Platform\Win64">
-      <UniqueIdentifier>{886afe96-f42f-441d-bae4-f4dff2c9c19b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Public\Platform\Win64\DirectX12">
+    <Filter Include="Public\Graphics\DirectX12">
       <UniqueIdentifier>{472dcde9-2aa3-4c7d-af44-2dbc755c48f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\Platform\Win64\DirectX12">
-      <UniqueIdentifier>{5ccd7e28-5186-4adf-bce8-97e07f49890a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,16 +42,43 @@
     <ClInclude Include="Source\Interfaces\IRenderer.hpp">
       <Filter>Public\Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Platform\Win64\DirectX12\Renderer.hpp">
-      <Filter>Public\Platform\Win64\DirectX12</Filter>
+    <ClInclude Include="Source\Graphics\DirectX12\Renderer.hpp">
+      <Filter>Public\Graphics\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\DirectX12\Hardware.hpp">
+      <Filter>Public\Graphics\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\DirectX12\SwapChain.hpp">
+      <Filter>Public\Graphics\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\DirectX12\Memory.hpp">
+      <Filter>Public\Graphics\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\DirectX12\Commands.hpp">
+      <Filter>Public\Graphics\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Graphics\DirectX12\d3dx12.h">
+      <Filter>Public\Graphics\DirectX12</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Platform\Win64\DirectX12\Renderer.cpp">
-      <Filter>Private\Platform\Win64\DirectX12</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Interfaces\IRenderer.cpp">
       <Filter>Private\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\DirectX12\Renderer.cpp">
+      <Filter>Private\Graphics\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\DirectX12\Hardware.cpp">
+      <Filter>Private\Graphics\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\DirectX12\SwapChain.cpp">
+      <Filter>Private\Graphics\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\DirectX12\Memory.cpp">
+      <Filter>Private\Graphics\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Graphics\DirectX12\Commands.cpp">
+      <Filter>Private\Graphics\DirectX12</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

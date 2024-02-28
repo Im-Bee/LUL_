@@ -28,7 +28,8 @@ namespace LUL_::Exceptions
         NotImplemented(
             char const* const file = 0,
             const int& line = -1) noexcept
-            : Exception("This function isn't implemented on current system", 
+            : Exception(
+                "This function isn't implemented on current system", 
                 file, 
                 line)
         {}
@@ -45,7 +46,8 @@ namespace LUL_::Exceptions
         InvalidArg(
             char const* const file = 0,
             const int& line = -1) noexcept
-            : Exception("Argument passed to this function was invalid",
+            : Exception(
+                "Argument passed to this function was invalid",
                 file,
                 line)
         {}
@@ -62,7 +64,8 @@ namespace LUL_::Exceptions
         Internal(
             char const* const file = 0,
             const int& line = -1) noexcept
-            : Exception("LUL_ coulnd't handle the heat and failed somewhere along the way", 
+            : Exception(
+                "LUL_ coulnd't handle the heat and failed somewhere along the way", 
                 file, 
                 line)
         {}
@@ -82,7 +85,8 @@ namespace LUL_::Exceptions
             void* pointer = nullptr,
             char const* const file = 0,
             const int& line = -1) noexcept
-            : Exception("Item with provided index/pointer didn't exist",
+            : Exception(
+                "Item with provided index/pointer didn't exist",
                 file,
                 line),
             m_Index(index),
@@ -101,6 +105,24 @@ namespace LUL_::Exceptions
 
         void* m_Ptr = nullptr;
         size_t m_Index = 0;
+
+    };
+
+    class LUL_EXPORT FeatureNotSupported
+        : public LUL_::Exceptions::Exception
+    {
+    public:
+
+        FeatureNotSupported(
+            char const* const file = 0,
+            const int& line = -1) noexcept
+            : Exception(
+                "Program tried to use a feature that isn't supported on current system",
+                file,
+                line)
+        {}
+
+        ~FeatureNotSupported() noexcept = default;
 
     };
 }

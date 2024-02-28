@@ -32,13 +32,15 @@ namespace LUL_
 
         // Getters ---------------------------------------------------------------------
 
+        virtual void* GetHandle() const noexcept = 0;
+
         const int& GetWindowIndex() const noexcept { return m_WindowIndex; }
 
         wchar_t const* const GetWindowName() const noexcept { return m_WindowName; }
         
         wchar_t const* const GetWindowClass() const noexcept { return m_WindowClass; }
 
-        L_Vec2<uint32_t>& GetWindowDimensions() { return m_WindowDimensions; }
+        const L_Vec2<uint32_t>& GetWindowDimensions() const noexcept { return m_WindowDimensions; }
 
     protected:
 

@@ -25,5 +25,8 @@ void Application::Update()
 // -----------------------------------------------------------------------------
 void Application::Destroy()
 {
+    m_pRenderer->Destroy();
+
+    LUL_::AppProperties::Get().CreatePath(L"C:\\Home\\Desktop\\Results\\");
     LUL_PROFILER_TIMER_SET_OUTPUT_DIR(L"C:\\Home\\Desktop\\Results\\");
 }

@@ -1,7 +1,6 @@
 #ifndef LUL_H
     #define LUL_H
 
-    // Check windows
     #if _WIN32 || _WIN64
         #if _WIN64
             #define LUL_ENVIRONMENT 64
@@ -10,7 +9,6 @@
         #endif
     #endif
 
-    // Check GCC
     #if __GNUC__
         #if __x86_64__ || __ppc64__
             #define LUL_ENVIRONMENT 64
@@ -32,7 +30,6 @@
             #include <string>
             #include <thread>
         #else // C -------------------------------------------------------------
-            #include <stdio.h>
         #endif // __cplusplus
     #pragma endregion 
 
@@ -110,6 +107,8 @@
         #endif // __cplusplus
 
         #ifdef _WIN32
+            #define LUL_GET_WINDOW_HANDLE(handle) static_cast<HWND>(handle)
+
             #define	HInstance() GetModuleHandle(NULL)
         #endif // _WIN32
     #pragma endregion
@@ -126,6 +125,7 @@
 
             #include "Core/DataTypes.hpp"
 
+            #include "Interfaces/IUnknown.hpp"
             #include "Interfaces/IWindow.hpp"
             #include "Interfaces/IApplication.hpp"    
 

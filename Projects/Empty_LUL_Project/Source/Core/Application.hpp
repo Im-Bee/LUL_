@@ -1,7 +1,6 @@
 #pragma once
 
 #include "EntryPoint/Win32/Entry.hpp"
-#include "Platform/Win64/DirectX12/Renderer.hpp"
 
 class Application
     : public LUL_::IApplication

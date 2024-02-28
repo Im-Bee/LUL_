@@ -23,8 +23,7 @@ LUL_::EmptyWindow::EmptyWindow(
 void LUL_::EmptyWindow::Show()
 {
     LUL_PROFILER_TIMER_START();
-
-    L_LOG(L_INFO, L"Showind window | %lS", GetWindowName());
+    L_LOG(L_INFO, L"Show window | %lS %p", GetWindowName(), this);
 
     if (!m_HWND)
     {
@@ -138,7 +137,7 @@ LRESULT LUL_::EmptyWindow::OnResizeMessage(LPARAM lParam)
 // -----------------------------------------------------------------------------
 LRESULT LUL_::EmptyWindow::OnDestroyMessage()
 {
-    L_LOG(L_INFO, L"Closing window | %lS", GetWindowName());
+    L_LOG(L_INFO, L"Close window | %lS", GetWindowName());
 
     if (GetWindowIndex() == LUL_MAIN_WINDOW_INDEX)
         LUL_::AppProperties::Get().TryQuitApplication();

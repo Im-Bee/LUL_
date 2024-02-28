@@ -24,6 +24,7 @@
     <ClCompile Include="Source\Core\Logger.cpp" />
     <ClCompile Include="Source\Exceptions\LUL_Exceptions.cpp" />
     <ClCompile Include="Source\Interfaces\IApplication.cpp" />
+    <ClCompile Include="Source\Interfaces\IUnknown.cpp" />
     <ClCompile Include="Source\Interfaces\IWindow.cpp" />
     <ClCompile Include="Source\Primitives\EmptyRendererWindow.cpp" />
     <ClCompile Include="Source\Primitives\EmptyWindow.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="Source\EntryPoint\Win32\Entry.hpp" />
     <ClInclude Include="Source\Exceptions\LUL_Exceptions.hpp" />
     <ClInclude Include="Source\Interfaces\IApplication.hpp" />
+    <ClInclude Include="Source\Interfaces\IUnknown.hpp" />
     <ClInclude Include="Source\Interfaces\IWindow.hpp" />
     <ClInclude Include="Source\LUL_.h" />
     <ClInclude Include="Source\Primitives\EmptyRendererWindow.hpp" />

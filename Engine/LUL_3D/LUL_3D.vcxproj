@@ -19,15 +19,27 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Graphics\DirectX12\Commands.hpp" />
+    <ClInclude Include="Source\Graphics\DirectX12\d3dx12.h" />
+    <ClInclude Include="Source\Graphics\DirectX12\Hardware.hpp" />
+    <ClInclude Include="Source\Graphics\DirectX12\Memory.hpp" />
+    <ClInclude Include="Source\Graphics\DirectX12\Renderer.hpp" />
+    <ClInclude Include="Source\Graphics\DirectX12\SwapChain.hpp" />
     <ClInclude Include="Source\Interfaces\IRenderer.hpp" />
     <ClInclude Include="Source\LUL_3D.hpp" />
-    <ClInclude Include="Source\Platform\Win64\DirectX12\Renderer.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Graphics\DirectX12\Commands.cpp" />
+    <ClCompile Include="Source\Graphics\DirectX12\Hardware.cpp" />
+    <ClCompile Include="Source\Graphics\DirectX12\Memory.cpp" />
+    <ClCompile Include="Source\Graphics\DirectX12\Renderer.cpp" />
+    <ClCompile Include="Source\Graphics\DirectX12\SwapChain.cpp" />
     <ClCompile Include="Source\Interfaces\IRenderer.cpp" />
-    <ClCompile Include="Source\Platform\Win64\DirectX12\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LUL_Profiler\Profiler.vcxproj">
+      <Project>{87a0c469-fbfb-4fe3-963a-4e99c257fa7e}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\LUL_\LUL_.vcxproj">
       <Project>{0cf9b103-d39a-4589-a7a2-1407b61c1911}</Project>
     </ProjectReference>
@@ -152,7 +164,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LUL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LUL_EXPORTS;_LUL_DX12;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -174,7 +186,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LUL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LUL_EXPORTS;_LUL_DX12;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>

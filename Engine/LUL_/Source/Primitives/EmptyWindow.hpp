@@ -31,7 +31,7 @@ namespace LUL_
         // Getters ---------------------------------------------------------------------
 
 #ifdef _WIN32
-        HWND GetHWND() { return m_HWND; }
+        virtual void* GetHandle() const noexcept override { return m_HWND; }
 #endif // _WIN32
 
     public:

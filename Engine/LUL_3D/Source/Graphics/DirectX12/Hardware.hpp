@@ -16,7 +16,7 @@ namespace LUL_::Graphics::DX12
 
 		CD3DX12_VIEWPORT m_ViewPort = CD3DX12_VIEWPORT();
 
-		uint64_t m_ReservedMem = 0;
+		uint64_t m_uReservedMem = 0;
 
 	public:
 
@@ -32,6 +32,8 @@ namespace LUL_::Graphics::DX12
 			std::shared_ptr<LUL_::IUnknown> swapchain,
 			std::shared_ptr<LUL_::IUnknown> memory,
 			std::shared_ptr<LUL_::IUnknown> commands);
+
+		void EndCreation();
 
 	public:
 
@@ -72,7 +74,7 @@ namespace LUL_::Graphics::DX12
 
 		Microsoft::WRL::ComPtr<IDXGIFactory> m_pFactory = Microsoft::WRL::ComPtr<IDXGIFactory>(nullptr);
 
-		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this class
+		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this object
 		std::shared_ptr<LUL_::IUnknown> m_pSwapChain = std::shared_ptr<LUL_::IUnknown>(nullptr);
 		std::shared_ptr<LUL_::IUnknown> m_pMemory = std::shared_ptr<LUL_::IUnknown>(nullptr);
 		std::shared_ptr<LUL_::IUnknown> m_pCommands = std::shared_ptr<LUL_::IUnknown>(nullptr);

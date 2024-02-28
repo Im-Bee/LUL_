@@ -103,4 +103,6 @@ void LUL_::Graphics::DX12::Renderer::LoadPipeline()
         m_pHardware,
         m_pSwapChain,
         m_pCommands);
+
+    m_pHardware->EndCreation();
 }

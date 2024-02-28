@@ -47,7 +47,7 @@ namespace LUL_::Graphics::DX12
 
 		Microsoft::WRL::ComPtr<IDXGIFactory> m_pFactory = Microsoft::WRL::ComPtr<IDXGIFactory>(nullptr);
 
-		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this class
+		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this object
 		std::shared_ptr<const LUL_::IUnknown> m_pHardware = std::shared_ptr<const LUL_::IUnknown>(nullptr);
 		std::shared_ptr<const LUL_::IUnknown> m_pSwapChain = std::shared_ptr<const LUL_::IUnknown>(nullptr);
 		std::shared_ptr<const LUL_::IUnknown> m_pMemory = std::shared_ptr<const LUL_::IUnknown>(nullptr);

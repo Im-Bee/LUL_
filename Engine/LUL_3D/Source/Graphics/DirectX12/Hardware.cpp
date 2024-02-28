@@ -130,7 +130,11 @@ void LUL_::Graphics::DX12::Hardware::Initialize(
 	// Set viewport dimensions
 	m_ViewPort.Width = static_cast<FLOAT>(m_pRenderer->GetTarget()->GetWindowDimensions().x);
 	m_ViewPort.Height = static_cast<FLOAT>(m_pRenderer->GetTarget()->GetWindowDimensions().y);
+}
 
+// -----------------------------------------------------------------------------
+void LUL_::Graphics::DX12::Hardware::EndCreation()
+{
 	m_pFactory.~ComPtr();
 }
 
@@ -231,6 +235,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> LUL_::Graphics::DX12::Hardware::CreateRtv
 	CD3DX12_CPU_DESCRIPTOR_HANDLE& descriptorHandle, 
 	const uint32_t& uDescriptorSize) const
 {
+	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"LUL_::Graphics::DX12::Hardware Create render target view");
 
 	ComPtr<ID3D12Resource> rtv = 0;

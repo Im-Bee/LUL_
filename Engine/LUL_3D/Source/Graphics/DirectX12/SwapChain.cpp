@@ -44,6 +44,7 @@ void LUL_::Graphics::DX12::SwapChain::Initialize(
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::SwapChain::CreateRtvs()
 {
+	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"LUL_::Graphics::DX12::SwapChain::CreateRtvs create");
 
 	auto cpuDescriptor = CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());

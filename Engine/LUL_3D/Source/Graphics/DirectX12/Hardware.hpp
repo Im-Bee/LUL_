@@ -15,6 +15,7 @@ namespace LUL_::Graphics::DX12
 		Microsoft::WRL::ComPtr<ID3D12Device> m_pDevice = Microsoft::WRL::ComPtr<ID3D12Device>(nullptr);
 
 		CD3DX12_VIEWPORT m_ViewPort = CD3DX12_VIEWPORT();
+		CD3DX12_RECT m_ScissorRect = CD3DX12_RECT();
 
 		uint64_t m_uReservedMem = 0;
 
@@ -41,6 +42,8 @@ namespace LUL_::Graphics::DX12
 
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CreateCommandAllocator() const;
 
+		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CreateCommandList(Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator) const;
+
 		Microsoft::WRL::ComPtr<IDXGISwapChain> CreateSwapChain() const;
 
 		void CreateRtvDescriptorHeap(
@@ -48,9 +51,18 @@ namespace LUL_::Graphics::DX12
 			uint32_t& uDescriptorSize,
 			const uint32_t& count) const;
 
-		Microsoft::WRL::ComPtr<ID3D12Resource> CreateRtv(
+		void CreateRtv(
+			Microsoft::WRL::ComPtr<ID3D12Resource> target,
 			CD3DX12_CPU_DESCRIPTOR_HANDLE& descriptorHandle,
 			const uint32_t& uDescriptorSize) const;
+
+		Microsoft::WRL::ComPtr<ID3D12RootSignature> CreateRootSignature() const;
+
+		Microsoft::WRL::ComPtr<ID3D12PipelineState> CreatePipelineState() const;
+
+		Microsoft::WRL::ComPtr<ID3D12Fence> CreateFence() const;
+
+
 
 	public:
 
@@ -63,6 +75,10 @@ namespace LUL_::Graphics::DX12
 		// Getters ---------------------------------------------------------------------
 
 		const CD3DX12_VIEWPORT& GetViewport() const { return m_ViewPort; }
+
+		const CD3DX12_RECT& GetScissorRect() const { return m_ScissorRect; }
+
+		Microsoft::WRL::ComPtr<ID3D12Device> GetDevice() const { return m_pDevice; }
 
 	private:
 

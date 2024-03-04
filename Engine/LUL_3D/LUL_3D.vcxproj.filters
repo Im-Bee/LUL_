@@ -60,6 +60,9 @@
     <ClInclude Include="Source\Graphics\DirectX12\d3dx12.h">
       <Filter>Public\Graphics\DirectX12</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Graphics\DirectX12\Vertex.hpp">
+      <Filter>Public\Graphics\DirectX12</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Interfaces\IRenderer.cpp">
@@ -80,5 +83,13 @@
     <ClCompile Include="Source\Graphics\DirectX12\Commands.cpp">
       <Filter>Private\Graphics\DirectX12</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Graphics\DirectX12\Vertex.cpp">
+      <Filter>Private\Graphics\DirectX12</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Assets\DirectX12\Shaders\Basic.hlsl">
+      <Filter>Assets</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

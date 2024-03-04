@@ -25,6 +25,7 @@
     <ClInclude Include="Source\Graphics\DirectX12\Memory.hpp" />
     <ClInclude Include="Source\Graphics\DirectX12\Renderer.hpp" />
     <ClInclude Include="Source\Graphics\DirectX12\SwapChain.hpp" />
+    <ClInclude Include="Source\Graphics\DirectX12\Vertex.hpp" />
     <ClInclude Include="Source\Interfaces\IRenderer.hpp" />
     <ClInclude Include="Source\LUL_3D.hpp" />
   </ItemGroup>
@@ -34,6 +35,7 @@
     <ClCompile Include="Source\Graphics\DirectX12\Memory.cpp" />
     <ClCompile Include="Source\Graphics\DirectX12\Renderer.cpp" />
     <ClCompile Include="Source\Graphics\DirectX12\SwapChain.cpp" />
+    <ClCompile Include="Source\Graphics\DirectX12\Vertex.cpp" />
     <ClCompile Include="Source\Interfaces\IRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +45,12 @@
     <ProjectReference Include="..\LUL_\LUL_.vcxproj">
       <Project>{0cf9b103-d39a-4589-a7a2-1407b61c1911}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\Assets\DirectX12\Shaders\Basic.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

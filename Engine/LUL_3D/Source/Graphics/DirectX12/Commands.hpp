@@ -14,6 +14,8 @@ namespace LUL_::Graphics::DX12
 		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_pCommandQueue = Microsoft::WRL::ComPtr<ID3D12CommandQueue>(nullptr);
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_pCommandAllocator = Microsoft::WRL::ComPtr<ID3D12CommandAllocator>(nullptr);
 
+		Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPipelineState = Microsoft::WRL::ComPtr<ID3D12PipelineState>(nullptr);
+
 	private:
 
 		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_pCommandList = Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>(nullptr);
@@ -27,11 +29,24 @@ namespace LUL_::Graphics::DX12
 	public:
 
 		void Initialize(
-			Microsoft::WRL::ComPtr<IDXGIFactory> factory,
 			IRenderer const* const renderer,
 			std::shared_ptr<const LUL_::IUnknown> hardware,
 			std::shared_ptr<const LUL_::IUnknown> swapchain,
 			std::shared_ptr<const LUL_::IUnknown> memory);
+
+		void InitializeAssets();
+
+	public:
+
+		void RecordCommands();
+
+		void CloseCommandLine();
+
+	public:
+
+		void Signal(
+			ID3D12Fence* pFence,
+			const uint64_t uValue) const;
 
 	public:
 
@@ -44,8 +59,6 @@ namespace LUL_::Graphics::DX12
 
 
 	private:
-
-		Microsoft::WRL::ComPtr<IDXGIFactory> m_pFactory = Microsoft::WRL::ComPtr<IDXGIFactory>(nullptr);
 
 		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this object
 		std::shared_ptr<const LUL_::IUnknown> m_pHardware = std::shared_ptr<const LUL_::IUnknown>(nullptr);

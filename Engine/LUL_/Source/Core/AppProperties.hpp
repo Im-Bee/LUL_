@@ -69,7 +69,7 @@ namespace LUL_
         * @returns The path. */
         std::wstring CreatePathInKnownDir(
             const KnownDirs& kd, 
-            const std::wstring& path = 0);
+            const wchar_t* path = nullptr);
 
         int AddIWindow(LUL_::IWindow* pW);
 

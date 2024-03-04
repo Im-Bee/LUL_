@@ -16,7 +16,7 @@ void LUL_::Logger::Log(const Severity s, wchar_t const* const msg, ...)
 {
     using namespace std::chrono_literals;
 
-    wchar_t fmtBuff[LUL_STRING_BIG] = { 0 };
+    wchar_t fmtBuff[LUL_STRING_V_BIG] = { 0 };
 
     va_list args;
     va_start(args, msg);
@@ -44,6 +44,17 @@ void LUL_::Logger::Log(const Severity s, wchar_t const* const msg, ...)
     #endif // _DEBUG
     }
 #endif // LUL_CORE_MULTITHREADED
+}
+
+// -----------------------------------------------------------------------------
+void LUL_::Logger::WaitForTraffic()
+{
+    using namespace std::chrono_literals;
+
+    while (m_ThreadQueue.size() > 0)
+    {
+        std::this_thread::sleep_for(1ms);
+    }
 }
 
 // Private ---------------------------------------------------------------------
@@ -81,7 +92,7 @@ void LUL_::Logger::CreateOutPath() noexcept
     {
         m_OutFilePath = AppProperties::Get().CreatePathInKnownDir(
             KnownDirs::Appdata,
-            std::wstring(LUL_LOG_DIR) + CreateOutFile());
+            std::wstring(LUL_LOG_DIR + CreateOutFile()).c_str());
     }
     catch (std::exception e)
     {
@@ -225,7 +236,8 @@ bool LUL_::Logger::LogFmtMsg(std::wstring& msg)
 #endif // _DEBUG
         }
 
-        std::this_thread::sleep_for(1ns);
+        out.close();
+        std::this_thread::sleep_for(1ms);
         return LogFmtMsg(msg);
     }
 
@@ -252,7 +264,7 @@ bool LUL_::Logger::LogFmtMsg(std::wstring& msg)
 void LUL_::Logger::ThreadLoop()
 {
     using namespace std::chrono_literals;
-    static const auto timeout = 5ms;
+    static const auto timeout = 250ns;
 
     while (m_Thread.load())
     {
@@ -285,7 +297,9 @@ void LUL_::Logger::KillThread() noexcept
 {
 #if LUL_CORE_MULTITHREADED
     m_Thread.store(false);
-    m_LogThread.join();
+    
+    if (m_LogThread.joinable())
+        m_LogThread.join();
 #else
     return;
 #endif // LUL_CORE_MULTITHREADED

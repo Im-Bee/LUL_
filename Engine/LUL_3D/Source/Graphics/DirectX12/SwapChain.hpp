@@ -19,26 +19,44 @@ namespace LUL_::Graphics::DX12
 		uint32_t m_uRtvDescriptorSize = 0;
 		Microsoft::WRL::ComPtr<ID3D12Resource> m_pRenderTargets[m_uFrameCount] = {};
 
+		Microsoft::WRL::ComPtr<ID3D12Fence> m_pFence = Microsoft::WRL::ComPtr<ID3D12Fence>(nullptr);
+		HANDLE m_FenceEvent = INVALID_HANDLE_VALUE;
+		uint64_t m_uFrameIndex = -1;
+		uint64_t m_uFenceValue = -1;
+
 	public:
 
 		SwapChain() = default;
 
-		~SwapChain() = default;
+		~SwapChain();
 
 	public:
 
 		void Initialize(
-			Microsoft::WRL::ComPtr<IDXGIFactory> factory,
 			IRenderer const* const renderer,
 			std::shared_ptr<const LUL_::IUnknown> hardware,
 			std::shared_ptr<const LUL_::IUnknown> memory,
 			std::shared_ptr<const LUL_::IUnknown> commands);
+
+		void InitializeFence();
+
+	public:
+
+		void Present() const;
+
+		void WaitForPrevious();
 
 	public:
 
 		// Getters ---------------------------------------------------------------------
 
 		static const uint32_t& GetFrameCount() { return m_uFrameCount; }
+
+		CD3DX12_RESOURCE_BARRIER GetRenderTarget() const;
+
+		CD3DX12_RESOURCE_BARRIER GetPresentTarget() const;
+
+		CD3DX12_CPU_DESCRIPTOR_HANDLE GetRtvHandle() const;
 
 	private:
 

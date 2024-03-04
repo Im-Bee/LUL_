@@ -11,7 +11,7 @@ namespace LUL_::Graphics::DX12
 
 	private:
 
-
+		Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature = Microsoft::WRL::ComPtr<ID3D12RootSignature>(nullptr);
 
 	public:
 
@@ -22,15 +22,24 @@ namespace LUL_::Graphics::DX12
 	public:
 
 		void Initialize(
-			Microsoft::WRL::ComPtr<IDXGIFactory> factory,
 			IRenderer const* const renderer,
 			std::shared_ptr<const LUL_::IUnknown> hardware,
 			std::shared_ptr<const LUL_::IUnknown> swapchain,
 			std::shared_ptr<const LUL_::IUnknown> commands);
 
-	private:
+		void InitializeAssets();
 
-		Microsoft::WRL::ComPtr<IDXGIFactory> m_pFactory = Microsoft::WRL::ComPtr<IDXGIFactory>(nullptr);
+	public:
+
+		D3D12_VERTEX_BUFFER_VIEW AllocateVertices(Vertex const* const buffer, const uint32_t bufferSize);
+
+	public:
+
+		// Getters ---------------------------------------------------------------------
+
+		Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSig() const { return m_pRootSignature; }
+
+	private:
 
 		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this object
 		std::shared_ptr<const LUL_::IUnknown> m_pHardware = std::shared_ptr<const LUL_::IUnknown>(nullptr);

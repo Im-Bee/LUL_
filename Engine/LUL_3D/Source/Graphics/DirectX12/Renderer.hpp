@@ -1,11 +1,11 @@
 #pragma once
 
 #ifdef _WIN64
-
 #include "Hardware.hpp"
 #include "SwapChain.hpp"
 #include "Memory.hpp"
 #include "Commands.hpp"
+#include "Vertex.hpp"
 
 namespace LUL_::Graphics::DX12
 {
@@ -49,6 +49,8 @@ namespace LUL_::Graphics::DX12
     private:
 
         void LoadPipeline();
+
+        void LoadAssets();
 
     };
 }

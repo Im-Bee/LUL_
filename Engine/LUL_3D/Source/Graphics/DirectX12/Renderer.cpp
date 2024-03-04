@@ -15,6 +15,7 @@ void LUL_::Graphics::DX12::Renderer::Initialize()
     GetTarget()->Show();
 
     LoadPipeline();
+    LoadAssets();
 }
 
 // -----------------------------------------------------------------------------
@@ -25,6 +26,9 @@ void LUL_::Graphics::DX12::Renderer::Update()
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Renderer::Render()
 {
+    m_pCommands->RecordCommands();
+    m_pCommands->CloseCommandLine();
+    m_pSwapChain->WaitForPrevious();
 }
 
 // -----------------------------------------------------------------------------
@@ -32,19 +36,29 @@ void LUL_::Graphics::DX12::Renderer::Destroy()
 {
     LUL_PROFILER_TIMER_START();
     L_LOG(L_INFO, L"Destroy DX12::Renderer | %p", this);
-    // Force destroy on unused objects
-
+    // Force destroy on objects
+    
     if (m_pMemory.get())
         m_pMemory->~Memory();
-
+    
     if (m_pSwapChain.get())
         m_pSwapChain->~SwapChain();
-
+    
     if (m_pCommands.get())
         m_pCommands->~Commands();
-
+    
     if (m_pHardware.get())
         m_pHardware->~Hardware();
+
+#ifdef _DEBUG
+    L_LOG(L_INFO, L"ReportLiveObjects \\/\\/\\/\\/\\/\\/\\/\\/\\/ ");
+    Microsoft::WRL::ComPtr<IDXGIDebug1> dxgiDebug = 0;
+    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(dxgiDebug.GetAddressOf()))))
+    {
+        dxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_FLAGS(DXGI_DEBUG_RLO_DETAIL | DXGI_DEBUG_RLO_IGNORE_INTERNAL));
+    }
+    L_LOG(L_INFO, L"ReportLiveObjects ^^^^^^^^^^ ");
+#endif // _DEBUG
 }
 
 // Private ---------------------------------------------------------------------
@@ -68,6 +82,7 @@ void LUL_::Graphics::DX12::Renderer::LoadPipeline()
 
     ComPtr<IDXGIFactory> factory = 0;
     L_THROW_IF_FAILED(CreateDXGIFactory(IID_PPV_ARGS(&factory)));
+    LUL_SET_DX_NAME(factory, L"LUL_Factory");
 
     L_LOG(L_INFO, L"Create factory | %p", factory.Get());
 
@@ -84,25 +99,34 @@ void LUL_::Graphics::DX12::Renderer::LoadPipeline()
         m_pCommands);
 
     m_pCommands->Initialize(
-        factory,
         this,
         m_pHardware,
         m_pSwapChain,
         m_pMemory);
-
+    
     m_pSwapChain->Initialize(
-        factory,
         this,
         m_pHardware,
         m_pMemory,
         m_pCommands);
-
+    
     m_pMemory->Initialize(
-        factory,
         this,
         m_pHardware,
         m_pSwapChain,
         m_pCommands);
-
+    
     m_pHardware->EndCreation();
+}
+
+void LUL_::Graphics::DX12::Renderer::LoadAssets()
+{
+    LUL_PROFILER_TIMER_START();
+    L_LOG(L_INFO, L"Load assets DX12::Renderer | %p", this);
+
+    m_pMemory->InitializeAssets();
+    m_pCommands->InitializeAssets();
+    m_pSwapChain->InitializeFence();
+    
+    m_pSwapChain->WaitForPrevious();
 }

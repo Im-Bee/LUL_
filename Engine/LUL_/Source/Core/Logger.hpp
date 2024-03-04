@@ -58,6 +58,8 @@ namespace LUL_
 
         void Log(const Severity s, wchar_t const* const msg, ...);
 
+        void WaitForTraffic();
+
     private:
 
         std::wstring CreateOutFile();

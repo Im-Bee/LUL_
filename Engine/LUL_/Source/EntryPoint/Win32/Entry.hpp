@@ -27,5 +27,8 @@ INT CALLBACK wWinMain(HINSTANCE hInst, HINSTANCE hInstPrev, LPWSTR cmdline, INT 
     app->Destroy();
 
     LUL_PROFILER_TIMER_RESULTS();
+
+    LUL_::Logger::Get().WaitForTraffic();
+    LUL_::Logger::Get().~Logger();
 }
 #endif // _WIN32

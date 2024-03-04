@@ -83,7 +83,7 @@ const std::wstring& LUL_::AppProperties::CreatePath(const std::wstring& path)
 }
 
 // -----------------------------------------------------------------------------
-std::wstring LUL_::AppProperties::CreatePathInKnownDir(const KnownDirs& kd, const std::wstring& path)
+std::wstring LUL_::AppProperties::CreatePathInKnownDir(const KnownDirs& kd, const wchar_t* path)
 {
     std::wstring result;
 
@@ -91,25 +91,27 @@ std::wstring LUL_::AppProperties::CreatePathInKnownDir(const KnownDirs& kd, cons
     {
     case (Current):
     {
-        result = m_CurPath + path;
+        result = m_CurPath;
         break;
     }
     case (Appdata):
     {
-        result = m_AppdataPath + path;
+        result = m_AppdataPath;
         break;
     }
     case (CurrentProject):
     {
-        result = m_CurPrjPath + path;
+        result = m_CurPrjPath;
         break;
     }
     default:
     {
-        L_LOG(Warning, L"Unkown directory passed fore creating in known dir \"%lS\" | kd = %d", path.c_str(), kd);
+        L_LOG(Warning, L"Unkown directory passed fore creating in known dir \"%lS\" | kd = %d", path, kd);
         result = path;
     }
     }
+    if (path)
+        result += path;
 
     return AppProperties::CreatePath(result);
 }

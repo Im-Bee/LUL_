@@ -147,8 +147,8 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
     {
         float fNear = 0.0f;
         float fFar = 1000.0f;
-        float fFov = 90.0f;
-        float fAspectRatio = sc.right / sc.bottom;
+        float fFov = 50.0f;
+        float fAspectRatio = 800.0f / 1200.0f;
         float fFovRad = 1.0f / tanf(fFov * 0.5f / 180.0f * 3.14159f);
 
         mat4x4 matProj;
@@ -193,7 +193,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
             triTranslated = triRotatedZX;
             triTranslated.x = triRotatedZX.x - 2.0f;
             triTranslated.y = triRotatedZX.y - 2.0f;
-            triTranslated.z = triRotatedZX.z + 3.0f;
+            triTranslated.z = triRotatedZX.z + 4.0f;
 
             // Project triangles from 3D --> 2D
             debugmath(triTranslated, triProjected, matProj);
@@ -201,8 +201,8 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
             // Scale into view
             triProjected.x += 1.0f; 
             triProjected.y += 1.0f;
-            triProjected.x *= 0.5f * sc.right;
-            triProjected.y *= 0.5f * sc.bottom;
+            triProjected.x *= 0.5f * 1200.f;
+            triProjected.y *= 0.5f * 800.0f;
 
             // float F = 1 / std::tanf(fFov / 0.5f);
             // float x = (fAspectRatio * F * t.postion.x) / t.postion.z;

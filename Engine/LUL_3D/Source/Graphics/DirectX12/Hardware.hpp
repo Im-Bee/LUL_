@@ -42,7 +42,7 @@ namespace LUL_::Graphics::DX12
 
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CreateCommandAllocator() const;
 
-		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CreateCommandList(Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator) const;
+		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CreateDirectCommandList(Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator) const;
 
 		Microsoft::WRL::ComPtr<IDXGISwapChain> CreateSwapChain() const;
 

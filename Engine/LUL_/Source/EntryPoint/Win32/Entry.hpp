@@ -28,7 +28,10 @@ INT CALLBACK wWinMain(HINSTANCE hInst, HINSTANCE hInstPrev, LPWSTR cmdline, INT 
 
     LUL_PROFILER_TIMER_RESULTS();
 
+    // In debug, make sure that logger finished write
+#ifdef _DEBUG
     LUL_::Logger::Get().WaitForTraffic();
     LUL_::Logger::Get().~Logger();
+#endif // _DEBUG
 }
 #endif // _WIN32

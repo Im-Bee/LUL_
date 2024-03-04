@@ -31,7 +31,7 @@ namespace LUL_::Graphics::DX12
 
 	public:
 
-		D3D12_VERTEX_BUFFER_VIEW AllocateVertices(Vertex const* const buffer, const uint32_t bufferSize);
+		// D3D12_VERTEX_BUFFER_VIEW AllocateVertices(Vertex const* const buffer, const uint32_t bufferSize);
 
 	public:
 

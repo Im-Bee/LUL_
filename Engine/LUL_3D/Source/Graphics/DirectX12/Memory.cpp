@@ -36,12 +36,12 @@ void LUL_::Graphics::DX12::Memory::InitializeAssets()
 }
 
 // -----------------------------------------------------------------------------
-D3D12_VERTEX_BUFFER_VIEW LUL_::Graphics::DX12::Memory::AllocateVertices(Vertex const* const buffer, const uint32_t bufferSize)
-{
-
-
-
-
-
-	return D3D12_VERTEX_BUFFER_VIEW();
-}
+// D3D12_VERTEX_BUFFER_VIEW LUL_::Graphics::DX12::Memory::AllocateVertices(Vertex const* const buffer, const uint32_t bufferSize)
+// {
+// 
+// 
+// 
+// 
+// 
+// 	return D3D12_VERTEX_BUFFER_VIEW();
+// }

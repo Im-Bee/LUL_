@@ -39,7 +39,25 @@ void LUL_::Graphics::DX12::Commands::InitializeAssets()
 
     m_pPipelineState = LUL_GET_HARDWARE(m_pHardware)->CreatePipelineState();
 
-    m_pCommandList = LUL_GET_HARDWARE(m_pHardware)->CreateCommandList(m_pCommandAllocator);
+    m_pCommandList = LUL_GET_HARDWARE(m_pHardware)->CreateDirectCommandList(m_pCommandAllocator);
+}
+
+struct mat4x4
+{
+    float m[4][4] = { 0 };
+};
+
+void debugmath(::DirectX::XMFLOAT4& i, ::DirectX::XMFLOAT4& o, mat4x4& m)
+{
+    o.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + m.m[3][0];
+    o.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + m.m[3][1];
+    o.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + m.m[3][2];
+    float w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + m.m[3][3];
+
+    if (w != 0.0f)
+    {
+        o.x /= w; o.y /= w; o.z /= w;
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -82,17 +100,124 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
     // Define the geometry for a triangle.
     Vertex triangleVertices[] =
     {
-        { { 0.0f, 0.56f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-        { { 0.5f, 0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-        { { -0.25f, -0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
-        { { 0.20f, 0.999f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-        { { 0.25f, 0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-        { { -0.25f, -0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
-        { { -0.20f, 0.999f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
-        { { 0.25f, -0.25f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
-        { { -0.25f, -0.25f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
+        { { 0.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+        { { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+        { { 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 0.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+        { { 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+
+        { { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+        { { 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+        { { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 1.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+
+        { { 1.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+        { { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+        { { 0.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 1.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 0.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 0.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+
+        { { 0.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+        { { 0.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+        { { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        
+        { { 0.0f, 1.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+        { { 0.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+        { { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+
+        { { 1.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+        { { 0.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+        { { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 1.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } },
+        { { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
     };
     const UINT vertexBufferSize = sizeof(triangleVertices);
+    // big DEBUG
+    {
+        float fNear = 0.0f;
+        float fFar = 1000.0f;
+        float fFov = 90.0f;
+        float fAspectRatio = sc.right / sc.bottom;
+        float fFovRad = 1.0f / tanf(fFov * 0.5f / 180.0f * 3.14159f);
+
+        mat4x4 matProj;
+        matProj.m[0][0] = fAspectRatio * fFovRad;
+        matProj.m[1][1] = fFovRad;
+        matProj.m[2][2] = fFar / (fFar - fNear);
+        matProj.m[3][2] = (-fFar * fNear) / (fFar - fNear);
+        matProj.m[2][3] = 1.0f;
+        matProj.m[3][3] = 0.0f;
+
+        mat4x4 matRotZ, matRotX;
+        static float fTheta = 0.0f;
+        fTheta += 0.001f;
+
+        // Rotation Z
+        matRotZ.m[0][0] = cosf(fTheta);
+        matRotZ.m[0][1] = sinf(fTheta);
+        matRotZ.m[1][0] = -sinf(fTheta);
+        matRotZ.m[1][1] = cosf(fTheta);
+        matRotZ.m[2][2] = 1;
+        matRotZ.m[3][3] = 1;
+
+        // Rotation X
+        matRotX.m[0][0] = 1;
+        matRotX.m[1][1] = cosf(fTheta * 0.5f);
+        matRotX.m[1][2] = sinf(fTheta * 0.5f);
+        matRotX.m[2][1] = -sinf(fTheta * 0.5f);
+        matRotX.m[2][2] = cosf(fTheta * 0.5f);
+        matRotX.m[3][3] = 1;
+
+        for (auto& tri : triangleVertices)
+        {
+            ::DirectX::XMFLOAT4 triProjected, triTranslated, triRotatedZ, triRotatedZX;
+
+            // Rotate in Z-Axis
+            debugmath(tri.postion, triRotatedZ, matRotZ);
+
+            // Rotate in X-Axis
+            debugmath(triRotatedZ, triRotatedZX, matRotX);
+
+            // Offset into the screen
+            triTranslated = triRotatedZX;
+            triTranslated.x = triRotatedZX.x - 2.0f;
+            triTranslated.y = triRotatedZX.y - 2.0f;
+            triTranslated.z = triRotatedZX.z + 3.0f;
+
+            // Project triangles from 3D --> 2D
+            debugmath(triTranslated, triProjected, matProj);
+
+            // Scale into view
+            triProjected.x += 1.0f; 
+            triProjected.y += 1.0f;
+            triProjected.x *= 0.5f * sc.right;
+            triProjected.y *= 0.5f * sc.bottom;
+
+            // float F = 1 / std::tanf(fFov / 0.5f);
+            // float x = (fAspectRatio * F * t.postion.x) / t.postion.z;
+            // float y = (F * t.postion.y) / t.postion.z;
+            // float z = (t.postion.z * (fFar / fFar - fNear)) - (t.postion.z * (-fFar * fNear / fFar - fNear));
+            // 
+            // t.postion.x = (x + 1.0f) * fAspectRatio;
+            // t.postion.y = (y + 1.0f) * fAspectRatio;
+            // t.postion.z = z;
+
+            tri.postion.x = triProjected.x / 1000.0f;
+            tri.postion.y = triProjected.y / 1000.0f;
+            tri.postion.z = triProjected.z;
+        }
+    }
 
     // Note: using upload heaps to transfer static data like vert buffers is not 
     // recommended. Every time the GPU needs it, the upload heap will be marshalled 
@@ -120,8 +245,8 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
     vbview.StrideInBytes = sizeof(Vertex);
     vbview.SizeInBytes = vertexBufferSize;
     
-    m_pCommandList->IASetVertexBuffers(0, 3, &vbview);
-    m_pCommandList->DrawInstanced(9, 3, 0, 0);
+    m_pCommandList->IASetVertexBuffers(0, 4, &vbview);
+    m_pCommandList->DrawInstanced(36, 4, 0, 0);
 }
 
 // -----------------------------------------------------------------------------

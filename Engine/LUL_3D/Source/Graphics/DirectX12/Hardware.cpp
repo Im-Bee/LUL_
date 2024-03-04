@@ -11,39 +11,40 @@ case (cat):										\
 // -----------------------------------------------------------------------------
 void LogDX12(
 	D3D12_MESSAGE_CATEGORY Category,
-    D3D12_MESSAGE_SEVERITY Severity,
-    D3D12_MESSAGE_ID ID,
-    LPCSTR pDescription,
-    void* pContext)
+	D3D12_MESSAGE_SEVERITY Severity,
+	D3D12_MESSAGE_ID ID,
+	LPCSTR pDescription,
+	void* pContext)
 {
-    LUL_::Severity sev = {};
-    std::string categoryStr = "";
+	LUL_::Severity sev = {};
+	std::string categoryStr = "";
 
-    switch (Severity)
-    {
-		case (D3D12_MESSAGE_SEVERITY_CORRUPTION):
-		case (D3D12_MESSAGE_SEVERITY_ERROR):
-		{
-			sev = L_ERROR;
-			break;
-		}
-		case (D3D12_MESSAGE_SEVERITY_WARNING):
-		{
-			sev = L_WARNING;
-			break;
-		}
-		case (D3D12_MESSAGE_SEVERITY_INFO):
-		case (D3D12_MESSAGE_SEVERITY_MESSAGE):
-		{
-			sev = L_INFO;
-			break;
-		}
-		default:
-		{
-			sev = L_ERROR;
-			break;
-		}
-    }
+	switch (Severity)
+	{
+	case (D3D12_MESSAGE_SEVERITY_CORRUPTION):
+	case (D3D12_MESSAGE_SEVERITY_ERROR):
+	{
+		sev = L_ERROR;
+		break;
+	}
+	case (D3D12_MESSAGE_SEVERITY_WARNING):
+	{
+		sev = L_WARNING;
+		break;
+	}
+	case (D3D12_MESSAGE_SEVERITY_INFO):
+	case (D3D12_MESSAGE_SEVERITY_MESSAGE):
+	{
+		sev = L_INFO;
+		return;
+		break;
+	}
+	default:
+	{
+		sev = L_ERROR;
+		break;
+	}
+	}
 
 	switch (Category)
 	{
@@ -58,19 +59,19 @@ void LogDX12(
 		LUL_DX12_LOG_CATEGORY(categoryStr, D3D12_MESSAGE_CATEGORY_RESOURCE_MANIPULATION);
 		LUL_DX12_LOG_CATEGORY(categoryStr, D3D12_MESSAGE_CATEGORY_EXECUTION);
 		LUL_DX12_LOG_CATEGORY(categoryStr, D3D12_MESSAGE_CATEGORY_SHADER);
-		default:
-		{
-			categoryStr = "???";
-			break;
-		}
+	default:
+	{
+		categoryStr = "???";
+		break;
+	}
 	}
 
-    L_LOG(
+	L_LOG(
 		sev,
-        L"[%S] [ID %d] %S",
-        categoryStr.c_str(),
-        ID,
-        pDescription);
+		L"[%S] [ID %d] %S",
+		categoryStr.c_str(),
+		ID,
+		pDescription);
 }
 
 // Hardware --------------------------------------------------------------------
@@ -102,30 +103,30 @@ void LUL_::Graphics::DX12::Hardware::Initialize(
 	CreateDevice();
 
 	// Initialize debug message callback
-	#ifdef _DEBUG
-		ComPtr<ID3D12InfoQueue1> infoQueue = 0;
-		m_pDevice->QueryInterface(IID_PPV_ARGS(&infoQueue));
-		DWORD cookie = 0;
-		if (infoQueue)
-		{
-			infoQueue->RegisterMessageCallback(
-				LogDX12,
-				D3D12_MESSAGE_CALLBACK_FLAG_NONE,
-				nullptr,
-				&cookie);
-		}
-		else
-		{
-			L_LOG(
-				L_ERROR, 
-				L"LUL_::Graphics::DX12::Hardware::Initialize couldn't create infoQueue");
-		}
+#ifdef _DEBUG
+	ComPtr<ID3D12InfoQueue1> infoQueue = 0;
+	m_pDevice->QueryInterface(IID_PPV_ARGS(&infoQueue));
+	DWORD cookie = 0;
+	if (infoQueue)
+	{
+		infoQueue->RegisterMessageCallback(
+			LogDX12,
+			D3D12_MESSAGE_CALLBACK_FLAG_NONE,
+			nullptr,
+			&cookie);
+	}
+	else
+	{
+		L_LOG(
+			L_ERROR,
+			L"LUL_::Graphics::DX12::Hardware::Initialize couldn't create infoQueue");
+	}
 
-		if (!cookie)
-		{
-			throw Exceptions::Internal(LUL_EXCPT_HELPER());
-		}
-	#endif // _DEBUG
+	if (!cookie)
+	{
+		throw Exceptions::Internal(LUL_EXCPT_HELPER());
+	}
+#endif // _DEBUG
 
 	// Set viewport dimensions
 	m_ViewPort.Width = static_cast<FLOAT>(m_pRenderer->GetTarget()->GetWindowDimensions().x);
@@ -222,7 +223,7 @@ Microsoft::WRL::ComPtr<IDXGISwapChain> LUL_::Graphics::DX12::Hardware::CreateSwa
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Hardware::CreateRtvDescriptorHeap(
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& pDescriptor,
-	uint32_t& uDescriptorSize, 
+	uint32_t& uDescriptorSize,
 	const uint32_t& count) const
 {
 	LUL_PROFILER_TIMER_START();
@@ -234,7 +235,7 @@ void LUL_::Graphics::DX12::Hardware::CreateRtvDescriptorHeap(
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 
 	L_THROW_IF_FAILED(m_pDevice->CreateDescriptorHeap(
-		&heapDesc, 
+		&heapDesc,
 		IID_PPV_ARGS(&pDescriptor)));
 
 	uDescriptorSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
@@ -245,7 +246,7 @@ void LUL_::Graphics::DX12::Hardware::CreateRtvDescriptorHeap(
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Hardware::CreateRtv(
 	Microsoft::WRL::ComPtr<ID3D12Resource> target,
-	CD3DX12_CPU_DESCRIPTOR_HANDLE& descriptorHandle, 
+	CD3DX12_CPU_DESCRIPTOR_HANDLE& descriptorHandle,
 	const uint32_t& uDescriptorSize) const
 {
 	LUL_PROFILER_TIMER_START();
@@ -342,7 +343,7 @@ Microsoft::WRL::ComPtr<ID3D12PipelineState> LUL_::Graphics::DX12::Hardware::Crea
 	psoDesc.SampleDesc.Count = 1;
 
 	L_THROW_IF_FAILED(m_pDevice->CreateGraphicsPipelineState(
-		&psoDesc, 
+		&psoDesc,
 		IID_PPV_ARGS(&pipelineState)));
 
 	LUL_SET_DX12_NAME(pipelineState, L"LUL_D3D12PipelineState");
@@ -350,12 +351,25 @@ Microsoft::WRL::ComPtr<ID3D12PipelineState> LUL_::Graphics::DX12::Hardware::Crea
 }
 
 // -----------------------------------------------------------------------------
-Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> LUL_::Graphics::DX12::Hardware::CreateCommandList(Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator) const
+Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> LUL_::Graphics::DX12::Hardware::CreateDirectCommandList(Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator) const
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();
 
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> cmdl = 0;
+	ComPtr<ID3D12Device4> device4 = 0;
+
+	if (SUCCEEDED(m_pDevice->QueryInterface(IID_PPV_ARGS(&device4))))
+	{
+		L_THROW_IF_FAILED(device4->CreateCommandList1(
+			0,
+			D3D12_COMMAND_LIST_TYPE_DIRECT,
+			D3D12_COMMAND_LIST_FLAG_NONE,
+			IID_PPV_ARGS(&cmdl)));	
+		
+		LUL_SET_DX12_NAME(cmdl, L"LUL_D3D12GraphicsCommandList");
+		return cmdl;
+	}
 
 	L_THROW_IF_FAILED(m_pDevice->CreateCommandList(
 		0,
@@ -363,7 +377,7 @@ Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> LUL_::Graphics::DX12::Hardware
 		cmdAllocator.Get(),
 		nullptr,
 		IID_PPV_ARGS(&cmdl)));
-
+	
 	cmdl->Close();
 
 	LUL_SET_DX12_NAME(cmdl, L"LUL_D3D12GraphicsCommandList");

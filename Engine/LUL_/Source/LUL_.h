@@ -101,11 +101,6 @@
             #define L_LOG(...)
         #endif // _DEBUG
 
-        #ifdef __cplusplus
-            #define LUL_INITIALIZE(...)   LUL::AppProperties::Get().InitCoreLULComponents(__VA_ARGS__);
-        #else // C -------------------------------------------------------------
-        #endif // __cplusplus
-
         #ifdef _WIN32
             #define LUL_GET_WINDOW_HANDLE(handle) static_cast<HWND>(handle)
 

@@ -303,7 +303,7 @@ Microsoft::WRL::ComPtr<ID3D12PipelineState> LUL_::Graphics::DX12::Hardware::Crea
 	compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif // DEBUG
 
-	std::wstring file = LUL_::AppProperties::Get().CreatePathInKnownDir(KnownDirs::CurrentProject) + L"\\Assets\\DirectX12\\Shaders\\Basic.hlsl";
+	std::wstring file = LUL_::AppProperties::Get().CreatePathInKnownDir(KnownDirs::CurrentProject) + L"Assets\\DirectX12\\Shaders\\Basic.hlsl";
 
 	L_THROW_IF_FAILED(D3DCompileFromFile(
 		file.c_str(),

@@ -423,8 +423,8 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	vbview.StrideInBytes = sizeof(Vertex);
 	vbview.SizeInBytes = vertexBufferSize;
 
-	m_pCommandList->IASetVertexBuffers(0, 3, &vbview);
-	m_pCommandList->DrawInstanced(108, 3, 0, 0);
+	m_pCommandList->IASetVertexBuffers(0, 1, &vbview);
+	m_pCommandList->DrawInstanced(108, 1, 0, 0);
 }
 
 // -----------------------------------------------------------------------------

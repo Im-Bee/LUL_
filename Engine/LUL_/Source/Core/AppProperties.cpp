@@ -323,7 +323,12 @@ void LUL_::AppProperties::FindCurrentProjectPath() noexcept
     m_CurPrjPath = m_CurPath;
     m_CurPrjPath.pop_back();
     m_CurPrjPath = m_CurPrjPath.substr(0, m_CurPrjPath.find_last_of('\\'));
+    #ifdef _DEBUG
     m_CurPrjPath = m_CurPrjPath.substr(0, m_CurPrjPath.size() - std::string("Bin64\\Projects\\Debug\\").size()) + L"\\";
+    #else
+    m_CurPrjPath = m_CurPrjPath.substr(0, m_CurPrjPath.size() - std::string("Bin64\\Projects\\Release\\").size()) + L"\\";
+    #endif // _DEBUG
+
 
     return;
 #else

@@ -353,9 +353,16 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 		matRotX.m[2][2] = cosf(fTheta * 0.5f);
 		matRotX.m[3][3] = 1;
 
+		float secondCubeOff = 0.0f;
+		int i = 0;
 		for (auto& tri : triangleVertices)
 		{
-			L_Float4 t = { tri.postion.x, tri.postion.y, tri.postion.z, tri.postion.w };
+			if (i >= 36)
+				secondCubeOff = -3.5f;
+			if (i >= 72)
+				secondCubeOff = 3.5f;
+
+			L_Float4 t = { tri.postion.x + secondCubeOff, tri.postion.y + secondCubeOff, tri.postion.z + secondCubeOff, tri.postion.w };
 			L_Float4 triProjected, triTranslated, triRotatedZ, triRotatedZX;
 
 			// Rotate in Z-Axis
@@ -367,7 +374,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 			// Offset into the screen
 			triTranslated.x = triRotatedZX.x - 2.0f;
 			triTranslated.y = triRotatedZX.y - 2.0f;
-			triTranslated.z = triRotatedZX.z + 4.0f;
+			triTranslated.z = triRotatedZX.z + 10.0f;
 			triTranslated.w = triRotatedZX.w;
 
 			// Project triangles from 3D --> 2D
@@ -385,8 +392,9 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 			tri.postion.w = 1.0f;
 
 			// L_LOG(L_INFO, L"GOOD %f %f %f %f", tri[0], tri[1], tri[2], tri[3]);
+			++i;
+		}
 	}
-}
 #endif
 
 	// Note: using upload heaps to transfer static data like vert buffers is not 

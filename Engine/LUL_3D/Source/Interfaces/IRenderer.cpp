@@ -19,6 +19,7 @@ void LUL_::Graphics::IRenderer::ProcessFlags() noexcept
     if (IsFlagSet(Graphics::CreateTarget))
     {
         m_pTarget = std::make_shared<LUL_::EmptyRendererWindow>();
+        dynamic_cast<LUL_::EmptyRendererWindow*>(m_pTarget.get())->SetDimensions(1920, 1080);
     }
 }
 

@@ -73,7 +73,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	// Record commands.
 	const float clearColor[] = { 0.901660f, 0.6f, 0.082352f, 1.0f };
 	m_pCommandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-	m_pCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_pCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Create the vertex buffer.
 	static ComPtr<ID3D12Resource> vbv = {};
@@ -195,7 +195,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 
 		// -----------------------------------------------------------------------------
 
-				{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain2, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain2, 1.0f } },
 		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
 		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain1, 1.0f } },
 		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain1, fRain2, 1.0f } },
@@ -243,9 +243,9 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	{
 		using namespace DirectX;
 
-		static const float fFov = 75.0f;
+		static const float fFov = 59.0f;
 		static const float fAspectRatio = 1200.0f / 800.0f;
-		static const float fNear = 0.1f;
+		static const float fNear = 0.001f;
 		static const float fFar = 1000.0f;
 
 		XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(
@@ -423,8 +423,8 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	vbview.StrideInBytes = sizeof(Vertex);
 	vbview.SizeInBytes = vertexBufferSize;
 
-	m_pCommandList->IASetVertexBuffers(0, 1, &vbview);
-	m_pCommandList->DrawInstanced(108, 1, 0, 0);
+	m_pCommandList->IASetVertexBuffers(0, 3, &vbview);
+	m_pCommandList->DrawInstanced(108, 3, 0, 0);
 }
 
 // -----------------------------------------------------------------------------

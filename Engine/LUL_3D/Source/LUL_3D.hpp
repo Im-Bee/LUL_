@@ -30,14 +30,30 @@
 		#pragma warning ( pop )
 	#pragma endregion 
 
+	#pragma region Engine helper functions
+		namespace LUL_
+		{
+			LUL_EXPORT inline const LUL_::IUnknown* GetHelper(const std::shared_ptr<const LUL_::IUnknown>& obj, char const* const original)
+			{
+			#ifdef _DEBUG
+				if (strcmp(obj->GetClass(), original))
+					throw LUL_::Exceptions::InvalidArg(LUL_EXCPT_HELPER());
+			#endif // _DEBUG
+				return obj.get();
+			}
+		}
+	#pragma endregion
+
 	#pragma region Engine macros
 		#define L_THROW_IF_FAILED(hr)											\
-					if (FAILED(hr)) throw LUL_::Exceptions::Internal(LUL_EXCPT_HELPER())
+		if (FAILED(hr)) throw LUL_::Exceptions::Internal(LUL_EXCPT_HELPER())
 
-		#define LUL_GET_HARDWARE(hardware) static_cast<const LUL_::Graphics::DX12::Hardware*>(hardware.get())
-		#define LUL_GET_SWAPCHAIN(swapChain) static_cast<const LUL_::Graphics::DX12::SwapChain*>(swapChain.get())
-		#define LUL_GET_MEMORY(memory) static_cast<const LUL_::Graphics::DX12::Memory*>(memory.get())
-		#define LUL_GET_COMMANDS(commands) static_cast<const LUL_::Graphics::DX12::Commands*>(commands.get())
+		#define LUL_GET_HELPER(obj, original) static_cast<const original*>(LUL_::GetHelper(obj, original::GetClassId()))
+
+		#define LUL_GET_HARDWARE(hardwareSharedPtr)	LUL_GET_HELPER(hardwareSharedPtr, LUL_::Graphics::DX12::Hardware)
+		#define LUL_GET_SWAPCHAIN(swapChainSharedPtr) LUL_GET_HELPER(swapChainSharedPtr, LUL_::Graphics::DX12::SwapChain)
+		#define LUL_GET_MEMORY(memorySharedPtr) LUL_GET_HELPER(memorySharedPtr, LUL_::Graphics::DX12::Memory)
+		#define LUL_GET_COMMANDS(commandsSharedPtr) LUL_GET_HELPER(commandsSharedPtr, LUL_::Graphics::DX12::Commands)
 
 		#ifdef _DEBUG
 			#define LUL_DX_LOG_CREATE() L_LOG(L_INFO, L"Create %S | %p", __func__, this)

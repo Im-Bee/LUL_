@@ -34,6 +34,12 @@
     <Filter Include="Public\Graphics\DirectX12">
       <UniqueIdentifier>{472dcde9-2aa3-4c7d-af44-2dbc755c48f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Public\Math">
+      <UniqueIdentifier>{aa718308-5666-4e13-8382-ef980fbb02ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Math">
+      <UniqueIdentifier>{65805338-0386-4f7a-88f0-0150f330055b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\LUL_3D.hpp">
@@ -63,6 +69,9 @@
     <ClInclude Include="Source\Graphics\DirectX12\Vertex.hpp">
       <Filter>Public\Graphics\DirectX12</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Math\Matrices.hpp">
+      <Filter>Public\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Interfaces\IRenderer.cpp">
@@ -85,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="Source\Graphics\DirectX12\Vertex.cpp">
       <Filter>Private\Graphics\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Math\Matrices.cpp">
+      <Filter>Private\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

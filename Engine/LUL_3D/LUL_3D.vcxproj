@@ -28,6 +28,7 @@
     <ClInclude Include="Source\Graphics\DirectX12\Vertex.hpp" />
     <ClInclude Include="Source\Interfaces\IRenderer.hpp" />
     <ClInclude Include="Source\LUL_3D.hpp" />
+    <ClInclude Include="Source\Math\Matrices.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Graphics\DirectX12\Commands.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="Source\Graphics\DirectX12\SwapChain.cpp" />
     <ClCompile Include="Source\Graphics\DirectX12\Vertex.cpp" />
     <ClCompile Include="Source\Interfaces\IRenderer.cpp" />
+    <ClCompile Include="Source\Math\Matrices.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LUL_Profiler\Profiler.vcxproj">

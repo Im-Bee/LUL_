@@ -43,14 +43,14 @@
 			#define LUL_DX_LOG_CREATE() L_LOG(L_INFO, L"Create %S | %p", __func__, this)
 
 			#define LUL_SET_DX_NAME(obj, name)												\
-							const wchar_t* theName = L#name;												\
-							if (FAILED(obj->SetPrivateData(													\
-								WKPDID_D3DDebugObjectName,													\
-								sizeof(theName),															\
-								theName)))																	\
-							{																				\
-								L_LOG(L_WARNING, L"Couldn't set the name for %p to %lS", obj, theName);		\
-							}
+			const wchar_t* theName = L#name;												\
+			if (FAILED(obj->SetPrivateData(													\
+				WKPDID_D3DDebugObjectName,													\
+				sizeof(theName),															\
+				theName)))																	\
+			{																				\
+				L_LOG(L_WARNING, L"Couldn't set the name for %p to %lS", obj, theName);		\
+			}
 
 			#define LUL_SET_DX12_NAME(obj, name) obj->SetName(L#name)
 		#else
@@ -65,6 +65,8 @@
 		// Warning C4251 Class needs to have dll - interface to be used by clients of class.
 		// Warning C4275 Non dll-interface class used as base.
 		#pragma warning (disable : 4251 4275)
+			#include "Math/Matrices.hpp"
+
 			#include "Interfaces/IRenderer.hpp"
 			
 			#include "Graphics/DirectX12/d3dx12.h"

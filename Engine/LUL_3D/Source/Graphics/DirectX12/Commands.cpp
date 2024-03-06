@@ -42,41 +42,6 @@ void LUL_::Graphics::DX12::Commands::InitializeAssets()
 	m_pCommandList = LUL_GET_HARDWARE(m_pHardware)->CreateDirectCommandList(m_pCommandAllocator);
 }
 
-struct mat4x4
-{
-	float m[4][4] = { 0 };
-};
-
-void debugmath(::DirectX::XMFLOAT4& i, ::DirectX::XMFLOAT4& o, mat4x4& m)
-{
-	o.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + m.m[3][0];
-	o.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + m.m[3][1];
-	o.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + m.m[3][2];
-	o.w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + m.m[3][3];
-
-	if (o.w != 0.0f)
-	{
-		o.x /= o.w;
-		o.y /= o.w;
-		o.z /= o.w;
-	}
-}
-
-void debugmath(::DirectX::XMFLOAT4& i, ::DirectX::XMFLOAT4& o, ::DirectX::XMMATRIX& m)
-{
-	o.x = i.x * m.r[0].m128_f32[0] + i.y * m.r[1].m128_f32[0] + i.z * m.r[2].m128_f32[0] + m.r[3].m128_f32[0];
-	o.y = i.x * m.r[0].m128_f32[1] + i.y * m.r[1].m128_f32[1] + i.z * m.r[2].m128_f32[1] + m.r[3].m128_f32[1];
-	o.z = i.x * m.r[0].m128_f32[2] + i.y * m.r[1].m128_f32[2] + i.z * m.r[2].m128_f32[2] + m.r[3].m128_f32[2];
-	o.w = i.x * m.r[0].m128_f32[3] + i.y * m.r[1].m128_f32[3] + i.z * m.r[2].m128_f32[3] + m.r[3].m128_f32[3];
-
-	if (o.w != 0.0f)
-	{
-		o.x /= o.w;
-		o.y /= o.w;
-		o.z /= o.w;
-	}
-}
-
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Commands::RecordCommands()
 {
@@ -114,16 +79,16 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	static ComPtr<ID3D12Resource> vbv = {};
 	static D3D12_VERTEX_BUFFER_VIEW vbview;
 
-	static float fRA1 = 0.0005f;
-	static float fRA2 = 0.0005f;
-	static float fRA3 = 0.0005f;
 
-	static float fRain1 = 0.0f;
-	fRain1 += fRA1;
-	static float fRain2 = 0.5f;
-	fRain2 += fRA2;
-	static float fRain3 = 0.25f;
-	fRain3 += fRA3;
+	static float
+		fRain1 = 0.0f,
+		fRain2 = 0.5f,
+		fRain3 = 0.25f;
+
+	static float 
+		fRA1 = 0.0008f,
+		fRA2 = 0.0002f,
+		fRA3 = 0.0005f;
 
 	if (fRain1 >= 1.0f ||
 		fRain1 <= 0.0f)
@@ -135,53 +100,145 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 		fRain3 <= 0.0f)
 		fRA3 = -fRA3;
 
+	fRain1 += fRA1;
+	fRain2 += fRA2;
+	fRain3 += fRA3;
+
 	// Define the geometry for a triangle.
 	Vertex triangleVertices[] =
 	{
-		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain2, 0.5f } },
-		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain2, fRain1, 1.0f, 0.5f } },
-		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain1, 0.5f } },
-		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain1, fRain2, 0.5f } },
-		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, fRain1, fRain1, 0.5f } },
-		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain2, fRain1, 1.0f, 0.5f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain1, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain1, fRain2, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain1, 1.0f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
 
-		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { 1.0f, fRain2, 1.0f, 0.5f } },
-		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, 1.0f, fRain2, 0.5f } },
-		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain3, 1.0f, fRain1, 0.5f } },
-		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, fRain2, fRain3, 0.5f } },
-		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain3, 1.0f, 0.5f } },
-		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain2, 0.0f, fRain2, 0.5f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain2, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain1, 1.0f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain3, fRain3, 1.0f } },
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain1, fRain2, 1.0f } },
+		
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain3, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain3, fRain2, 1.0f } },
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain2, fRain3, 1.0f } },
+		
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain1, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain2, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain3, fRain3, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain1, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain2, fRain1, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain2, fRain2, fRain2, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain2, fRain1, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain2, fRain2, 1.0f } },
+		
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain1, 1.0f } },
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain3, fRain3, 1.0f } },
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain1, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain1, 1.0f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain2, 1.0f } },
 
-		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, 0.0f, fRain3, 0.5f } },
-		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain1, 0.0f, 0.5f } },
-		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain3, fRain2, 0.5f } },
-		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain2, 0.5f } },
-		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, fRain3, 1.0f, 0.5f } },
-		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain2, 1.0f, 0.5f } },
+		// ---------------------------------------------------------------------------
 
-		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain1, 0.0f, fRain2, 0.5f } },
-		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain1, 0.5f } },
-		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain3, fRain3, 0.0f, 0.5f } },
-		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, fRain2, fRain2, 0.5f } },
-		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, fRain1, fRain3, 0.5f } },
-		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain3, fRain3, 0.5f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain1, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain1, fRain2, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain1, 1.0f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
 
-		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { 1.0f, 0.0f, fRain3, 0.5f } },
-		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain3, 0.0f, 0.5f } },
-		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain2, 0.0f, 1.0f, 0.5f } },
-		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, fRain2, 1.0f, 0.5f } },
-		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain2, fRain1, 0.5f } },
-		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain2, 1.0f, 0.5f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain2, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain1, 1.0f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain3, fRain3, 1.0f } },
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain1, fRain2, 1.0f } },
 
-		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, fRain1, fRain1, 0.5f } },
-		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, fRain1, 0.0f, 0.5f } },
-		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain3, 1.0f, 0.5f } },
-		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { 1.0f, fRain1, fRain1, 0.5f } },
-		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain1, 0.5f } },
-		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain2, fRain1, 1.0f, 0.5f } }
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain3, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain3, fRain2, 1.0f } },
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain2, fRain3, 1.0f } },
+
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain1, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain2, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain3, fRain3, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain1, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain2, fRain1, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain2, fRain2, fRain2, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain2, fRain1, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain2, fRain2, 1.0f } },
+
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain1, 1.0f } },
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain3, fRain3, 1.0f } },
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain1, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain1, 1.0f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain2, 1.0f } },
+
+		// -----------------------------------------------------------------------------
+
+				{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain1, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain1, fRain2, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain1, 1.0f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
+
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain2, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain1, 1.0f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain2, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain3, fRain3, 1.0f } },
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain1, fRain2, 1.0f } },
+
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain3, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain3, fRain2, 1.0f } },
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain2, fRain3, 1.0f } },
+
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain1, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain2, fRain2, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain3, fRain3, fRain3, 1.0f } },
+
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain3, fRain3, 1.0f } },
+		{ { 0.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain3, fRain1, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain2, fRain2, fRain1, 1.0f } },
+		{ { 0.0f, 1.0f, 0.0f, 1.0f }, { fRain2, fRain2, fRain2, 1.0f } },
+		{ { 1.0f, 1.0f, 1.0f, 1.0f }, { fRain1, fRain2, fRain1, 1.0f } },
+		{ { 1.0f, 1.0f, 0.0f, 1.0f }, { fRain1, fRain2, fRain2, 1.0f } },
+
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain1, 1.0f } },
+		{ { 0.0f, 0.0f, 1.0f, 1.0f }, { fRain2, fRain1, fRain3, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain3, fRain3, 1.0f } },
+		{ { 1.0f, 0.0f, 1.0f, 1.0f }, { fRain3, fRain1, fRain1, 1.0f } },
+		{ { 0.0f, 0.0f, 0.0f, 1.0f }, { fRain1, fRain1, fRain1, 1.0f } },
+		{ { 1.0f, 0.0f, 0.0f, 1.0f }, { fRain2, fRain1, fRain2, 1.0f } }
 	};
 	const UINT vertexBufferSize = sizeof(triangleVertices);
-	// big DEBUG
+
 #if 1
 	{
 		using namespace DirectX;
@@ -191,7 +248,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 		static const float fNear = 0.1f;
 		static const float fFar = 1000.0f;
 
-		XMMATRIX projection = DirectX::XMMatrixPerspectiveFovRH(
+		XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(
 			XMConvertToRadians(fFov),
 			fAspectRatio,
 			fNear,
@@ -201,36 +258,63 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 		static float fThetaDirection = 0.05f;
 		fTheta += fThetaDirection;
 
+		static float fOffset = 1.0f;
+		static float fOffDirection = 0.0001f;
+		fOffset += fOffDirection;
+		if (fOffset > 7.0f || fOffset <= 0.0f)
+			fOffDirection = -fOffDirection;
+
+		XMVECTOR 
+			v,
+			result;
+
+		XMMATRIX 
+			rotationZ,
+			rotationX,
+			rotationY,
+			rotatedXZ,
+			rotatedXZY,
+			finished;
+
+		float secondCubeOff = 0.0f;
+		int i = 0;
 		for (auto& tri : triangleVertices)
 		{
-			XMVECTOR v = { tri.postion.x, tri.postion.y, tri.postion.z, tri.postion.w };
+			if (i >= 36)
+				secondCubeOff = -3.5f;
+			if (i >= 72)
+				secondCubeOff = 3.5f;
 
-			v.m128_f32[3] += 4.0f;
+			v.m128_f32[0] = tri.postion.x + secondCubeOff;
+			v.m128_f32[1] = tri.postion.y + fOffset + secondCubeOff;
+			v.m128_f32[2] = tri.postion.z + secondCubeOff;
+			v.m128_f32[3] = tri.postion.w;
 			
-			// Make rotations
-			auto rotationZ = XMMatrixRotationZ(XMConvertToRadians(fTheta));
-			auto rotationX = XMMatrixRotationX(XMConvertToRadians(fTheta));
-			auto rotationY = XMMatrixRotationY(XMConvertToRadians(fTheta));
-
+			// // Make rotations
+			rotationZ = XMMatrixRotationZ(XMConvertToRadians(fTheta));
+			rotationX = XMMatrixRotationX(XMConvertToRadians(fTheta));
+			rotationY = XMMatrixRotationY(XMConvertToRadians(fTheta));
+			
 			// Rotate
-			auto rotatedXZ = XMMatrixMultiply(rotationX, rotationZ);
-			auto rotatedXZY = XMMatrixMultiply(rotatedXZ, rotationY);
+			rotatedXZ = XMMatrixMultiply(rotationX, rotationZ);
+			rotatedXZY = XMMatrixMultiply(rotatedXZ, rotationY);
 			
 			// Project
-			auto finished = XMMatrixMultiply(rotatedXZY, projection);
-
+			finished = XMMatrixMultiply(rotatedXZY, projection);
+			
 			// Calculate result
-			auto result = XMVector4Transform(v, finished);
+			result = XMVector4Transform(v, finished);
 
-			if (result.m128_f32[2] < 0.0f)
-				result.m128_f32[2] = -result.m128_f32[2];
+ 			if (result.m128_f32[2] < 0.0f)
+ 				result.m128_f32[2] = -result.m128_f32[2];
 
 			// Scale down
-			tri.postion.x = result.m128_f32[0] / 4.0f;
-			tri.postion.y = result.m128_f32[1] / 4.0f;
-			tri.postion.z = result.m128_f32[2] / 10.0f;
-			tri.postion.w = 1.0f;
+			tri.postion.x = result.m128_f32[0] * 0.1f;
+			tri.postion.y = result.m128_f32[1] * 0.1f;
+			tri.postion.z = result.m128_f32[2] * 0.1f;
+			tri.postion.w = 1.0f;  // result.m128_f32[3] * 0.1f;
 			// L_LOG(L_INFO, L"%f %f %f %f", tri[0], tri[1], tri[2], tri[3]);
+			++i;
 		}
 	}
 #else
@@ -241,7 +325,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 		static const float fAspectRatio = 800.0f / 1200.0f;
 		static const float fFovRad = 1.0f / tanf(fFov * 0.5f / 180.0f * 3.14159f);
 
-		mat4x4 matProj;
+		L_MatFloat4x4 matProj;
 		matProj.m[0][0] = fAspectRatio * fFovRad;
 		matProj.m[1][1] = fFovRad;
 		matProj.m[2][2] = fFar / (fFar - fNear);
@@ -249,7 +333,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 		matProj.m[2][3] = 1.0f;
 		matProj.m[3][3] = 0.0f;
 
-		mat4x4 matRotZ, matRotX;
+		L_MatFloat4x4 matRotZ, matRotX;
 		static float fTheta = 0.0f;
 		fTheta += 0.001f;
 
@@ -271,22 +355,23 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 
 		for (auto& tri : triangleVertices)
 		{
-			::DirectX::XMFLOAT4 triProjected, triTranslated, triRotatedZ, triRotatedZX;
+			L_Float4 t = { tri.postion.x, tri.postion.y, tri.postion.z, tri.postion.w };
+			L_Float4 triProjected, triTranslated, triRotatedZ, triRotatedZX;
 
 			// Rotate in Z-Axis
-			debugmath(tri.postion, triRotatedZ, matRotZ);
+			triRotatedZ = Math::Vector4Transform(t, matRotZ);
 
 			// Rotate in X-Axis
-			debugmath(triRotatedZ, triRotatedZX, matRotX);
+			triRotatedZX = Math::Vector4Transform(triRotatedZ, matRotX);
 
 			// Offset into the screen
-			triTranslated = triRotatedZX;
 			triTranslated.x = triRotatedZX.x - 2.0f;
 			triTranslated.y = triRotatedZX.y - 2.0f;
 			triTranslated.z = triRotatedZX.z + 4.0f;
+			triTranslated.w = triRotatedZX.w;
 
 			// Project triangles from 3D --> 2D
-			debugmath(triTranslated, triProjected, matProj);
+			triProjected = Math::Vector4Transform(triTranslated, matProj);
 
 			// Scale into view
 			triProjected.x += 0.5f;
@@ -294,21 +379,12 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 			triProjected.x *= 0.5f * 1200.f;
 			triProjected.y *= 0.5f * 800.0f;
 
-			// float F = 1 / std::tanf(fFov / 0.5f);
-			// float x = (fAspectRatio * F * t.postion.x) / t.postion.z;
-			// float y = (F * t.postion.y) / t.postion.z;
-			// float z = (t.postion.z * (fFar / fFar - fNear)) - (t.postion.z * (-fFar * fNear / fFar - fNear));
-			// 
-			// t.postion.x = (x + 1.0f) * fAspectRatio;
-			// t.postion.y = (y + 1.0f) * fAspectRatio;
-			// t.postion.z = z;
-
 			tri.postion.x = triProjected.x / 1000.0f;
 			tri.postion.y = triProjected.y / 1000.0f;
 			tri.postion.z = triProjected.z / 10.0f;
-			tri.postion.w = triProjected.w / 10.0f;
+			tri.postion.w = 1.0f;
 
-			L_LOG(L_INFO, L"GOOD %f %f %f %f", tri[0], tri[1], tri[2], tri[3]);
+			// L_LOG(L_INFO, L"GOOD %f %f %f %f", tri[0], tri[1], tri[2], tri[3]);
 	}
 }
 #endif
@@ -340,7 +416,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	vbview.SizeInBytes = vertexBufferSize;
 
 	m_pCommandList->IASetVertexBuffers(0, 1, &vbview);
-	m_pCommandList->DrawInstanced(36, 1, 0, 0);
+	m_pCommandList->DrawInstanced(108, 1, 0, 0);
 }
 
 // -----------------------------------------------------------------------------

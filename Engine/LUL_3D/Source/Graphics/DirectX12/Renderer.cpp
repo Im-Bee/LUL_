@@ -37,7 +37,9 @@ void LUL_::Graphics::DX12::Renderer::Destroy()
     LUL_PROFILER_TIMER_START();
     L_LOG(L_INFO, L"Destroy DX12::Renderer | %p", this);
     // Force destroy on objects
-    
+    if (m_pSwapChain.get())
+        m_pSwapChain->WaitForPrevious();
+
     if (m_pMemory.get())
         m_pMemory->~Memory();
     

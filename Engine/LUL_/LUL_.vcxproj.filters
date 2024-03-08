@@ -69,9 +69,6 @@
     <ClCompile Include="Source\Core\DataTypes.cpp">
       <Filter>Private\Core</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Primitives\EmptyRendererWindow.cpp">
-      <Filter>Private\Primitives</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Interfaces\IUnknown.cpp">
       <Filter>Private\Interfaces</Filter>
     </ClCompile>
@@ -100,9 +97,6 @@
     </ClInclude>
     <ClInclude Include="Source\Core\DataTypes.hpp">
       <Filter>Public\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Primitives\EmptyRendererWindow.hpp">
-      <Filter>Public\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="Source\LUL_.h">
       <Filter>LUL_</Filter>

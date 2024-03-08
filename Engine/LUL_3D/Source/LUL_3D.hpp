@@ -9,7 +9,7 @@
 		#endif // _DEBUG
 
 		#pragma warning ( push )
-		#pragma warning (disable : 4005)
+		#pragma warning ( disable : 4005 )
 		#include <wrl.h>
 		#include <d3d12.h>
 		#pragma comment(lib, "d3d12")
@@ -30,20 +30,6 @@
 		#pragma warning ( pop )
 	#pragma endregion 
 
-	#pragma region Engine helper functions
-		namespace LUL_
-		{
-			LUL_EXPORT inline const LUL_::IUnknown* GetHelper(const std::shared_ptr<const LUL_::IUnknown>& obj, char const* const original)
-			{
-			#ifdef _DEBUG
-				if (strcmp(obj->GetClass(), original))
-					throw LUL_::Exceptions::InvalidArg(LUL_EXCPT_HELPER());
-			#endif // _DEBUG
-				return obj.get();
-			}
-		}
-	#pragma endregion
-
 	#pragma region Engine macros
 		#define L_THROW_IF_FAILED(hr)											\
 		if (FAILED(hr)) throw LUL_::Exceptions::Internal(LUL_EXCPT_HELPER())
@@ -58,14 +44,14 @@
 		#ifdef _DEBUG
 			#define LUL_DX_LOG_CREATE() L_LOG(L_INFO, L"Create %S | %p", __func__, this)
 
-			#define LUL_SET_DX_NAME(obj, name)												\
-			const wchar_t* theName = L#name;												\
-			if (FAILED(obj->SetPrivateData(													\
-				WKPDID_D3DDebugObjectName,													\
-				sizeof(theName),															\
-				theName)))																	\
-			{																				\
-				L_LOG(L_WARNING, L"Couldn't set the name for %p to %lS", obj, theName);		\
+			#define LUL_SET_DX_NAME(obj, name)															\
+			const wchar_t* theName = L#name;															\
+			if (FAILED(obj->SetPrivateData(																\
+				WKPDID_D3DDebugObjectName,																\
+				sizeof(theName),																		\
+				theName)))																				\
+			{																							\
+				L_LOG(L_WARNING, L"Couldn't set the name for %p | %S to %lS", obj, #obj, theName);		\
 			}
 
 			#define LUL_SET_DX12_NAME(obj, name) obj->SetName(L#name)
@@ -84,10 +70,25 @@
 			#include "Math/Matrices.hpp"
 
 			#include "Interfaces/IRenderer.hpp"
+			#include "Interfaces/IRendererComponent.hpp"
 			
 			#include "Graphics/DirectX12/d3dx12.h"
 			#include "Graphics/DirectX12/Renderer.hpp"
 		#pragma warning ( pop )
+	#pragma endregion
+
+	#pragma region Engine helper functions
+		namespace LUL_
+		{
+			LUL_EXPORT inline const LUL_::Graphics::IRendererComponent* GetHelper(const std::shared_ptr<const LUL_::Graphics::IRendererComponent>& obj, char const* const original)
+			{
+		#ifdef _DEBUG
+				if (strcmp(obj->GetClass(), original))
+					throw LUL_::Exceptions::InvalidArg(LUL_EXCPT_HELPER());
+		#endif // _DEBUG
+				return obj.get();
+			}
+		}
 	#pragma endregion
 #endif
 

@@ -2,7 +2,7 @@
 
 namespace LUL_::Graphics
 {
-    typedef int RendererFlags;
+    typedef int_fast32_t RendererFlags;
 
     static constexpr RendererFlags CreateTarget = 0x01;
 
@@ -14,7 +14,9 @@ namespace LUL_::Graphics
 
     public:
 
-        explicit IRenderer(RendererFlags flags = 0) noexcept
+        IRenderer() = default;
+
+        explicit IRenderer(RendererFlags flags) noexcept
         {
             SetFlag(flags);
             ProcessFlags();
@@ -40,7 +42,7 @@ namespace LUL_::Graphics
         virtual void Render() = 0;
 
         virtual void Destroy() = 0;
-
+        
     public:
 
         // Setters ---------------------------------------------------------------------
@@ -53,14 +55,14 @@ namespace LUL_::Graphics
 
         const std::shared_ptr<LUL_::IWindow>& GetTarget() const noexcept { return m_pTarget; }
 
-    private:
-
-        void ProcessFlags() noexcept;
+    protected:
 
         bool IsFlagSet(RendererFlags f) noexcept;
 
-        void SetFlag(RendererFlags f) noexcept;
+    private:
 
+        void ProcessFlags() noexcept;
+        void SetFlag(RendererFlags f) noexcept;
         void UnsetFlag(RendererFlags f) noexcept;
 
     private:

@@ -4,7 +4,7 @@
 namespace LUL_::Graphics::DX12
 {
 	class LUL_EXPORT Commands
-		: public LUL_::IUnknown
+		: public LUL_::Graphics::IRendererComponent
 	{
 
 		LUL_IUNKNOWN_IMPL(Commands);
@@ -13,6 +13,8 @@ namespace LUL_::Graphics::DX12
 
 		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_pCommandQueue = Microsoft::WRL::ComPtr<ID3D12CommandQueue>(nullptr);
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_pCommandAllocator = Microsoft::WRL::ComPtr<ID3D12CommandAllocator>(nullptr);
+
+		CD3DX12_RECT m_ScissorRect = CD3DX12_RECT();
 
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPipelineState = Microsoft::WRL::ComPtr<ID3D12PipelineState>(nullptr);
 
@@ -30,9 +32,9 @@ namespace LUL_::Graphics::DX12
 
 		void Initialize(
 			IRenderer const* const renderer,
-			std::shared_ptr<const LUL_::IUnknown> hardware,
-			std::shared_ptr<const LUL_::IUnknown> swapchain,
-			std::shared_ptr<const LUL_::IUnknown> memory);
+			std::shared_ptr<const LUL_::Graphics::IRendererComponent> hardware,
+			std::shared_ptr<const LUL_::Graphics::IRendererComponent> swapchain,
+			std::shared_ptr<const LUL_::Graphics::IRendererComponent> memory);
 
 		void InitializeAssets();
 
@@ -61,9 +63,9 @@ namespace LUL_::Graphics::DX12
 	private:
 
 		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this object
-		std::shared_ptr<const LUL_::IUnknown> m_pHardware = std::shared_ptr<const LUL_::IUnknown>(nullptr);
-		std::shared_ptr<const LUL_::IUnknown> m_pSwapChain = std::shared_ptr<const LUL_::IUnknown>(nullptr);
-		std::shared_ptr<const LUL_::IUnknown> m_pMemory = std::shared_ptr<const LUL_::IUnknown>(nullptr);
+		std::shared_ptr<const LUL_::Graphics::IRendererComponent> m_pHardware = std::shared_ptr<const LUL_::Graphics::IRendererComponent>(nullptr);
+		std::shared_ptr<const LUL_::Graphics::IRendererComponent> m_pSwapChain = std::shared_ptr<const LUL_::Graphics::IRendererComponent>(nullptr);
+		std::shared_ptr<const LUL_::Graphics::IRendererComponent> m_pMemory = std::shared_ptr<const LUL_::Graphics::IRendererComponent>(nullptr);
 
 	};
 }

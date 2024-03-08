@@ -9,9 +9,9 @@ using Microsoft::WRL::ComPtr;
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::SwapChain::Initialize(
 	IRenderer const* const renderer,
-	std::shared_ptr<const LUL_::IUnknown> hardware,
-	std::shared_ptr<const LUL_::IUnknown> memory,
-	std::shared_ptr<const LUL_::IUnknown> commands)
+	std::shared_ptr<const LUL_::Graphics::IRendererComponent> hardware,
+	std::shared_ptr<const LUL_::Graphics::IRendererComponent> memory,
+	std::shared_ptr<const LUL_::Graphics::IRendererComponent> commands)
 {
 	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::SwapChain | %p", this);

@@ -16,8 +16,10 @@ void LogDX12(
 	LPCSTR pDescription,
 	void* pContext)
 {
+	LUL_PROFILER_TIMER_START();
+
 	LUL_::Severity sev = {};
-	std::string categoryStr = "";
+	const char* categoryStr;
 
 	switch (Severity)
 	{
@@ -69,7 +71,7 @@ void LogDX12(
 	L_LOG(
 		sev,
 		L"[%S] [ID %d] %S",
-		categoryStr.c_str(),
+		categoryStr,
 		ID,
 		pDescription);
 }
@@ -80,9 +82,9 @@ void LogDX12(
 void LUL_::Graphics::DX12::Hardware::Initialize(
 	Microsoft::WRL::ComPtr<IDXGIFactory> factory,
 	IRenderer const* const renderer,
-	std::shared_ptr<LUL_::IUnknown> swapchain,
-	std::shared_ptr<LUL_::IUnknown> memory,
-	std::shared_ptr<LUL_::IUnknown> commands)
+	std::shared_ptr<LUL_::Graphics::IRendererComponent> swapchain,
+	std::shared_ptr<LUL_::Graphics::IRendererComponent> memory,
+	std::shared_ptr<LUL_::Graphics::IRendererComponent> commands)
 {
 	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::Hardware | %p", this);
@@ -131,12 +133,6 @@ void LUL_::Graphics::DX12::Hardware::Initialize(
 	// Set viewport dimensions
 	m_ViewPort.Width = static_cast<FLOAT>(m_pRenderer->GetTarget()->GetWindowDimensions().x);
 	m_ViewPort.Height = static_cast<FLOAT>(m_pRenderer->GetTarget()->GetWindowDimensions().y);
-
-	m_ScissorRect = CD3DX12_RECT(
-		0,
-		0,
-		m_pRenderer->GetTarget()->GetWindowDimensions().x,
-		m_pRenderer->GetTarget()->GetWindowDimensions().y);
 }
 
 // -----------------------------------------------------------------------------
@@ -161,7 +157,7 @@ Microsoft::WRL::ComPtr<ID3D12CommandQueue> LUL_::Graphics::DX12::Hardware::Creat
 		&queueDesc,
 		IID_PPV_ARGS(&commandQueue))))
 	{
-		throw Exceptions::FeatureNotSupported();
+		throw Exceptions::FeatureNotSupported(LUL_EXCPT_HELPER());
 	}
 
 	LUL_SET_DX_NAME(commandQueue, L"LUL_D3D12CommandQueue");

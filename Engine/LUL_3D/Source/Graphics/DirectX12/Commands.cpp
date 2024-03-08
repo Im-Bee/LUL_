@@ -9,9 +9,9 @@ using Microsoft::WRL::ComPtr;
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Commands::Initialize(
 	IRenderer const* const renderer,
-	std::shared_ptr<const LUL_::IUnknown> hardware,
-	std::shared_ptr<const LUL_::IUnknown> swapchain,
-	std::shared_ptr<const LUL_::IUnknown> memory)
+	std::shared_ptr<const LUL_::Graphics::IRendererComponent> hardware,
+	std::shared_ptr<const LUL_::Graphics::IRendererComponent> swapchain,
+	std::shared_ptr<const LUL_::Graphics::IRendererComponent> memory)
 {
 	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::Commands | %p", this);
@@ -40,6 +40,13 @@ void LUL_::Graphics::DX12::Commands::InitializeAssets()
 	m_pPipelineState = LUL_GET_HARDWARE(m_pHardware)->CreatePipelineState();
 
 	m_pCommandList = LUL_GET_HARDWARE(m_pHardware)->CreateDirectCommandList(m_pCommandAllocator);
+
+
+	m_ScissorRect = CD3DX12_RECT(
+		0,
+		0,
+		m_pRenderer->GetTarget()->GetWindowDimensions().x,
+		m_pRenderer->GetTarget()->GetWindowDimensions().y);
 }
 
 // -----------------------------------------------------------------------------
@@ -56,7 +63,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	L_THROW_IF_FAILED(m_pCommandList->Reset(m_pCommandAllocator.Get(), m_pPipelineState.Get()));
 
 	auto vp = LUL_GET_HARDWARE(m_pHardware)->GetViewport();
-	auto sc = LUL_GET_HARDWARE(m_pHardware)->GetScissorRect();
+	auto sc = m_ScissorRect;
 
 	// Set necessary state.
 	m_pCommandList->SetGraphicsRootSignature(LUL_GET_MEMORY(m_pMemory)->GetRootSig().Get());
@@ -243,9 +250,11 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	{
 		using namespace DirectX;
 
-		static const float fFov = 59.0f;
-		static const float fAspectRatio = 1200.0f / 800.0f;
-		static const float fNear = 0.001f;
+		static const float fFov = 75.0f;
+		static const float fWidth = vp.Width;
+		static const float fHeight = vp.Height;
+		static const float fAspectRatio = vp.Width / vp.Height;
+		static const float fNear = 0.1f;
 		static const float fFar = 1000.0f;
 
 		XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(
@@ -253,6 +262,12 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 			fAspectRatio,
 			fNear,
 			fFar);
+
+		// XMMATRIX projection = DirectX::XMMatrixOrthographicLH(
+		// 	vp.Width,
+		// 	vp.Height,
+		// 	fFar,
+		// 	fNear);
 
 		static float fTheta = 1.0f;
 		static float fThetaDirection = 0.05f;
@@ -272,9 +287,23 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 			rotationZ,
 			rotationX,
 			rotationY,
+			offset,
 			rotatedXZ,
 			rotatedXZY,
+			offsetedAndRotated,
 			finished;
+		
+		rotationZ = XMMatrixRotationZ(XMConvertToRadians(fTheta));
+		rotationX = XMMatrixRotationX(XMConvertToRadians(fTheta));
+		rotationY = XMMatrixRotationY(XMConvertToRadians(fTheta));
+		offset = XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+
+		// Rotate
+		rotatedXZ = XMMatrixMultiply(rotationX, rotationZ);
+		rotatedXZY = XMMatrixMultiply(rotatedXZ, rotationY);
+		offsetedAndRotated = XMMatrixMultiply(rotatedXZY, offset);
+		
+		finished = XMMatrixMultiply(offsetedAndRotated, projection);
 
 		float secondCubeOff = 0.0f;
 		int i = 0;
@@ -285,23 +314,11 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 			if (i >= 72)
 				secondCubeOff = 3.5f;
 
-			v.m128_f32[0] = tri.postion.x + secondCubeOff;
-			v.m128_f32[1] = tri.postion.y + fOffset + secondCubeOff;
-			v.m128_f32[2] = tri.postion.z + secondCubeOff;
-			v.m128_f32[3] = tri.postion.w;
-			
-			// // Make rotations
-			rotationZ = XMMatrixRotationZ(XMConvertToRadians(fTheta));
-			rotationX = XMMatrixRotationX(XMConvertToRadians(fTheta));
-			rotationY = XMMatrixRotationY(XMConvertToRadians(fTheta));
-			
-			// Rotate
-			rotatedXZ = XMMatrixMultiply(rotationX, rotationZ);
-			rotatedXZY = XMMatrixMultiply(rotatedXZ, rotationY);
-			
-			// Project
-			finished = XMMatrixMultiply(rotatedXZY, projection);
-			
+			v.m128_f32[0] = tri.Position.x + secondCubeOff;
+			v.m128_f32[1] = tri.Position.y + fOffset + secondCubeOff;
+			v.m128_f32[2] = tri.Position.z + secondCubeOff;
+			v.m128_f32[3] = tri.Position.w;
+
 			// Calculate result
 			result = XMVector4Transform(v, finished);
 
@@ -309,10 +326,10 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
  				result.m128_f32[2] = -result.m128_f32[2];
 
 			// Scale down
-			tri.postion.x = result.m128_f32[0] * 0.1f;
-			tri.postion.y = result.m128_f32[1] * 0.1f;
-			tri.postion.z = result.m128_f32[2] * 0.1f;
-			tri.postion.w = 1.0f;  // result.m128_f32[3] * 0.1f;
+			tri.Position.x = result.m128_f32[0];
+			tri.Position.y = result.m128_f32[1];
+			tri.Position.z = result.m128_f32[2];
+			tri.Position.w = /* 10.0f; */ result.m128_f32[3];
 			// L_LOG(L_INFO, L"%f %f %f %f", tri[0], tri[1], tri[2], tri[3]);
 			++i;
 		}
@@ -429,8 +446,8 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Commands::CloseCommandLine()
-
-{    // Indicate that the back buffer will now be used to present.
+{
+	// Indicate that the back buffer will now be used to present.
 	auto pb = LUL_GET_SWAPCHAIN(m_pSwapChain)->GetPresentTarget();
 	m_pCommandList->ResourceBarrier(1, &pb);
 

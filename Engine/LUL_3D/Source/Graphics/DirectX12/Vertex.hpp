@@ -11,29 +11,29 @@ namespace LUL_::Graphics::DX12
 
     struct Vertex
     {
-        float& operator[](size_t indx)
+        ::DirectX::XMFLOAT4 Position;
+        ::DirectX::XMFLOAT4 Color;
+
+        float& operator[](const size_t& indx)
         {
             switch (indx)
             {
             case 0:
-                return postion.x;
+                return Position.x;
 
             case 1:
-                return postion.y;
+                return Position.y;
 
             case 2:
-                return postion.z;
+                return Position.z;
 
             case 3:
-                return postion.w;
+                return Position.w;
 
             default:
                 throw LUL_::Exceptions::InvalidArg(LUL_EXCPT_HELPER());
             }
         }
-
-        ::DirectX::XMFLOAT4 postion;
-        ::DirectX::XMFLOAT4 color;
     };
 }
 #endif // _WIN64

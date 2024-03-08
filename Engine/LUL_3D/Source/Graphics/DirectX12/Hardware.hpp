@@ -4,7 +4,7 @@
 namespace LUL_::Graphics::DX12
 {
 	class LUL_EXPORT Hardware
-		: public LUL_::IUnknown
+		: public LUL_::Graphics::IRendererComponent
 	{
 
 		LUL_IUNKNOWN_IMPL(Hardware);
@@ -15,7 +15,6 @@ namespace LUL_::Graphics::DX12
 		Microsoft::WRL::ComPtr<ID3D12Device> m_pDevice = Microsoft::WRL::ComPtr<ID3D12Device>(nullptr);
 
 		CD3DX12_VIEWPORT m_ViewPort = CD3DX12_VIEWPORT();
-		CD3DX12_RECT m_ScissorRect = CD3DX12_RECT();
 
 		uint64_t m_uReservedMem = 0;
 
@@ -30,9 +29,9 @@ namespace LUL_::Graphics::DX12
 		void Initialize(
 			Microsoft::WRL::ComPtr<IDXGIFactory> factory,
 			IRenderer const* const renderer,
-			std::shared_ptr<LUL_::IUnknown> swapchain,
-			std::shared_ptr<LUL_::IUnknown> memory,
-			std::shared_ptr<LUL_::IUnknown> commands);
+			std::shared_ptr<LUL_::Graphics::IRendererComponent> swapchain,
+			std::shared_ptr<LUL_::Graphics::IRendererComponent> memory,
+			std::shared_ptr<LUL_::Graphics::IRendererComponent> commands);
 
 		void EndCreation();
 
@@ -62,8 +61,6 @@ namespace LUL_::Graphics::DX12
 
 		Microsoft::WRL::ComPtr<ID3D12Fence> CreateFence() const;
 
-
-
 	public:
 
 		// Setters ---------------------------------------------------------------------
@@ -75,8 +72,6 @@ namespace LUL_::Graphics::DX12
 		// Getters ---------------------------------------------------------------------
 
 		const CD3DX12_VIEWPORT& GetViewport() const { return m_ViewPort; }
-
-		const CD3DX12_RECT& GetScissorRect() const { return m_ScissorRect; }
 
 		Microsoft::WRL::ComPtr<ID3D12Device> GetDevice() const { return m_pDevice; }
 
@@ -91,9 +86,9 @@ namespace LUL_::Graphics::DX12
 		Microsoft::WRL::ComPtr<IDXGIFactory> m_pFactory = Microsoft::WRL::ComPtr<IDXGIFactory>(nullptr);
 
 		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this object
-		std::shared_ptr<LUL_::IUnknown> m_pSwapChain = std::shared_ptr<LUL_::IUnknown>(nullptr);
-		std::shared_ptr<LUL_::IUnknown> m_pMemory = std::shared_ptr<LUL_::IUnknown>(nullptr);
-		std::shared_ptr<LUL_::IUnknown> m_pCommands = std::shared_ptr<LUL_::IUnknown>(nullptr);
+		std::shared_ptr<LUL_::Graphics::IRendererComponent> m_pSwapChain = std::shared_ptr<LUL_::Graphics::IRendererComponent>(nullptr);
+		std::shared_ptr<LUL_::Graphics::IRendererComponent> m_pMemory = std::shared_ptr<LUL_::Graphics::IRendererComponent>(nullptr);
+		std::shared_ptr<LUL_::Graphics::IRendererComponent> m_pCommands = std::shared_ptr<LUL_::Graphics::IRendererComponent>(nullptr);
 
 	};
 }

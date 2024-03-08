@@ -1,6 +1,6 @@
 #include "LUL_3D.hpp"
 
-#include "Primitives/EmptyRendererWindow.hpp"
+#include "Primitives/EmptyWindow.hpp"
 
 // IRenderer -------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
@@ -14,19 +14,20 @@ void LUL_::Graphics::IRenderer::SetTarget(std::shared_ptr<LUL_::IWindow> target)
 
 // Private ---------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+bool LUL_::Graphics::IRenderer::IsFlagSet(RendererFlags f) noexcept
+{
+    return false != (m_Flags & f);
+}
+
+// -----------------------------------------------------------------------------
 void LUL_::Graphics::IRenderer::ProcessFlags() noexcept
 {
     if (IsFlagSet(Graphics::CreateTarget))
     {
-        m_pTarget = std::make_shared<LUL_::EmptyRendererWindow>();
-        dynamic_cast<LUL_::EmptyRendererWindow*>(m_pTarget.get())->SetDimensions(1920, 1080);
-    }
-}
+        m_pTarget = std::make_shared<LUL_::EmptyWindow>();
 
-// -----------------------------------------------------------------------------
-bool LUL_::Graphics::IRenderer::IsFlagSet(RendererFlags f) noexcept
-{
-    return false != (m_Flags & f);
+        dynamic_cast<LUL_::EmptyWindow*>(m_pTarget.get())->SetDimensions(1920, 1080);
+    }
 }
 
 // -----------------------------------------------------------------------------

@@ -2,14 +2,38 @@
 
 #include "Memory.hpp"
 
+// ReservedMemory --------------------------------------------------------------
+// Public ----------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+
+// Private ---------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+void LUL_::Graphics::DX12::ReservedMemory::DescribeBuffer()
+{
+	switch (m_BufferType)
+	{
+		case (MeshBuffer) :
+		{
+				
+
+			break;
+		}
+		default:
+		{
+			L_LOG(L_WARNING, L"Buffer type was invalid | %p", this);
+			return;
+		}
+	}
+}
+
 // Memory ----------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Memory::Initialize(
 	IRenderer const* const renderer,
-	std::shared_ptr<const LUL_::IUnknown> hardware, 
-	std::shared_ptr<const LUL_::IUnknown> swapchain,
-	std::shared_ptr<const LUL_::IUnknown> commands)
+	std::shared_ptr<const LUL_::Graphics::IRendererComponent> hardware, 
+	std::shared_ptr<const LUL_::Graphics::IRendererComponent> swapchain,
+	std::shared_ptr<const LUL_::Graphics::IRendererComponent> commands)
 {
 	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::Memory | %p", this);
@@ -36,12 +60,12 @@ void LUL_::Graphics::DX12::Memory::InitializeAssets()
 }
 
 // -----------------------------------------------------------------------------
-// D3D12_VERTEX_BUFFER_VIEW LUL_::Graphics::DX12::Memory::AllocateVertices(Vertex const* const buffer, const uint32_t bufferSize)
-// {
-// 
-// 
-// 
-// 
-// 
-// 	return D3D12_VERTEX_BUFFER_VIEW();
-// }
+LUL_::Graphics::DX12::ReservedMemory LUL_::Graphics::DX12::Memory::ReserveMemory(const uint32_t bufferSize, BufferType type) const
+{
+	ReservedMemory newMem = ReserveMemory(bufferSize, type);
+
+
+
+	return newMem;
+}
+

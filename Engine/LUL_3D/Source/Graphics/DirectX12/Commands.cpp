@@ -297,7 +297,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 		rotationZ = XMMatrixRotationZ(XMConvertToRadians(fTheta));
 		rotationX = XMMatrixRotationX(XMConvertToRadians(fTheta));
 		rotationY = XMMatrixRotationY(XMConvertToRadians(fTheta));
-		offset = XMMatrixTranslation(fOffset, -fOffset, 35.0f + fOffset);
+		offset = XMMatrixTranslation(0.0f, 0.0f, 5.0f);
 
 		// Rotate
 		rotatedXZ = XMMatrixMultiply(rotationX, rotationZ);

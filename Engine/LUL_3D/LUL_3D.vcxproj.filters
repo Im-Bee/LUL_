@@ -15,12 +15,6 @@
     <Filter Include="Private\Interfaces">
       <UniqueIdentifier>{4d484497-d59d-4f45-956d-04a0c2d70de8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Private\Graphics">
-      <UniqueIdentifier>{adcc72ef-e4f4-41a0-ab55-7f8c78b2ee9c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private\Graphics\DirectX12">
-      <UniqueIdentifier>{5ccd7e28-5186-4adf-bce8-97e07f49890a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Public">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -28,17 +22,29 @@
     <Filter Include="Public\Interfaces">
       <UniqueIdentifier>{bd4d1b93-a615-4ba9-bbe3-bb80e8e79367}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Public\Graphics">
-      <UniqueIdentifier>{526af11f-4f47-41f5-be68-69870813911b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Public\Graphics\DirectX12">
-      <UniqueIdentifier>{472dcde9-2aa3-4c7d-af44-2dbc755c48f0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Public\Math">
       <UniqueIdentifier>{aa718308-5666-4e13-8382-ef980fbb02ac}</UniqueIdentifier>
     </Filter>
     <Filter Include="Private\Math">
       <UniqueIdentifier>{65805338-0386-4f7a-88f0-0150f330055b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Core">
+      <UniqueIdentifier>{526af11f-4f47-41f5-be68-69870813911b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Core\DirectX12">
+      <UniqueIdentifier>{472dcde9-2aa3-4c7d-af44-2dbc755c48f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Core">
+      <UniqueIdentifier>{adcc72ef-e4f4-41a0-ab55-7f8c78b2ee9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Core\DirectX12">
+      <UniqueIdentifier>{5ccd7e28-5186-4adf-bce8-97e07f49890a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public\Primitives">
+      <UniqueIdentifier>{d2a3e226-c565-4f86-a6f2-41e62770d81b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Primitives">
+      <UniqueIdentifier>{6f9e8ea7-8d63-416c-8b68-85ca28fef2fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,61 +54,67 @@
     <ClInclude Include="Source\Interfaces\IRenderer.hpp">
       <Filter>Public\Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Graphics\DirectX12\Renderer.hpp">
-      <Filter>Public\Graphics\DirectX12</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\DirectX12\Hardware.hpp">
-      <Filter>Public\Graphics\DirectX12</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\DirectX12\SwapChain.hpp">
-      <Filter>Public\Graphics\DirectX12</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\DirectX12\Memory.hpp">
-      <Filter>Public\Graphics\DirectX12</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\DirectX12\Commands.hpp">
-      <Filter>Public\Graphics\DirectX12</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\DirectX12\d3dx12.h">
-      <Filter>Public\Graphics\DirectX12</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Graphics\DirectX12\Vertex.hpp">
-      <Filter>Public\Graphics\DirectX12</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Math\Matrices.hpp">
       <Filter>Public\Math</Filter>
     </ClInclude>
     <ClInclude Include="Source\Interfaces\IRendererComponent.hpp">
       <Filter>Public\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Core\DirectX12\SwapChain.hpp">
+      <Filter>Public\Core\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\DirectX12\Vertex.hpp">
+      <Filter>Public\Core\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\DirectX12\Commands.hpp">
+      <Filter>Public\Core\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\DirectX12\d3dx12.h">
+      <Filter>Public\Core\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\DirectX12\Hardware.hpp">
+      <Filter>Public\Core\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\DirectX12\Memory.hpp">
+      <Filter>Public\Core\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\DirectX12\Renderer.hpp">
+      <Filter>Public\Core\DirectX12</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Primitives\Entity.hpp">
+      <Filter>Public\Primitives</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Interfaces\IRenderer.cpp">
       <Filter>Private\Interfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\DirectX12\Renderer.cpp">
-      <Filter>Private\Graphics\DirectX12</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\DirectX12\Hardware.cpp">
-      <Filter>Private\Graphics\DirectX12</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\DirectX12\SwapChain.cpp">
-      <Filter>Private\Graphics\DirectX12</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\DirectX12\Memory.cpp">
-      <Filter>Private\Graphics\DirectX12</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\DirectX12\Commands.cpp">
-      <Filter>Private\Graphics\DirectX12</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Graphics\DirectX12\Vertex.cpp">
-      <Filter>Private\Graphics\DirectX12</Filter>
     </ClCompile>
     <ClCompile Include="Source\Math\Matrices.cpp">
       <Filter>Private\Math</Filter>
     </ClCompile>
     <ClCompile Include="Source\Interfaces\IRendererComponent.cpp">
       <Filter>Private\Interfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\DirectX12\SwapChain.cpp">
+      <Filter>Private\Core\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\DirectX12\Vertex.cpp">
+      <Filter>Private\Core\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\DirectX12\Commands.cpp">
+      <Filter>Private\Core\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\DirectX12\Hardware.cpp">
+      <Filter>Private\Core\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\DirectX12\Memory.cpp">
+      <Filter>Private\Core\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\DirectX12\Renderer.cpp">
+      <Filter>Private\Core\DirectX12</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Primitives\Entity.cpp">
+      <Filter>Private\Primitives</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

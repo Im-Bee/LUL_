@@ -33,6 +33,8 @@ namespace LUL_::Graphics::DX12
 
 		// Methods ---------------------------------------------------------------------
 
+
+
 	};
 
 	class LUL_EXPORT Memory

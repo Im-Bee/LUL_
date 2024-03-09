@@ -72,8 +72,8 @@
 			#include "Interfaces/IRenderer.hpp"
 			#include "Interfaces/IRendererComponent.hpp"
 			
-			#include "Graphics/DirectX12/d3dx12.h"
-			#include "Graphics/DirectX12/Renderer.hpp"
+			#include "Core/DirectX12/d3dx12.h"
+			#include "Core/DirectX12/Renderer.hpp"
 		#pragma warning ( pop )
 	#pragma endregion
 

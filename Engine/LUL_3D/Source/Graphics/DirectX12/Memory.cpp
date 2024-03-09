@@ -8,23 +8,7 @@
 
 // Private ---------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::ReservedMemory::DescribeBuffer()
-{
-	switch (m_BufferType)
-	{
-		case (MeshBuffer) :
-		{
-				
 
-			break;
-		}
-		default:
-		{
-			L_LOG(L_WARNING, L"Buffer type was invalid | %p", this);
-			return;
-		}
-	}
-}
 
 // Memory ----------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
@@ -67,7 +51,10 @@ std::shared_ptr<LUL_::Graphics::DX12::ReservedMemory> LUL_::Graphics::DX12::Memo
 	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"LUL_::Graphics::DX12::Memory::ReserveMemory | %p", this);
 
-	m_vAllReservedMemory.push_back(std::make_shared<ReservedMemory>(type));
+	Microsoft::WRL::ComPtr<IDXGIResource> p = 0;
+	D3D12_VERTEX_BUFFER_VIEW mem;
+
+	m_vAllReservedMemory.push_back(std::make_shared<ReservedMemory>(p, mem));
 
 	return m_vAllReservedMemory.back();
 }

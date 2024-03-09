@@ -19,27 +19,20 @@ namespace LUL_::Graphics::DX12
 
 		ReservedMemory() = delete;
 
-		explicit ReservedMemory(const BufferType type)
-			: m_BufferType(type)
+		explicit ReservedMemory(
+			Microsoft::WRL::ComPtr<IDXGIResource> ptr,
+			D3D12_VERTEX_BUFFER_VIEW mem)
+			: m_pResource(ptr),
+			m_BufferView(mem)
 		{
-			DescribeBuffer();
 		}
 
 		~ReservedMemory() = default;
 
 	public:
 
+		// Methods ---------------------------------------------------------------------
 
-	private:
-
-		void DescribeBuffer();
-
-	private:
-
-		const BufferType m_BufferType;
-
-		CD3DX12_HEAP_PROPERTIES m_HeapProperites = {};
-		CD3DX12_RESOURCE_DESC m_ResourceDesc = {};
 	};
 
 	class LUL_EXPORT Memory

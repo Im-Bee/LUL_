@@ -12,7 +12,7 @@ namespace LUL_::Graphics::DX12
 	{
 	private:
 
-		Microsoft::WRL::ComPtr<IDXGIResource> m_pResource = Microsoft::WRL::ComPtr<IDXGIResource>(nullptr);
+		Microsoft::WRL::ComPtr<ID3D12Resource> m_pBuffer = Microsoft::WRL::ComPtr<ID3D12Resource>(nullptr);
 		D3D12_VERTEX_BUFFER_VIEW m_BufferView = {};
 
 	public:
@@ -20,12 +20,10 @@ namespace LUL_::Graphics::DX12
 		ReservedMemory() = delete;
 
 		explicit ReservedMemory(
-			Microsoft::WRL::ComPtr<IDXGIResource> ptr,
-			D3D12_VERTEX_BUFFER_VIEW mem)
-			: m_pResource(ptr),
-			m_BufferView(mem)
-		{
-		}
+			Microsoft::WRL::ComPtr<ID3D12Resource> ptr,
+			D3D12_VERTEX_BUFFER_VIEW& mem,
+			CD3DX12_HEAP_PROPERTIES& prop,
+			CD3DX12_RESOURCE_DESC& desc);
 
 		~ReservedMemory() = default;
 
@@ -33,7 +31,25 @@ namespace LUL_::Graphics::DX12
 
 		// Methods ---------------------------------------------------------------------
 
+		void SendDataToUploadBuffer(const void* pData,
+			uint64_t uBytesPerData,
+			uint32_t uDataCount,
+			uint32_t uAlignment,
+			uint32_t* uByteOffset);
 
+	private:
+
+		HRESULT SuballocateFromBuffer(uint64_t uSize, uint64_t uAlign);
+		uint64_t Align(uint64_t uLocation, uint64_t uAlign);
+
+	private:
+
+		uint8_t* m_pDataBegin = nullptr;
+		uint8_t* m_pDataCur = nullptr;
+		uint8_t* m_pDataEnd = nullptr;
+
+		CD3DX12_HEAP_PROPERTIES m_Properties;
+		CD3DX12_RESOURCE_DESC m_Desc;
 
 	};
 

@@ -84,6 +84,9 @@
     <ClInclude Include="Source\Primitives\Entity.hpp">
       <Filter>Public\Primitives</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Primitives\Camera.hpp">
+      <Filter>Public\Primitives</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Interfaces\IRenderer.cpp">
@@ -114,6 +117,9 @@
       <Filter>Private\Core\DirectX12</Filter>
     </ClCompile>
     <ClCompile Include="Source\Primitives\Entity.cpp">
+      <Filter>Private\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Primitives\Camera.cpp">
       <Filter>Private\Primitives</Filter>
     </ClCompile>
   </ItemGroup>

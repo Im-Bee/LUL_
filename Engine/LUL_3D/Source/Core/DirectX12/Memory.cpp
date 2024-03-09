@@ -5,10 +5,66 @@
 // ReservedMemory --------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+LUL_::Graphics::DX12::ReservedMemory::ReservedMemory(
+	Microsoft::WRL::ComPtr<ID3D12Resource> ptr,
+	D3D12_VERTEX_BUFFER_VIEW& mem,
+	CD3DX12_HEAP_PROPERTIES& prop,
+	CD3DX12_RESOURCE_DESC& desc)
+	: m_pBuffer(ptr),
+	m_BufferView(std::move(mem)),
+	m_Properties(std::move(prop)),
+	m_Desc(std::move(desc))
+{
+	void* pData;
+	CD3DX12_RANGE readRange(0, 0);
+
+	m_pBuffer->Map(0, &readRange, &pData);
+
+	m_pDataBegin = reinterpret_cast<uint8_t*>(pData);
+	m_pDataCur = m_pDataBegin;
+	m_pDataEnd = m_pDataBegin + desc.Width;
+}
+
+// -----------------------------------------------------------------------------
+void LUL_::Graphics::DX12::ReservedMemory::SendDataToUploadBuffer(
+	const void* pData, 
+	uint64_t uBytesPerData, 
+	uint32_t uDataCount, 
+	uint32_t uAlignment, 
+	uint32_t* uByteOffset)
+{
+	uint64_t uByteSize = uBytesPerData * uDataCount;
+
+	L_THROW_IF_FAILED(SuballocateFromBuffer(uByteSize, uAlignment));
+
+	*uByteOffset = uint32_t(m_pDataCur - m_pDataBegin);
+
+	memcpy(m_pDataCur, pData, uByteSize);
+
+	m_pDataCur += uByteSize;
+}
 
 // Private ---------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+HRESULT LUL_::Graphics::DX12::ReservedMemory::SuballocateFromBuffer(uint64_t uSize, uint64_t uAlign)
+{
+	m_pDataCur = reinterpret_cast<uint8_t*>(Align(
+		reinterpret_cast<uint64_t>(m_pDataCur),
+		uAlign));
 
+	return (m_pDataCur + uSize > m_pDataEnd) ? E_INVALIDARG : S_OK;
+}
+
+// -----------------------------------------------------------------------------
+uint64_t LUL_::Graphics::DX12::ReservedMemory::Align(uint64_t uLocation, uint64_t uAlign)
+{
+	if ((0 == uAlign) || (uAlign & (uAlign - 1)))
+	{
+		throw Exceptions::Internal(LUL_EXCPT_HELPER());
+	}
+
+	return ((uLocation + (uAlign - 1)) & ~(uAlign - 1));
+}
 
 // Memory ----------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
@@ -51,11 +107,22 @@ std::shared_ptr<LUL_::Graphics::DX12::ReservedMemory> LUL_::Graphics::DX12::Memo
 	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"LUL_::Graphics::DX12::Memory::ReserveMemory | %p", this);
 
-	Microsoft::WRL::ComPtr<IDXGIResource> p = 0;
 	D3D12_VERTEX_BUFFER_VIEW mem;
+	CD3DX12_HEAP_PROPERTIES props = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+	CD3DX12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);
+	Microsoft::WRL::ComPtr<ID3D12Resource> p = LUL_GET_HARDWARE(m_pHardware)->CreateResource(
+		props,
+		desc);
 
-	m_vAllReservedMemory.push_back(std::make_shared<ReservedMemory>(p, mem));
+	mem.BufferLocation = p->GetGPUVirtualAddress();
+	mem.StrideInBytes = sizeof(Vertex);
+	mem.SizeInBytes = bufferSize;
+
+	m_vAllReservedMemory.push_back(std::make_shared<ReservedMemory>(
+		p, 
+		mem, 
+		props,
+		desc));
 
 	return m_vAllReservedMemory.back();
 }
-

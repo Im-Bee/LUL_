@@ -52,6 +52,8 @@ namespace LUL_::Graphics::DX12
 
 		Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature = Microsoft::WRL::ComPtr<ID3D12RootSignature>(nullptr);
 
+		std::vector<std::shared_ptr<ReservedMemory>> m_vAllReservedMemory = std::vector<std::shared_ptr<ReservedMemory>>();
+
 	public:
 
 		Memory() = default;
@@ -66,11 +68,13 @@ namespace LUL_::Graphics::DX12
 			std::shared_ptr<const LUL_::Graphics::IRendererComponent> swapchain,
 			std::shared_ptr<const LUL_::Graphics::IRendererComponent> commands);
 
-		void InitializeAssets();
+		void InitializeRootSignature();
 
 	public:
 
-		ReservedMemory ReserveMemory(const uint32_t bufferSize, BufferType type) const;
+		// Methods ---------------------------------------------------------------------
+
+		std::shared_ptr<ReservedMemory> ReserveMemory(const uint32_t bufferSize, const BufferType type);
 
 	public:
 

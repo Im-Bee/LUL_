@@ -50,7 +50,7 @@ namespace LUL_::Graphics::DX12
 
         void LoadPipeline();
 
-        void LoadAssets();
+        void InitializePipelineState();
 
     };
 }

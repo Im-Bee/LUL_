@@ -105,9 +105,4 @@
       <Filter>Public\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="Assets\LUL_.manifest">
-      <Filter>Assets</Filter>
-    </Manifest>
-  </ItemGroup>
 </Project>

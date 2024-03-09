@@ -11,16 +11,13 @@ namespace LUL_::Graphics::DX12
 
 	private:
 
-		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_pCommandQueue = Microsoft::WRL::ComPtr<ID3D12CommandQueue>(nullptr);
-		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_pCommandAllocator = Microsoft::WRL::ComPtr<ID3D12CommandAllocator>(nullptr);
+		Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_pMainCommandQueue = Microsoft::WRL::ComPtr<ID3D12CommandQueue>(nullptr);
+		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_pMainCommandAllocator = Microsoft::WRL::ComPtr<ID3D12CommandAllocator>(nullptr);
+		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_pMainCommandList = Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>(nullptr);
 
-		CD3DX12_RECT m_ScissorRect = CD3DX12_RECT();
+		CD3DX12_RECT m_MainScissorRect = CD3DX12_RECT();
 
 		Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pPipelineState = Microsoft::WRL::ComPtr<ID3D12PipelineState>(nullptr);
-
-	private:
-
-		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_pCommandList = Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>(nullptr);
 
 	public:
 
@@ -36,29 +33,25 @@ namespace LUL_::Graphics::DX12
 			std::shared_ptr<const LUL_::Graphics::IRendererComponent> swapchain,
 			std::shared_ptr<const LUL_::Graphics::IRendererComponent> memory);
 
-		void InitializeAssets();
+		void InitializePipelineState();
 
 	public:
+
+		// Methods ---------------------------------------------------------------------
 
 		void RecordCommands();
-
-		void CloseCommandLine();
-
-	public:
 
 		void Signal(
 			ID3D12Fence* pFence,
 			const uint64_t uValue) const;
 
+		void CloseCommandLine();
+
 	public:
 
 		// Getters ---------------------------------------------------------------------
 
-		Microsoft::WRL::ComPtr<ID3D12CommandQueue> GetCommandQueue() { return m_pCommandQueue; }
-
-	private:
-
-
+		Microsoft::WRL::ComPtr<ID3D12CommandQueue> GetMainCommandQueue() { return m_pMainCommandQueue; }
 
 	private:
 

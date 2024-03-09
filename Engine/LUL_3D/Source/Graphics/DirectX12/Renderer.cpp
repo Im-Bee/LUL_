@@ -15,7 +15,7 @@ void LUL_::Graphics::DX12::Renderer::Initialize()
     GetTarget()->Show();
 
     LoadPipeline();
-    LoadAssets();
+    InitializePipelineState();
 }
 
 // -----------------------------------------------------------------------------
@@ -121,13 +121,13 @@ void LUL_::Graphics::DX12::Renderer::LoadPipeline()
     m_pHardware->EndCreation();
 }
 
-void LUL_::Graphics::DX12::Renderer::LoadAssets()
+void LUL_::Graphics::DX12::Renderer::InitializePipelineState()
 {
     LUL_PROFILER_TIMER_START();
     L_LOG(L_INFO, L"Load assets DX12::Renderer | %p", this);
 
-    m_pMemory->InitializeAssets();
-    m_pCommands->InitializeAssets();
+    m_pMemory->InitializeRootSignature();
+    m_pCommands->InitializePipelineState();
     m_pSwapChain->InitializeFence();
     
     m_pSwapChain->WaitForPrevious();

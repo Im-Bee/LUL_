@@ -199,7 +199,7 @@ Microsoft::WRL::ComPtr<IDXGISwapChain> LUL_::Graphics::DX12::Hardware::CreateSwa
 	if (SUCCEEDED(m_pFactory->QueryInterface(IID_PPV_ARGS(&factory2))))
 	{
 		factory2->CreateSwapChainForHwnd(
-			static_cast<DX12::Commands*>(m_pCommands.get())->GetCommandQueue().Get(),
+			static_cast<DX12::Commands*>(m_pCommands.get())->GetMainCommandQueue().Get(),
 			LUL_GET_WINDOW_HANDLE(m_pRenderer->GetTarget()->GetHandle()),
 			&swapDesc,
 			nullptr,
@@ -396,6 +396,24 @@ Microsoft::WRL::ComPtr<ID3D12Fence> LUL_::Graphics::DX12::Hardware::CreateFence(
 
 	LUL_SET_DX12_NAME(f, L"LUL_D3D12Fence");
 	return f;
+}
+
+// -----------------------------------------------------------------------------
+Microsoft::WRL::ComPtr<ID3D12Resource> LUL_::Graphics::DX12::Hardware::CreateResource(
+	CD3DX12_HEAP_PROPERTIES& properites,
+	CD3DX12_RESOURCE_DESC& description) const
+{
+	ComPtr<ID3D12Resource> resource = 0;
+
+	L_THROW_IF_FAILED(m_pDevice->CreateCommittedResource(
+		&properites,
+		D3D12_HEAP_FLAG_NONE,
+		&description,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&resource)));
+
+	return resource;
 }
 
 // Private ---------------------------------------------------------------------

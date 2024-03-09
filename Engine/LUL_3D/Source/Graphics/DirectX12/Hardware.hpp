@@ -15,7 +15,6 @@ namespace LUL_::Graphics::DX12
 		Microsoft::WRL::ComPtr<ID3D12Device> m_pDevice = Microsoft::WRL::ComPtr<ID3D12Device>(nullptr);
 
 		CD3DX12_VIEWPORT m_ViewPort = CD3DX12_VIEWPORT();
-
 		uint64_t m_uReservedMem = 0;
 
 	public:
@@ -37,11 +36,14 @@ namespace LUL_::Graphics::DX12
 
 	public:
 
+		// Creation methods ----------------------------------------------------------
+
 		Microsoft::WRL::ComPtr<ID3D12CommandQueue> CreateCommandQueue() const;
 
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator> CreateCommandAllocator() const;
 
-		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CreateDirectCommandList(Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator) const;
+		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CreateDirectCommandList(
+			Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator) const;
 
 		Microsoft::WRL::ComPtr<IDXGISwapChain> CreateSwapChain() const;
 
@@ -61,6 +63,10 @@ namespace LUL_::Graphics::DX12
 
 		Microsoft::WRL::ComPtr<ID3D12Fence> CreateFence() const;
 
+		Microsoft::WRL::ComPtr<ID3D12Resource> CreateResource(
+			CD3DX12_HEAP_PROPERTIES& properites, 
+			CD3DX12_RESOURCE_DESC& description) const;
+
 	public:
 
 		// Setters ---------------------------------------------------------------------
@@ -73,12 +79,9 @@ namespace LUL_::Graphics::DX12
 
 		const CD3DX12_VIEWPORT& GetViewport() const { return m_ViewPort; }
 
-		Microsoft::WRL::ComPtr<ID3D12Device> GetDevice() const { return m_pDevice; }
-
 	private:
 
 		void CreateAdapter();
-
 		void CreateDevice();
 
 	private:

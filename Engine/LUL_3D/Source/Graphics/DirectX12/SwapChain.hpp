@@ -42,6 +42,8 @@ namespace LUL_::Graphics::DX12
 
 	public:
 
+		// Methods ---------------------------------------------------------------------
+
 		void Present() const;
 
 		void WaitForPrevious();

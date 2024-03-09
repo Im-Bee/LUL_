@@ -82,10 +82,10 @@
 		{
 			LUL_EXPORT inline const LUL_::Graphics::IRendererComponent* GetHelper(const std::shared_ptr<const LUL_::Graphics::IRendererComponent>& obj, char const* const original)
 			{
-		#ifdef _DEBUG
+			#ifdef _DEBUG
 				if (strcmp(obj->GetClass(), original))
 					throw LUL_::Exceptions::InvalidArg(LUL_EXCPT_HELPER());
-		#endif // _DEBUG
+			#endif // _DEBUG
 				return obj.get();
 			}
 		}

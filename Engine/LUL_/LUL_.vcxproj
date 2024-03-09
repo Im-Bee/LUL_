@@ -45,9 +45,6 @@
       <Project>{87a0c469-fbfb-4fe3-963a-4e99c257fa7e}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="Assets\LUL_.manifest" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

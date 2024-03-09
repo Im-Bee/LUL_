@@ -27,22 +27,22 @@ void LUL_::Graphics::DX12::Commands::Initialize(
 		throw LUL_::Exceptions::Internal(LUL_EXCPT_HELPER());
 	m_pMemory = memory;
 
-	m_pCommandQueue = LUL_GET_HARDWARE(m_pHardware)->CreateCommandQueue();
-	m_pCommandAllocator = LUL_GET_HARDWARE(m_pHardware)->CreateCommandAllocator();
+	m_pMainCommandQueue = LUL_GET_HARDWARE(m_pHardware)->CreateCommandQueue();
+	m_pMainCommandAllocator = LUL_GET_HARDWARE(m_pHardware)->CreateCommandAllocator();
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Commands::InitializeAssets()
+void LUL_::Graphics::DX12::Commands::InitializePipelineState()
 {
 	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"Initialize assets LUL_::Graphics::DX12::Commands | %p", this);
 
 	m_pPipelineState = LUL_GET_HARDWARE(m_pHardware)->CreatePipelineState();
 
-	m_pCommandList = LUL_GET_HARDWARE(m_pHardware)->CreateDirectCommandList(m_pCommandAllocator);
+	m_pMainCommandList = LUL_GET_HARDWARE(m_pHardware)->CreateDirectCommandList(m_pMainCommandAllocator);
 
 
-	m_ScissorRect = CD3DX12_RECT(
+	m_MainScissorRect = CD3DX12_RECT(
 		0,
 		0,
 		m_pRenderer->GetTarget()->GetWindowDimensions().x,
@@ -55,32 +55,32 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	// Command list allocators can only be reset when the associated 
 	// command lists have finished execution on the GPU; apps should use 
 	// fences to determine GPU execution progress.
-	L_THROW_IF_FAILED(m_pCommandAllocator->Reset());
+	L_THROW_IF_FAILED(m_pMainCommandAllocator->Reset());
 
 	// However, when ExecuteCommandList() is called on a particular command 
 	// list, that command list can then be reset at any time and must be before 
 	// re-recording.
-	L_THROW_IF_FAILED(m_pCommandList->Reset(m_pCommandAllocator.Get(), m_pPipelineState.Get()));
+	L_THROW_IF_FAILED(m_pMainCommandList->Reset(m_pMainCommandAllocator.Get(), m_pPipelineState.Get()));
 
 	auto vp = LUL_GET_HARDWARE(m_pHardware)->GetViewport();
-	auto sc = m_ScissorRect;
+	auto sc = m_MainScissorRect;
 
 	// Set necessary state.
-	m_pCommandList->SetGraphicsRootSignature(LUL_GET_MEMORY(m_pMemory)->GetRootSig().Get());
-	m_pCommandList->RSSetViewports(1, &vp);
-	m_pCommandList->RSSetScissorRects(1, &sc);
+	m_pMainCommandList->SetGraphicsRootSignature(LUL_GET_MEMORY(m_pMemory)->GetRootSig().Get());
+	m_pMainCommandList->RSSetViewports(1, &vp);
+	m_pMainCommandList->RSSetScissorRects(1, &sc);
 
 	// Indicate that the back buffer will be used as a render target.
 	auto b = LUL_GET_SWAPCHAIN(m_pSwapChain)->GetRenderTarget();
-	m_pCommandList->ResourceBarrier(1, &b);
+	m_pMainCommandList->ResourceBarrier(1, &b);
 
 	auto rtvHandle = LUL_GET_SWAPCHAIN(m_pSwapChain)->GetRtvHandle();
-	m_pCommandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+	m_pMainCommandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 
 	// Record commands.
 	const float clearColor[] = { 0.901660f, 0.6f, 0.082352f, 1.0f };
-	m_pCommandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-	m_pCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_pMainCommandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+	m_pMainCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Create the vertex buffer.
 	static ComPtr<ID3D12Resource> vbv = {};
@@ -250,12 +250,12 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	{
 		using namespace DirectX;
 
-		static const float fFov = 75.0f;
-		static const float fWidth = vp.Width;
-		static const float fHeight = vp.Height;
-		static const float fAspectRatio = vp.Width / vp.Height;
+		static const float fFov = 120.0f;
 		static const float fNear = 0.1f;
 		static const float fFar = 1000.0f;
+		const float fWidth = vp.Width;
+		const float fHeight = vp.Height;
+		const float fAspectRatio = vp.Width / vp.Height;
 
 		XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(
 			XMConvertToRadians(fFov),
@@ -274,10 +274,11 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 		fTheta += fThetaDirection;
 
 		static float fOffset = 1.0f;
-		static float fOffDirection = 0.0001f;
-		fOffset += fOffDirection;
-		if (fOffset > 7.0f || fOffset <= 0.0f)
+		static float fOffDirection = 0.01f;
+		if (fOffset >= 35.0f || fOffset <= -35.0f)
 			fOffDirection = -fOffDirection;
+
+		fOffset += fOffDirection;
 
 		XMVECTOR 
 			v,
@@ -296,7 +297,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 		rotationZ = XMMatrixRotationZ(XMConvertToRadians(fTheta));
 		rotationX = XMMatrixRotationX(XMConvertToRadians(fTheta));
 		rotationY = XMMatrixRotationY(XMConvertToRadians(fTheta));
-		offset = XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+		offset = XMMatrixTranslation(fOffset, -fOffset, 35.0f + fOffset);
 
 		// Rotate
 		rotatedXZ = XMMatrixMultiply(rotationX, rotationZ);
@@ -315,7 +316,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 				secondCubeOff = 3.5f;
 
 			v.m128_f32[0] = tri.Position.x + secondCubeOff;
-			v.m128_f32[1] = tri.Position.y + fOffset + secondCubeOff;
+			v.m128_f32[1] = tri.Position.y + secondCubeOff;
 			v.m128_f32[2] = tri.Position.z + secondCubeOff;
 			v.m128_f32[3] = tri.Position.w;
 
@@ -337,10 +338,10 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 #else
 	{
 		static const float fNear = 0.1f;
-		static const float fFar = 10000.0f;
-		static const float fFov = 90.0f;
-		static const float fAspectRatio = 800.0f / 1200.0f;
+		static const float fFar = 1000.0f;
+		static const float fFov = 75.0f;
 		static const float fFovRad = 1.0f / tanf(fFov * 0.5f / 180.0f * 3.14159f);
+		const float fAspectRatio = vp.Width / vp.Height;
 
 		L_MatFloat4x4 matProj;
 		matProj.m[0][0] = fAspectRatio * fFovRad;
@@ -379,8 +380,10 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 			if (i >= 72)
 				secondCubeOff = 3.5f;
 
-			L_Float4 t = { tri.postion.x + secondCubeOff, tri.postion.y + secondCubeOff, tri.postion.z + secondCubeOff, tri.postion.w };
-			L_Float4 triProjected, triTranslated, triRotatedZ, triRotatedZX;
+			L_Float4 t = { tri.Position.x + secondCubeOff, tri.Position.y + secondCubeOff, tri.Position.z + secondCubeOff, tri.Position.w };
+			L_Float4 triProjected, triRotatedZ, triRotatedZX;
+
+			t.z += 30.0f;
 
 			// Rotate in Z-Axis
 			triRotatedZ = Math::Vector4Transform(t, matRotZ);
@@ -388,25 +391,13 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 			// Rotate in X-Axis
 			triRotatedZX = Math::Vector4Transform(triRotatedZ, matRotX);
 
-			// Offset into the screen
-			triTranslated.x = triRotatedZX.x - 2.0f;
-			triTranslated.y = triRotatedZX.y - 2.0f;
-			triTranslated.z = triRotatedZX.z + 10.0f;
-			triTranslated.w = triRotatedZX.w;
-
 			// Project triangles from 3D --> 2D
-			triProjected = Math::Vector4Transform(triTranslated, matProj);
+			triProjected = Math::Vector4Transform(triRotatedZX, matProj);
 
-			// Scale into view
-			triProjected.x += 0.5f;
-			triProjected.y += 0.5f;
-			triProjected.x *= 0.5f * 1200.f;
-			triProjected.y *= 0.5f * 800.0f;
-
-			tri.postion.x = triProjected.x / 1000.0f;
-			tri.postion.y = triProjected.y / 1000.0f;
-			tri.postion.z = triProjected.z / 10.0f;
-			tri.postion.w = 1.0f;
+			tri.Position.x = triProjected.x;
+			tri.Position.y = triProjected.y;
+			tri.Position.z = triProjected.z;
+			tri.Position.w = 1.0f;
 
 			// L_LOG(L_INFO, L"GOOD %f %f %f %f", tri[0], tri[1], tri[2], tri[3]);
 			++i;
@@ -420,13 +411,9 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	// code simplicity and because there are very few verts to actually transfer.
 	auto aa = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
 	auto bb = CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize);
-	L_THROW_IF_FAILED(LUL_GET_HARDWARE(m_pHardware)->GetDevice()->CreateCommittedResource(
-		&aa,
-		D3D12_HEAP_FLAG_NONE,
-		&bb,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&vbv)));
+	vbv = LUL_GET_HARDWARE(m_pHardware)->CreateResource(
+		aa,
+		bb);
 
 	// Copy the triangle data to the vertex buffer.
 	UINT8* pVertexDataBegin;
@@ -440,8 +427,8 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	vbview.StrideInBytes = sizeof(Vertex);
 	vbview.SizeInBytes = vertexBufferSize;
 
-	m_pCommandList->IASetVertexBuffers(0, 1, &vbview);
-	m_pCommandList->DrawInstanced(108, 1, 0, 0);
+	m_pMainCommandList->IASetVertexBuffers(0, 1, &vbview);
+	m_pMainCommandList->DrawInstanced(108, 1, 0, 0);
 }
 
 // -----------------------------------------------------------------------------
@@ -449,12 +436,12 @@ void LUL_::Graphics::DX12::Commands::CloseCommandLine()
 {
 	// Indicate that the back buffer will now be used to present.
 	auto pb = LUL_GET_SWAPCHAIN(m_pSwapChain)->GetPresentTarget();
-	m_pCommandList->ResourceBarrier(1, &pb);
+	m_pMainCommandList->ResourceBarrier(1, &pb);
 
-	L_THROW_IF_FAILED(m_pCommandList->Close());
+	L_THROW_IF_FAILED(m_pMainCommandList->Close());
 
-	ID3D12CommandList* ppCommandLists[] = { m_pCommandList.Get() };
-	m_pCommandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+	ID3D12CommandList* ppCommandLists[] = { m_pMainCommandList.Get() };
+	m_pMainCommandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
 	// Present the frame
 	LUL_GET_SWAPCHAIN(m_pSwapChain)->Present();
@@ -463,5 +450,5 @@ void LUL_::Graphics::DX12::Commands::CloseCommandLine()
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Commands::Signal(ID3D12Fence* pFence, const uint64_t uValue) const
 {
-	L_THROW_IF_FAILED(m_pCommandQueue->Signal(pFence, uValue));
+	L_THROW_IF_FAILED(m_pMainCommandQueue->Signal(pFence, uValue));
 }

@@ -51,21 +51,24 @@ void LUL_::Graphics::DX12::Memory::Initialize(
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Memory::InitializeAssets()
+void LUL_::Graphics::DX12::Memory::InitializeRootSignature()
 {
 	LUL_PROFILER_TIMER_START();
-	L_LOG(L_INFO, L"LUL_::Graphics::DX12::Memory::InitializeAssets", this);
+	L_LOG(L_INFO, L"LUL_::Graphics::DX12::Memory::InitializeAssets | %p", this);
 
 	m_pRootSignature = LUL_GET_HARDWARE(m_pHardware)->CreateRootSignature();
 }
 
 // -----------------------------------------------------------------------------
-LUL_::Graphics::DX12::ReservedMemory LUL_::Graphics::DX12::Memory::ReserveMemory(const uint32_t bufferSize, BufferType type) const
+std::shared_ptr<LUL_::Graphics::DX12::ReservedMemory> LUL_::Graphics::DX12::Memory::ReserveMemory(
+	const uint32_t bufferSize, 
+	const BufferType type)
 {
-	ReservedMemory newMem = ReserveMemory(bufferSize, type);
+	LUL_PROFILER_TIMER_START();
+	L_LOG(L_INFO, L"LUL_::Graphics::DX12::Memory::ReserveMemory | %p", this);
 
+	m_vAllReservedMemory.push_back(std::make_shared<ReservedMemory>(type));
 
-
-	return newMem;
+	return m_vAllReservedMemory.back();
 }
 

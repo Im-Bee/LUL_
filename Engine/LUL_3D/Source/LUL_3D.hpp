@@ -34,7 +34,7 @@
 		#define L_THROW_IF_FAILED(hr)											\
 		if (FAILED(hr)) throw LUL_::Exceptions::Internal(LUL_EXCPT_HELPER())
 
-		#define LUL_GET_HELPER(obj, original) static_cast<const original*>(LUL_::GetHelper(obj, original::GetClassId()))
+		#define LUL_GET_HELPER(obj, original) static_cast<original*>(LUL_::GetHelper(obj, original::GetClassId()))
 
 		#define LUL_GET_HARDWARE(hardwareSharedPtr)	LUL_GET_HELPER(hardwareSharedPtr, LUL_::Graphics::DX12::Hardware)
 		#define LUL_GET_SWAPCHAIN(swapChainSharedPtr) LUL_GET_HELPER(swapChainSharedPtr, LUL_::Graphics::DX12::SwapChain)
@@ -80,7 +80,7 @@
 	#pragma region Engine helper functions
 		namespace LUL_
 		{
-			LUL_EXPORT inline const LUL_::Graphics::IRendererComponent* GetHelper(const std::shared_ptr<const LUL_::Graphics::IRendererComponent>& obj, char const* const original)
+			LUL_EXPORT inline LUL_::Graphics::IRendererComponent* GetHelper(const std::shared_ptr<LUL_::Graphics::IRendererComponent>& obj, char const* const original)
 			{
 			#ifdef _DEBUG
 				if (strcmp(obj->GetClass(), original))

@@ -64,8 +64,10 @@ namespace LUL_::Graphics::DX12
 		Microsoft::WRL::ComPtr<ID3D12Fence> CreateFence() const;
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> CreateResource(
-			CD3DX12_HEAP_PROPERTIES& properites, 
-			CD3DX12_RESOURCE_DESC& description) const;
+			CD3DX12_HEAP_PROPERTIES& properites,
+			D3D12_HEAP_FLAGS heapFlags,
+			CD3DX12_RESOURCE_DESC& description,
+			D3D12_RESOURCE_STATES initialState) const;
 
 	public:
 

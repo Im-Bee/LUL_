@@ -34,9 +34,9 @@ namespace LUL_::Graphics::DX12
 
 		void Initialize(
 			IRenderer const* const renderer,
-			std::shared_ptr<const LUL_::Graphics::IRendererComponent> hardware,
-			std::shared_ptr<const LUL_::Graphics::IRendererComponent> memory,
-			std::shared_ptr<const LUL_::Graphics::IRendererComponent> commands);
+			std::shared_ptr<LUL_::Graphics::IRendererComponent> hardware,
+			std::shared_ptr<LUL_::Graphics::IRendererComponent> memory,
+			std::shared_ptr<LUL_::Graphics::IRendererComponent> commands);
 
 		void InitializeFence();
 
@@ -69,9 +69,9 @@ namespace LUL_::Graphics::DX12
 		Microsoft::WRL::ComPtr<IDXGIFactory> m_pFactory = Microsoft::WRL::ComPtr<IDXGIFactory>(nullptr);
 
 		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this object
-		std::shared_ptr<const LUL_::Graphics::IRendererComponent> m_pHardware = std::shared_ptr<const LUL_::Graphics::IRendererComponent>(nullptr);
-		std::shared_ptr<const LUL_::Graphics::IRendererComponent> m_pMemory = std::shared_ptr<const LUL_::Graphics::IRendererComponent>(nullptr);
-		std::shared_ptr<const LUL_::Graphics::IRendererComponent> m_pCommands = std::shared_ptr<const LUL_::Graphics::IRendererComponent>(nullptr);
+		std::shared_ptr<LUL_::Graphics::IRendererComponent> m_pHardware = std::shared_ptr<LUL_::Graphics::IRendererComponent>(nullptr);
+		std::shared_ptr<LUL_::Graphics::IRendererComponent> m_pMemory = std::shared_ptr<LUL_::Graphics::IRendererComponent>(nullptr);
+		std::shared_ptr<LUL_::Graphics::IRendererComponent> m_pCommands = std::shared_ptr<LUL_::Graphics::IRendererComponent>(nullptr);
 
 	};
 }

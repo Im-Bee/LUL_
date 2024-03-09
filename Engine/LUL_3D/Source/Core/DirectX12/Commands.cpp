@@ -9,9 +9,9 @@ using Microsoft::WRL::ComPtr;
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Commands::Initialize(
 	IRenderer const* const renderer,
-	std::shared_ptr<const LUL_::Graphics::IRendererComponent> hardware,
-	std::shared_ptr<const LUL_::Graphics::IRendererComponent> swapchain,
-	std::shared_ptr<const LUL_::Graphics::IRendererComponent> memory)
+	std::shared_ptr<LUL_::Graphics::IRendererComponent> hardware,
+	std::shared_ptr<LUL_::Graphics::IRendererComponent> swapchain,
+	std::shared_ptr<LUL_::Graphics::IRendererComponent> memory)
 {
 	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::Commands | %p", this);
@@ -413,7 +413,9 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 	auto bb = CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize);
 	vbv = LUL_GET_HARDWARE(m_pHardware)->CreateResource(
 		aa,
-		bb);
+		D3D12_HEAP_FLAG_NONE,
+		bb,
+		D3D12_RESOURCE_STATE_GENERIC_READ);
 
 	// Copy the triangle data to the vertex buffer.
 	UINT8* pVertexDataBegin;

@@ -401,15 +401,17 @@ Microsoft::WRL::ComPtr<ID3D12Fence> LUL_::Graphics::DX12::Hardware::CreateFence(
 // -----------------------------------------------------------------------------
 Microsoft::WRL::ComPtr<ID3D12Resource> LUL_::Graphics::DX12::Hardware::CreateResource(
 	CD3DX12_HEAP_PROPERTIES& properites,
-	CD3DX12_RESOURCE_DESC& description) const
+	D3D12_HEAP_FLAGS heapFlags,
+	CD3DX12_RESOURCE_DESC& description,
+	D3D12_RESOURCE_STATES initialState) const
 {
 	ComPtr<ID3D12Resource> resource = 0;
 
 	L_THROW_IF_FAILED(m_pDevice->CreateCommittedResource(
 		&properites,
-		D3D12_HEAP_FLAG_NONE,
+		heapFlags,
 		&description,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
+		initialState,
 		nullptr,
 		IID_PPV_ARGS(&resource)));
 

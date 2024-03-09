@@ -71,9 +71,9 @@ uint64_t LUL_::Graphics::DX12::ReservedMemory::Align(uint64_t uLocation, uint64_
 // -----------------------------------------------------------------------------
 void LUL_::Graphics::DX12::Memory::Initialize(
 	IRenderer const* const renderer,
-	std::shared_ptr<const LUL_::Graphics::IRendererComponent> hardware, 
-	std::shared_ptr<const LUL_::Graphics::IRendererComponent> swapchain,
-	std::shared_ptr<const LUL_::Graphics::IRendererComponent> commands)
+	std::shared_ptr<LUL_::Graphics::IRendererComponent> hardware, 
+	std::shared_ptr<LUL_::Graphics::IRendererComponent> swapchain,
+	std::shared_ptr<LUL_::Graphics::IRendererComponent> commands)
 {
 	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::Memory | %p", this);
@@ -108,18 +108,36 @@ std::shared_ptr<LUL_::Graphics::DX12::ReservedMemory> LUL_::Graphics::DX12::Memo
 	L_LOG(L_INFO, L"LUL_::Graphics::DX12::Memory::ReserveMemory | %p", this);
 
 	D3D12_VERTEX_BUFFER_VIEW mem;
-	CD3DX12_HEAP_PROPERTIES props = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	CD3DX12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);
-	Microsoft::WRL::ComPtr<ID3D12Resource> p = LUL_GET_HARDWARE(m_pHardware)->CreateResource(
-		props,
-		desc);
+	CD3DX12_HEAP_PROPERTIES props; 
+	CD3DX12_RESOURCE_DESC desc;
+	Microsoft::WRL::ComPtr<ID3D12Resource> p;
+
+	switch (type)
+	{
+		case (MeshBuffer):
+		{
+			props = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+			desc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);
+			p = LUL_GET_HARDWARE(m_pHardware)->CreateResource(
+				props,
+				D3D12_HEAP_FLAG_NONE,
+				desc,
+				D3D12_RESOURCE_STATE_GENERIC_READ);
+
+			break;
+		}
+		default:
+		{
+			L_LOG(L_ERROR, L"LUL_::Graphics::DX12::Memory::ReserveMemory unknown memory type");
+		}
+	}
 
 	mem.BufferLocation = p->GetGPUVirtualAddress();
 	mem.StrideInBytes = sizeof(Vertex);
 	mem.SizeInBytes = bufferSize;
 
 	m_vAllReservedMemory.push_back(std::make_shared<ReservedMemory>(
-		p, 
+		p,
 		mem, 
 		props,
 		desc));

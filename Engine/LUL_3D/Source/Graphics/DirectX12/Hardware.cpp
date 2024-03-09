@@ -126,7 +126,7 @@ void LUL_::Graphics::DX12::Hardware::Initialize(
 
 	if (!cookie)
 	{
-		throw Exceptions::Internal(LUL_EXCPT_HELPER());
+		L_LOG(L_WARNING, L"Couldn't register message callback DX12");
 	}
 #endif // _DEBUG
 

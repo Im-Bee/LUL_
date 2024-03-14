@@ -23,13 +23,16 @@ void LUL_::DX12::Renderer::Initialize()
 // -----------------------------------------------------------------------------
 void LUL_::DX12::Renderer::Update()
 {
+    for (auto& e : m_vpEntities)
+        e->Update();
 }
 
 // -----------------------------------------------------------------------------
 void LUL_::DX12::Renderer::Render()
 {
-    m_pCommands->RecordCommands();
-    m_pCommands->CloseCommandLine();
+    m_pCommands->BeginVerticesProcessing();
+    m_pCommands->ProcessVertices();
+    m_pCommands->CloseVerticesProcessing();
     m_pSwapChain->WaitForPrevious();
 }
 
@@ -65,10 +68,15 @@ void LUL_::DX12::Renderer::Destroy()
 #endif // _DEBUG
 }
 
-// -----------------------------------------------------------------------------
-void LUL_::DX12::Renderer::CreateResourcesForMesh(Mesh* m, uint64_t uMemSize)
+void LUL_::DX12::Renderer::AddEntity(Entity* e)
 {
-    m->SetGpuBuffer(m_pMemory->ReserveMemory(uMemSize, MeshBuffer));
+    m_vpEntities.push_back(e);
+}
+
+// -----------------------------------------------------------------------------
+void LUL_::DX12::Renderer::CreateResourcesForMesh(Mesh* m, uint32_t uMemSize)
+{
+    m->SetBuffer(m_pMemory->ReserveMemory(uMemSize, MeshBuffer));
 }
 
 // Private ---------------------------------------------------------------------

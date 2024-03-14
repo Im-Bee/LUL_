@@ -21,6 +21,8 @@ namespace LUL_::DX12
         std::shared_ptr<LUL_::DX12::Memory> m_pMemory = std::shared_ptr<LUL_::DX12::Memory>(nullptr);
         std::shared_ptr<LUL_::DX12::Commands> m_pCommands = std::shared_ptr<LUL_::DX12::Commands>(nullptr);
 
+        std::vector<Entity*> m_vpEntities;
+
     public:
         explicit Renderer(
             RendererFlags flags = 0) noexcept 
@@ -45,7 +47,9 @@ namespace LUL_::DX12
         virtual void Destroy() override;
 
     public:
-        void CreateResourcesForMesh(Mesh* m, uint64_t uMemSize);
+        void CreateResourcesForMesh(Mesh* m, uint32_t uMemSize);
+
+        void AddEntity(Entity* e);
 
     private:
         void LoadPipeline();

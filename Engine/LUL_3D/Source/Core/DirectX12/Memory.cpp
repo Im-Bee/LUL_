@@ -9,11 +9,13 @@ LUL_::DX12::ReservedMemory::ReservedMemory(
 	Microsoft::WRL::ComPtr<ID3D12Resource> ptr,
 	D3D12_VERTEX_BUFFER_VIEW& mem,
 	CD3DX12_HEAP_PROPERTIES& prop,
-	CD3DX12_RESOURCE_DESC& desc)
+	CD3DX12_RESOURCE_DESC& desc,
+	BufferType type)
 	: m_pBuffer(ptr),
 	m_BufferView(std::move(mem)),
 	m_Properties(std::move(prop)),
-	m_Desc(std::move(desc))
+	m_Desc(std::move(desc)),
+	m_Type(std::move(type))
 {
 	void* pData;
 	CD3DX12_RANGE readRange(0, 0);
@@ -31,11 +33,19 @@ void LUL_::DX12::ReservedMemory::Upload(
 	uint64_t uBytesPerData, 
 	uint32_t uDataCount, 
 	uint32_t uAlignment, 
-	uint32_t* uByteOffset)
+	BufferOffset offset)
 {
 	uint64_t uByteSize = uBytesPerData * uDataCount;
 
 	L_THROW_IF_FAILED(SuballocateFromBuffer(uByteSize, uAlignment));
+
+	uint8_t* uByteOffset;
+	if (offset == Begin)
+		uByteOffset = m_pDataBegin;
+	else if (offset == Cur)
+		uByteOffset = m_pDataCur;
+	else
+		throw LUL_::Exceptions::InvalidArg(LUL_EXCPT_HELPER());
 
 	*uByteOffset = uint32_t(m_pDataCur - m_pDataBegin);
 	memcpy(m_pDataCur, pData, uByteSize);
@@ -98,8 +108,8 @@ void LUL_::DX12::Memory::InitializeRootSignature()
 }
 
 // -----------------------------------------------------------------------------
-std::shared_ptr<LUL_::DX12::ReservedMemory> LUL_::DX12::Memory::ReserveMemory(
-	const uint32_t bufferSize, 
+LUL_::DX12::GpuBasedBuffer LUL_::DX12::Memory::ReserveMemory(
+	const uint32_t bufferSize,
 	const BufferType type)
 {
 	LUL_PROFILER_TIMER_START();
@@ -122,6 +132,10 @@ std::shared_ptr<LUL_::DX12::ReservedMemory> LUL_::DX12::Memory::ReserveMemory(
 				desc,
 				D3D12_RESOURCE_STATE_GENERIC_READ);
 
+			mem.BufferLocation = p->GetGPUVirtualAddress();
+			mem.StrideInBytes = sizeof(Vertex);
+			mem.SizeInBytes = bufferSize;
+
 			break;
 		}
 		default:
@@ -130,15 +144,12 @@ std::shared_ptr<LUL_::DX12::ReservedMemory> LUL_::DX12::Memory::ReserveMemory(
 		}
 	}
 
-	mem.BufferLocation = p->GetGPUVirtualAddress();
-	mem.StrideInBytes = sizeof(Vertex);
-	mem.SizeInBytes = bufferSize;
-
 	m_vAllReservedMemory.push_back(std::make_shared<ReservedMemory>(
 		p,
 		mem, 
 		props,
-		desc));
+		desc,
+		type));
 
 	return m_vAllReservedMemory.back();
 }

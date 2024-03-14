@@ -9,14 +9,23 @@ namespace LUL_::DX12
 
 	enum LUL_EXPORT BufferType
 	{
-		MeshBuffer = 0x1
+		Unvalid = 0x00,
+		MeshBuffer = 0x10
+	};
+
+	enum LUL_EXPORT BufferOffset
+	{
+		Begin = 0x01,
+		Cur = 0x10
 	};
 
 	class LUL_EXPORT ReservedMemory
 	{
-	private:
+		friend LUL_::IRendererComponent;
+
 		Microsoft::WRL::ComPtr<ID3D12Resource> m_pBuffer = Microsoft::WRL::ComPtr<ID3D12Resource>(nullptr);
 		D3D12_VERTEX_BUFFER_VIEW m_BufferView = {};
+		BufferType m_Type = Unvalid;
 
 	public:
 		ReservedMemory() = delete;
@@ -24,17 +33,22 @@ namespace LUL_::DX12
 			Microsoft::WRL::ComPtr<ID3D12Resource> ptr,
 			D3D12_VERTEX_BUFFER_VIEW& mem,
 			CD3DX12_HEAP_PROPERTIES& prop,
-			CD3DX12_RESOURCE_DESC& desc);
-
+			CD3DX12_RESOURCE_DESC& desc,
+			BufferType type);
 		~ReservedMemory() = default;
 
-		// Methods ---------------------------------------------------------------------
 	public:
 		void Upload(const void* pData,
 			uint64_t uBytesPerData,
 			uint32_t uDataCount,
 			uint32_t uAlignment,
-			uint32_t* uByteOffset);
+			BufferOffset offset);
+
+		// Getters ---------------------------------------------------------------------
+	public:
+		BufferType GetType() { return m_Type; }
+
+		D3D12_VERTEX_BUFFER_VIEW& GetView() { return m_BufferView; }
 
 	private:
 		HRESULT SuballocateFromBuffer(uint64_t uSize, uint64_t uAlign);
@@ -47,6 +61,23 @@ namespace LUL_::DX12
 
 		CD3DX12_HEAP_PROPERTIES m_Properties;
 		CD3DX12_RESOURCE_DESC m_Desc;
+	};
+
+	class LUL_EXPORT GpuBasedObject
+	{
+		LUL_::DX12::GpuBasedBuffer m_Buffer = LUL_::DX12::GpuBasedBuffer(nullptr);
+
+	public:
+		GpuBasedObject() = default;
+		GpuBasedObject(const GpuBasedObject&) = default;
+		GpuBasedObject(GpuBasedObject&&) = delete;
+		~GpuBasedObject() = default;
+
+	public:
+		void SetBuffer(LUL_::DX12::GpuBasedBuffer b) { m_Buffer = b; }
+
+	public:
+		GpuBasedBuffer GetRawBuffer() { return m_Buffer; }
 	};
 
 	class LUL_EXPORT Memory
@@ -72,13 +103,14 @@ namespace LUL_::DX12
 
 		void InitializeRootSignature();
 
-		// Methods ---------------------------------------------------------------------
 	public:
-		std::shared_ptr<ReservedMemory> ReserveMemory(const uint32_t bufferSize, const BufferType type);
+		GpuBasedBuffer ReserveMemory(const uint32_t bufferSize, const BufferType type);
 
 		// Getters ---------------------------------------------------------------------
 	public:
 		Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSig() const { return m_pRootSignature; }
+
+		std::vector<std::shared_ptr<ReservedMemory>>& GetReservedMemory() { return m_vAllReservedMemory; }
 
 	private:
 		const IRenderer* m_pRenderer = nullptr; // Renderer should be alive through the whole life cycle of this object

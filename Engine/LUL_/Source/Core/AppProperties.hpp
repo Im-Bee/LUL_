@@ -11,8 +11,6 @@ namespace LUL_
 
     class LUL_EXPORT AppProperties
     {
-    private:
-
         std::wstring m_AppdataPath, m_CurPath, m_CurPrjPath;
 
         char m_AppName[LUL_STRING_V_SMALL] = { 0 },
@@ -23,10 +21,8 @@ namespace LUL_
         std::list<LUL_::IWindow*> m_Windows =
             std::list<LUL_::IWindow*>();
         
-    private:
-
         // Singleton -----------------------------------------------------------
-
+    private:
         AppProperties() noexcept
         {
             FindBootTime();
@@ -36,7 +32,6 @@ namespace LUL_
         }
 
     public:
-
         AppProperties(AppProperties&&) = delete;
         AppProperties(const AppProperties&) = delete;
 
@@ -45,7 +40,6 @@ namespace LUL_
         ~AppProperties() noexcept = default;
 
     public:
-
         /*
         * Checks if file/dir exist
         * @param path: If the path ends with '/' or '\\' then checks for dir otherwise
@@ -79,41 +73,25 @@ namespace LUL_
 
         static void ForceQuitApplication() noexcept;
 
-    public:
-
         // Getters -------------------------------------------------------------
-
+    public:
         char const* const GetAppName() const { return m_AppName; }
-
         char const* const GetAppClass() const { return m_AppClass; }
-
         char const* const GetAppBootTime() const { return m_AppBootTime; }
-
         char const* const GetAppVersion() const { return m_AppVersion; }
 
-    public:
-
         // Setters -------------------------------------------------------------
-
+    public:
         void SetAppName(char const* const n);
-        
         void SetAppClass(char const* const cl);
-        
         void SetAppVersion(char const* const v);
 
     private:
-
         static void MakeDir(const std::wstring& path);
-
         static void MakeFile(const std::wstring& path);
-
         void FindBootTime() noexcept;
-
         void FindAppdataPath() noexcept;
-
         void FindCurrentPath() noexcept;
-
         void FindCurrentProjectPath() noexcept;
-
     };
 }

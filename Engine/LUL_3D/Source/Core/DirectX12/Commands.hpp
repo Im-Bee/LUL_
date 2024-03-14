@@ -32,13 +32,15 @@ namespace LUL_::DX12
 
 		// Debug -----------------------------------------------------------------------
 	public:
-		void RecordCommands();
+		void BeginVerticesProcessing();
+
+		void ProcessVertices();
 
 		void Signal(
 			ID3D12Fence* pFence,
 			const uint64_t uValue) const;
 
-		void CloseCommandLine();
+		void CloseVerticesProcessing();
 
 		// Getters ---------------------------------------------------------------------
 	public:

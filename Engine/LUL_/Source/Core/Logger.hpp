@@ -25,14 +25,10 @@ namespace LUL_
 
     class LUL_EXPORT Logger
     {
-    private:
-
         std::wstring m_OutFilePath;
 
-    private:
-
         // Singleton -----------------------------------------------------------
-
+    private:
         Logger() noexcept
         {
             CreateThread();
@@ -41,12 +37,9 @@ namespace LUL_
         }
 
     public:
-
         Logger(Logger&&) = delete;
         Logger(const Logger&) = delete;
-
         static Logger& Get() noexcept;
-
         ~Logger() noexcept
         {
             KillThread();
@@ -61,32 +54,21 @@ namespace LUL_
         void WaitForTraffic();
 
     private:
-
         std::wstring CreateOutFile();
-        
         void CreateOutPath() noexcept;
-
         void CreateThread() noexcept;
-
         void PrintHeader() noexcept;
-
         void PrintFooter() noexcept;
-
         void TagFmt(
             const Severity& s, 
             std::wstring& msg, 
             const std::chrono::time_point<std::chrono::system_clock>& time = std::chrono::system_clock::now());
-
         bool LogFmtMsg(std::wstring& msg);
-
         void ThreadLoop();
-
         void KillThread() noexcept;
-
         void DumpQueue() noexcept;
 
     private:
-
         std::atomic_bool m_Thread = std::atomic_bool(false);
         std::thread m_LogThread = std::thread();
         std::atomic_bool m_QueueLock = std::atomic_bool(false);

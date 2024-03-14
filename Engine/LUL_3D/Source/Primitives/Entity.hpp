@@ -2,20 +2,6 @@
 
 namespace LUL_::DX12
 {
-	class LUL_EXPORT GpuBasedObject
-	{
-		LUL_::DX12::GpuBasedBuffer m_Buffer = LUL_::DX12::GpuBasedBuffer(nullptr);
-
-	public:
-		GpuBasedObject() = default;
-		GpuBasedObject(const GpuBasedObject&) = default;
-		GpuBasedObject(GpuBasedObject&&) = delete;
-		~GpuBasedObject() = default;
-
-	public:
-		void SetGpuBuffer(GpuBasedBuffer b) { b = m_Buffer; }
-	}; 
-
 	class LUL_EXPORT Mesh 
 		: public GpuBasedObject
 	{
@@ -42,6 +28,9 @@ namespace LUL_::DX12
 		Entity(const Entity&) = default;
 		Entity(Entity&&) = default;
 		~Entity() = default;
+
+	public:
+		void Update();
 
 	public:
 		std::shared_ptr<Mesh> GetMesh() { return m_pMesh; }

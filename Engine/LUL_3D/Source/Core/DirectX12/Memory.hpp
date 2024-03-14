@@ -50,6 +50,8 @@ namespace LUL_::DX12
 
 		D3D12_VERTEX_BUFFER_VIEW& GetView() { return m_BufferView; }
 
+		uint32_t GetDataCount() { return m_uDataCount; }
+
 	private:
 		HRESULT SuballocateFromBuffer(uint64_t uSize, uint64_t uAlign);
 		uint64_t Align(uint64_t uLocation, uint64_t uAlign);
@@ -58,6 +60,8 @@ namespace LUL_::DX12
 		uint8_t* m_pDataBegin = nullptr;
 		uint8_t* m_pDataCur = nullptr;
 		uint8_t* m_pDataEnd = nullptr;
+
+		uint32_t m_uDataCount = 0;
 
 		CD3DX12_HEAP_PROPERTIES m_Properties;
 		CD3DX12_RESOURCE_DESC m_Desc;

@@ -282,7 +282,7 @@ void LUL_::DX12::Commands::ProcessVertices()
 			continue;
 
 		m_pMainCommandList->IASetVertexBuffers(0, 1, &i->GetView());
-		m_pMainCommandList->DrawInstanced(108, 1, 0, 0);
+		m_pMainCommandList->DrawInstanced(i->GetDataCount(), 1, 0, 0);
 	}
 }
 

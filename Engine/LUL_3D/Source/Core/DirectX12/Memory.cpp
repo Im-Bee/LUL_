@@ -36,20 +36,26 @@ void LUL_::DX12::ReservedMemory::Upload(
 	BufferOffset offset)
 {
 	uint64_t uByteSize = uBytesPerData * uDataCount;
-
-	L_THROW_IF_FAILED(SuballocateFromBuffer(uByteSize, uAlignment));
-
 	uint8_t* uByteOffset;
 	if (offset == Begin)
+	{
+		memset(m_pDataBegin, 0, m_pDataEnd - m_pDataBegin);
+		m_uDataCount = 0;
+		m_pDataCur = m_pDataBegin;
 		uByteOffset = m_pDataBegin;
+	}
 	else if (offset == Cur)
 		uByteOffset = m_pDataCur;
 	else
 		throw LUL_::Exceptions::InvalidArg(LUL_EXCPT_HELPER());
 
+	L_THROW_IF_FAILED(SuballocateFromBuffer(uByteSize, uAlignment));
+
 	*uByteOffset = uint32_t(m_pDataCur - m_pDataBegin);
 	memcpy(m_pDataCur, pData, uByteSize);
 	m_pDataCur += uByteSize;
+
+	m_uDataCount += uDataCount;
 }
 
 // Private ---------------------------------------------------------------------

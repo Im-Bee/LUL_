@@ -7,6 +7,7 @@ namespace LUL_::DX12
 	{
 	private:
 		DirectX::XMMATRIX m_Offset = DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+		Vertex* m_CpuBuffer = nullptr;
 
 	public:
 		Mesh() = default;
@@ -16,6 +17,10 @@ namespace LUL_::DX12
 
 	public:
 		void LoadMeshFromObj(char const* const path);
+
+		// Getters ---------------------------------------------------------------------
+	public:
+		Vertex* GetCpuBuffer() { return m_CpuBuffer; }
 	};
 
 	class LUL_EXPORT Entity

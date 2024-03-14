@@ -26,6 +26,7 @@
     <ClInclude Include="Source\Core\DirectX12\Renderer.hpp" />
     <ClInclude Include="Source\Core\DirectX12\SwapChain.hpp" />
     <ClInclude Include="Source\Core\DirectX12\Vertex.hpp" />
+    <ClInclude Include="Source\Core\World.hpp" />
     <ClInclude Include="Source\Interfaces\IRenderer.hpp" />
     <ClInclude Include="Source\Interfaces\IRendererComponent.hpp" />
     <ClInclude Include="Source\LUL_3D.hpp" />
@@ -40,6 +41,7 @@
     <ClCompile Include="Source\Core\DirectX12\Renderer.cpp" />
     <ClCompile Include="Source\Core\DirectX12\SwapChain.cpp" />
     <ClCompile Include="Source\Core\DirectX12\Vertex.cpp" />
+    <ClCompile Include="Source\Core\World.cpp" />
     <ClCompile Include="Source\Interfaces\IRenderer.cpp" />
     <ClCompile Include="Source\Interfaces\IRendererComponent.cpp" />
     <ClCompile Include="Source\Math\Matrices.cpp" />

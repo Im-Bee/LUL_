@@ -7,14 +7,14 @@ using Microsoft::WRL::ComPtr;
 // Swapchain -------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::SwapChain::Initialize(
+void LUL_::DX12::SwapChain::Initialize(
 	IRenderer const* const renderer,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> hardware,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> memory,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> commands)
+	std::shared_ptr<LUL_::IRendererComponent> hardware,
+	std::shared_ptr<LUL_::IRendererComponent> memory,
+	std::shared_ptr<LUL_::IRendererComponent> commands)
 {
 	LUL_PROFILER_TIMER_START();
-	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::SwapChain | %p", this);
+	L_LOG(L_INFO, L"Initialize LUL_::DX12::SwapChain | %p", this);
 
 	m_pRenderer = renderer;
 	if (hardware->GetClass() != DX12::Hardware::GetClassId())
@@ -37,14 +37,14 @@ void LUL_::Graphics::DX12::SwapChain::Initialize(
 }
 
 // -----------------------------------------------------------------------------
-LUL_::Graphics::DX12::SwapChain::~SwapChain()
+LUL_::DX12::SwapChain::~SwapChain()
 {
 	WaitForPrevious();
 	CloseHandle(m_FenceEvent);
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::SwapChain::InitializeFence()
+void LUL_::DX12::SwapChain::InitializeFence()
 {
 	m_pFence = LUL_GET_HARDWARE(m_pHardware)->CreateFence();
 	m_FenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -55,13 +55,13 @@ void LUL_::Graphics::DX12::SwapChain::InitializeFence()
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::SwapChain::Present() const
+void LUL_::DX12::SwapChain::Present() const
 {
 	L_THROW_IF_FAILED(m_pSwapChain->Present(1, 0));
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::SwapChain::WaitForPrevious()
+void LUL_::DX12::SwapChain::WaitForPrevious()
 {
 	const uint64_t fence = m_uFenceValue;
 	LUL_GET_COMMANDS(m_pCommands)->Signal(m_pFence.Get(), m_uFenceValue);
@@ -85,7 +85,7 @@ void LUL_::Graphics::DX12::SwapChain::WaitForPrevious()
 }
 
 // -----------------------------------------------------------------------------
-CD3DX12_RESOURCE_BARRIER LUL_::Graphics::DX12::SwapChain::GetRenderTarget() const
+CD3DX12_RESOURCE_BARRIER LUL_::DX12::SwapChain::GetRenderTarget() const
 {
 	return CD3DX12_RESOURCE_BARRIER::Transition(
 		m_pRenderTargets[m_uFrameIndex].Get(),
@@ -94,7 +94,7 @@ CD3DX12_RESOURCE_BARRIER LUL_::Graphics::DX12::SwapChain::GetRenderTarget() cons
 }
 
 // -----------------------------------------------------------------------------
-CD3DX12_RESOURCE_BARRIER LUL_::Graphics::DX12::SwapChain::GetPresentTarget() const
+CD3DX12_RESOURCE_BARRIER LUL_::DX12::SwapChain::GetPresentTarget() const
 {
 	return CD3DX12_RESOURCE_BARRIER::Transition(
 		m_pRenderTargets[m_uFrameIndex].Get(),
@@ -103,7 +103,7 @@ CD3DX12_RESOURCE_BARRIER LUL_::Graphics::DX12::SwapChain::GetPresentTarget() con
 }
 
 // -----------------------------------------------------------------------------
-CD3DX12_CPU_DESCRIPTOR_HANDLE LUL_::Graphics::DX12::SwapChain::GetRtvHandle() const
+CD3DX12_CPU_DESCRIPTOR_HANDLE LUL_::DX12::SwapChain::GetRtvHandle() const
 {
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
 		m_pRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
@@ -113,10 +113,10 @@ CD3DX12_CPU_DESCRIPTOR_HANDLE LUL_::Graphics::DX12::SwapChain::GetRtvHandle() co
 
 // Private ---------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::SwapChain::CreateRtvs()
+void LUL_::DX12::SwapChain::CreateRtvs()
 {
 	LUL_PROFILER_TIMER_START();
-	L_LOG(L_INFO, L"LUL_::Graphics::DX12::SwapChain::CreateRtvs create");
+	L_LOG(L_INFO, L"LUL_::DX12::SwapChain::CreateRtvs create");
 
 	auto cpuDescriptor = CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace LUL_::Graphics
+namespace LUL_
 {
 	class LUL_EXPORT IRendererComponent
 		: public LUL_::IUnknown

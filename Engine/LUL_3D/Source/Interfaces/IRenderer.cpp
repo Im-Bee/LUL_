@@ -5,7 +5,7 @@
 // IRenderer -------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::IRenderer::SetTarget(std::shared_ptr<LUL_::IWindow> target) noexcept
+void LUL_::IRenderer::SetTarget(std::shared_ptr<LUL_::IWindow> target) noexcept
 {
     L_LOG(L_INFO, L"Renderer setting target to %lS", target->GetWindowName());
 
@@ -20,15 +20,15 @@ void LUL_::Graphics::IRenderer::SetTarget(std::shared_ptr<LUL_::IWindow> target)
 
 // Private ---------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-bool LUL_::Graphics::IRenderer::IsFlagSet(RendererFlags f) noexcept
+bool LUL_::IRenderer::IsFlagSet(RendererFlags f) noexcept
 {
     return false != (m_Flags & f);
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::IRenderer::ProcessFlags() noexcept
+void LUL_::IRenderer::ProcessFlags() noexcept
 {
-    if (IsFlagSet(Graphics::CreateTarget))
+    if (IsFlagSet(CreateTarget))
     {
         m_pTarget = std::make_shared<LUL_::EmptyWindow>();
 
@@ -37,13 +37,13 @@ void LUL_::Graphics::IRenderer::ProcessFlags() noexcept
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::IRenderer::SetFlag(RendererFlags f) noexcept
+void LUL_::IRenderer::SetFlag(RendererFlags f) noexcept
 {
     m_Flags |= f;
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::IRenderer::UnsetFlag(RendererFlags f) noexcept
+void LUL_::IRenderer::UnsetFlag(RendererFlags f) noexcept
 {
     m_Flags &= ~f;
 }

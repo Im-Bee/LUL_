@@ -79,15 +79,15 @@ void LogDX12(
 // Hardware --------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Hardware::Initialize(
+void LUL_::DX12::Hardware::Initialize(
 	Microsoft::WRL::ComPtr<IDXGIFactory> factory,
 	IRenderer const* const renderer,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> swapchain,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> memory,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> commands)
+	std::shared_ptr<LUL_::IRendererComponent> swapchain,
+	std::shared_ptr<LUL_::IRendererComponent> memory,
+	std::shared_ptr<LUL_::IRendererComponent> commands)
 {
 	LUL_PROFILER_TIMER_START();
-	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::Hardware | %p", this);
+	L_LOG(L_INFO, L"Initialize LUL_::DX12::Hardware | %p", this);
 	m_pFactory = factory;
 
 	m_pRenderer = renderer;
@@ -121,7 +121,7 @@ void LUL_::Graphics::DX12::Hardware::Initialize(
 	{
 		L_LOG(
 			L_ERROR,
-			L"LUL_::Graphics::DX12::Hardware::Initialize couldn't create infoQueue");
+			L"LUL_::DX12::Hardware::Initialize couldn't create infoQueue");
 	}
 
 	if (!cookie)
@@ -136,13 +136,13 @@ void LUL_::Graphics::DX12::Hardware::Initialize(
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Hardware::EndCreation()
+void LUL_::DX12::Hardware::EndCreation()
 {
 	m_pFactory.~ComPtr();
 }
 
 // -----------------------------------------------------------------------------
-Microsoft::WRL::ComPtr<ID3D12CommandQueue> LUL_::Graphics::DX12::Hardware::CreateCommandQueue() const
+Microsoft::WRL::ComPtr<ID3D12CommandQueue> LUL_::DX12::Hardware::CreateCommandQueue() const
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();
@@ -164,7 +164,7 @@ Microsoft::WRL::ComPtr<ID3D12CommandQueue> LUL_::Graphics::DX12::Hardware::Creat
 	return commandQueue;
 }
 
-Microsoft::WRL::ComPtr<ID3D12CommandAllocator> LUL_::Graphics::DX12::Hardware::CreateCommandAllocator() const
+Microsoft::WRL::ComPtr<ID3D12CommandAllocator> LUL_::DX12::Hardware::CreateCommandAllocator() const
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();
@@ -178,7 +178,7 @@ Microsoft::WRL::ComPtr<ID3D12CommandAllocator> LUL_::Graphics::DX12::Hardware::C
 }
 
 // -----------------------------------------------------------------------------
-Microsoft::WRL::ComPtr<IDXGISwapChain> LUL_::Graphics::DX12::Hardware::CreateSwapChain() const
+Microsoft::WRL::ComPtr<IDXGISwapChain> LUL_::DX12::Hardware::CreateSwapChain() const
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();
@@ -217,7 +217,7 @@ Microsoft::WRL::ComPtr<IDXGISwapChain> LUL_::Graphics::DX12::Hardware::CreateSwa
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Hardware::CreateRtvDescriptorHeap(
+void LUL_::DX12::Hardware::CreateRtvDescriptorHeap(
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>& pDescriptor,
 	uint32_t& uDescriptorSize,
 	const uint32_t& count) const
@@ -240,7 +240,7 @@ void LUL_::Graphics::DX12::Hardware::CreateRtvDescriptorHeap(
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Hardware::CreateRtv(
+void LUL_::DX12::Hardware::CreateRtv(
 	Microsoft::WRL::ComPtr<ID3D12Resource> target,
 	CD3DX12_CPU_DESCRIPTOR_HANDLE& descriptorHandle,
 	const uint32_t& uDescriptorSize) const
@@ -255,7 +255,7 @@ void LUL_::Graphics::DX12::Hardware::CreateRtv(
 }
 
 // -----------------------------------------------------------------------------
-Microsoft::WRL::ComPtr<ID3D12RootSignature> LUL_::Graphics::DX12::Hardware::CreateRootSignature() const
+Microsoft::WRL::ComPtr<ID3D12RootSignature> LUL_::DX12::Hardware::CreateRootSignature() const
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();
@@ -283,7 +283,7 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> LUL_::Graphics::DX12::Hardware::Crea
 }
 
 // -----------------------------------------------------------------------------
-Microsoft::WRL::ComPtr<ID3D12PipelineState> LUL_::Graphics::DX12::Hardware::CreatePipelineState() const
+Microsoft::WRL::ComPtr<ID3D12PipelineState> LUL_::DX12::Hardware::CreatePipelineState() const
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();
@@ -347,7 +347,7 @@ Microsoft::WRL::ComPtr<ID3D12PipelineState> LUL_::Graphics::DX12::Hardware::Crea
 }
 
 // -----------------------------------------------------------------------------
-Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> LUL_::Graphics::DX12::Hardware::CreateDirectCommandList(Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator) const
+Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> LUL_::DX12::Hardware::CreateDirectCommandList(Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator) const
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();
@@ -381,7 +381,7 @@ Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> LUL_::Graphics::DX12::Hardware
 }
 
 // -----------------------------------------------------------------------------
-Microsoft::WRL::ComPtr<ID3D12Fence> LUL_::Graphics::DX12::Hardware::CreateFence() const
+Microsoft::WRL::ComPtr<ID3D12Fence> LUL_::DX12::Hardware::CreateFence() const
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();
@@ -399,7 +399,7 @@ Microsoft::WRL::ComPtr<ID3D12Fence> LUL_::Graphics::DX12::Hardware::CreateFence(
 }
 
 // -----------------------------------------------------------------------------
-Microsoft::WRL::ComPtr<ID3D12Resource> LUL_::Graphics::DX12::Hardware::CreateResource(
+Microsoft::WRL::ComPtr<ID3D12Resource> LUL_::DX12::Hardware::CreateResource(
 	CD3DX12_HEAP_PROPERTIES& properites,
 	D3D12_HEAP_FLAGS heapFlags,
 	CD3DX12_RESOURCE_DESC& description,
@@ -420,7 +420,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> LUL_::Graphics::DX12::Hardware::CreateRes
 
 // Private ---------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Hardware::CreateAdapter()
+void LUL_::DX12::Hardware::CreateAdapter()
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();
@@ -495,7 +495,7 @@ void LUL_::Graphics::DX12::Hardware::CreateAdapter()
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Hardware::CreateDevice()
+void LUL_::DX12::Hardware::CreateDevice()
 {
 	LUL_PROFILER_TIMER_START();
 	LUL_DX_LOG_CREATE();

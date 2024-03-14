@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _WIN64
-namespace LUL_::Graphics::DX12
+namespace LUL_::DX12
 {
     static const D3D12_INPUT_ELEMENT_DESC VertexElementsDesc[] =
     {

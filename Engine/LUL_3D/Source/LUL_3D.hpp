@@ -36,10 +36,10 @@
 
 		#define LUL_GET_HELPER(obj, original) static_cast<original*>(LUL_::GetHelper(obj, original::GetClassId()))
 
-		#define LUL_GET_HARDWARE(hardwareSharedPtr)	LUL_GET_HELPER(hardwareSharedPtr, LUL_::Graphics::DX12::Hardware)
-		#define LUL_GET_SWAPCHAIN(swapChainSharedPtr) LUL_GET_HELPER(swapChainSharedPtr, LUL_::Graphics::DX12::SwapChain)
-		#define LUL_GET_MEMORY(memorySharedPtr) LUL_GET_HELPER(memorySharedPtr, LUL_::Graphics::DX12::Memory)
-		#define LUL_GET_COMMANDS(commandsSharedPtr) LUL_GET_HELPER(commandsSharedPtr, LUL_::Graphics::DX12::Commands)
+		#define LUL_GET_HARDWARE(hardwareSharedPtr)	LUL_GET_HELPER(hardwareSharedPtr, LUL_::DX12::Hardware)
+		#define LUL_GET_SWAPCHAIN(swapChainSharedPtr) LUL_GET_HELPER(swapChainSharedPtr, LUL_::DX12::SwapChain)
+		#define LUL_GET_MEMORY(memorySharedPtr) LUL_GET_HELPER(memorySharedPtr, LUL_::DX12::Memory)
+		#define LUL_GET_COMMANDS(commandsSharedPtr) LUL_GET_HELPER(commandsSharedPtr, LUL_::DX12::Commands)
 
 		#ifdef _DEBUG
 			#define LUL_DX_LOG_CREATE() L_LOG(L_INFO, L"Create %S | %p", __func__, this)
@@ -71,16 +71,20 @@
 
 			#include "Interfaces/IRenderer.hpp"
 			#include "Interfaces/IRendererComponent.hpp"
-			
-			#include "Core/DirectX12/d3dx12.h"
-			#include "Core/DirectX12/Renderer.hpp"
+
+			#ifdef _LUL_DX12
+				#include "Core/DirectX12/d3dx12.h"
+				#include "Core/DirectX12/Renderer.hpp"
+			#endif // _LUL_DX12
+
+			#include "Core/World.hpp"
 		#pragma warning ( pop )
 	#pragma endregion
 
 	#pragma region Engine helper functions
 		namespace LUL_
 		{
-			LUL_EXPORT inline LUL_::Graphics::IRendererComponent* GetHelper(const std::shared_ptr<LUL_::Graphics::IRendererComponent>& obj, char const* const original)
+			LUL_EXPORT inline LUL_::IRendererComponent* GetHelper(const std::shared_ptr<LUL_::IRendererComponent>& obj, char const* const original)
 			{
 			#ifdef _DEBUG
 				if (strcmp(obj->GetClass(), original))

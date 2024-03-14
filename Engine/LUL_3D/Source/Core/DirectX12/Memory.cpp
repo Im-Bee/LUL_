@@ -5,7 +5,7 @@
 // ReservedMemory --------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-LUL_::Graphics::DX12::ReservedMemory::ReservedMemory(
+LUL_::DX12::ReservedMemory::ReservedMemory(
 	Microsoft::WRL::ComPtr<ID3D12Resource> ptr,
 	D3D12_VERTEX_BUFFER_VIEW& mem,
 	CD3DX12_HEAP_PROPERTIES& prop,
@@ -26,7 +26,7 @@ LUL_::Graphics::DX12::ReservedMemory::ReservedMemory(
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::ReservedMemory::SendDataToUploadBuffer(
+void LUL_::DX12::ReservedMemory::Upload(
 	const void* pData, 
 	uint64_t uBytesPerData, 
 	uint32_t uDataCount, 
@@ -38,15 +38,13 @@ void LUL_::Graphics::DX12::ReservedMemory::SendDataToUploadBuffer(
 	L_THROW_IF_FAILED(SuballocateFromBuffer(uByteSize, uAlignment));
 
 	*uByteOffset = uint32_t(m_pDataCur - m_pDataBegin);
-
 	memcpy(m_pDataCur, pData, uByteSize);
-
 	m_pDataCur += uByteSize;
 }
 
 // Private ---------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-HRESULT LUL_::Graphics::DX12::ReservedMemory::SuballocateFromBuffer(uint64_t uSize, uint64_t uAlign)
+HRESULT LUL_::DX12::ReservedMemory::SuballocateFromBuffer(uint64_t uSize, uint64_t uAlign)
 {
 	m_pDataCur = reinterpret_cast<uint8_t*>(Align(
 		reinterpret_cast<uint64_t>(m_pDataCur),
@@ -56,7 +54,7 @@ HRESULT LUL_::Graphics::DX12::ReservedMemory::SuballocateFromBuffer(uint64_t uSi
 }
 
 // -----------------------------------------------------------------------------
-uint64_t LUL_::Graphics::DX12::ReservedMemory::Align(uint64_t uLocation, uint64_t uAlign)
+uint64_t LUL_::DX12::ReservedMemory::Align(uint64_t uLocation, uint64_t uAlign)
 {
 	if ((0 == uAlign) || (uAlign & (uAlign - 1)))
 	{
@@ -69,14 +67,14 @@ uint64_t LUL_::Graphics::DX12::ReservedMemory::Align(uint64_t uLocation, uint64_
 // Memory ----------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Memory::Initialize(
+void LUL_::DX12::Memory::Initialize(
 	IRenderer const* const renderer,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> hardware, 
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> swapchain,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> commands)
+	std::shared_ptr<LUL_::IRendererComponent> hardware, 
+	std::shared_ptr<LUL_::IRendererComponent> swapchain,
+	std::shared_ptr<LUL_::IRendererComponent> commands)
 {
 	LUL_PROFILER_TIMER_START();
-	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::Memory | %p", this);
+	L_LOG(L_INFO, L"Initialize LUL_::DX12::Memory | %p", this);
 	
 	m_pRenderer = renderer;
 	if (hardware->GetClass() != DX12::Hardware::GetClassId())
@@ -91,21 +89,21 @@ void LUL_::Graphics::DX12::Memory::Initialize(
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Memory::InitializeRootSignature()
+void LUL_::DX12::Memory::InitializeRootSignature()
 {
 	LUL_PROFILER_TIMER_START();
-	L_LOG(L_INFO, L"LUL_::Graphics::DX12::Memory::InitializeAssets | %p", this);
+	L_LOG(L_INFO, L"LUL_::DX12::Memory::InitializeAssets | %p", this);
 
 	m_pRootSignature = LUL_GET_HARDWARE(m_pHardware)->CreateRootSignature();
 }
 
 // -----------------------------------------------------------------------------
-std::shared_ptr<LUL_::Graphics::DX12::ReservedMemory> LUL_::Graphics::DX12::Memory::ReserveMemory(
+std::shared_ptr<LUL_::DX12::ReservedMemory> LUL_::DX12::Memory::ReserveMemory(
 	const uint32_t bufferSize, 
 	const BufferType type)
 {
 	LUL_PROFILER_TIMER_START();
-	L_LOG(L_INFO, L"LUL_::Graphics::DX12::Memory::ReserveMemory | %p", this);
+	L_LOG(L_INFO, L"LUL_::DX12::Memory::ReserveMemory | %p", this);
 
 	D3D12_VERTEX_BUFFER_VIEW mem;
 	CD3DX12_HEAP_PROPERTIES props; 
@@ -128,7 +126,7 @@ std::shared_ptr<LUL_::Graphics::DX12::ReservedMemory> LUL_::Graphics::DX12::Memo
 		}
 		default:
 		{
-			L_LOG(L_ERROR, L"LUL_::Graphics::DX12::Memory::ReserveMemory unknown memory type");
+			L_LOG(L_ERROR, L"LUL_::DX12::Memory::ReserveMemory unknown memory type");
 		}
 	}
 

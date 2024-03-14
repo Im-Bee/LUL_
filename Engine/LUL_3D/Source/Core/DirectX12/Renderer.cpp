@@ -2,12 +2,14 @@
 
 #include "Renderer.hpp"
 
+#include "Primitives/Entity.hpp"
+
 using Microsoft::WRL::ComPtr;
 
 // Renderer --------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Renderer::Initialize()
+void LUL_::DX12::Renderer::Initialize()
 {
     LUL_PROFILER_TIMER_START();
     L_LOG(L_INFO, L"Initialize DX12::Renderer | %p", this);
@@ -19,12 +21,12 @@ void LUL_::Graphics::DX12::Renderer::Initialize()
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Renderer::Update()
+void LUL_::DX12::Renderer::Update()
 {
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Renderer::Render()
+void LUL_::DX12::Renderer::Render()
 {
     m_pCommands->RecordCommands();
     m_pCommands->CloseCommandLine();
@@ -32,7 +34,7 @@ void LUL_::Graphics::DX12::Renderer::Render()
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Renderer::Destroy()
+void LUL_::DX12::Renderer::Destroy()
 {
     LUL_PROFILER_TIMER_START();
     L_LOG(L_INFO, L"Destroy DX12::Renderer | %p", this);
@@ -63,9 +65,15 @@ void LUL_::Graphics::DX12::Renderer::Destroy()
 #endif // _DEBUG
 }
 
+// -----------------------------------------------------------------------------
+void LUL_::DX12::Renderer::CreateResourcesForMesh(Mesh* m, uint64_t uMemSize)
+{
+    m->SetGpuBuffer(m_pMemory->ReserveMemory(uMemSize, MeshBuffer));
+}
+
 // Private ---------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Renderer::LoadPipeline()
+void LUL_::DX12::Renderer::LoadPipeline()
 {
     LUL_PROFILER_TIMER_START();
     L_LOG(L_INFO, L"Load pipeline DX12::Renderer | %p", this);
@@ -121,7 +129,7 @@ void LUL_::Graphics::DX12::Renderer::LoadPipeline()
     m_pHardware->EndCreation();
 }
 
-void LUL_::Graphics::DX12::Renderer::InitializePipelineState()
+void LUL_::DX12::Renderer::InitializePipelineState()
 {
     LUL_PROFILER_TIMER_START();
     L_LOG(L_INFO, L"Load assets DX12::Renderer | %p", this);
@@ -131,4 +139,6 @@ void LUL_::Graphics::DX12::Renderer::InitializePipelineState()
     m_pSwapChain->InitializeFence();
     
     m_pSwapChain->WaitForPrevious();
+
+
 }

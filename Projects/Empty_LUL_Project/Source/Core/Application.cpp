@@ -13,8 +13,12 @@ void Application::Initialize()
 {
     LUL_PROFILER_TIMER_START();
 
-    m_pRenderer = std::make_shared<LUL_::Graphics::DX12::Renderer>(LUL_::Graphics::CreateTarget);
+    m_pRenderer = std::make_shared<LUL_::DX12::Renderer>(LUL_::CreateTarget);
     m_pRenderer->Initialize();
+
+    LUL_::World::Get().InitializeWorld(m_pRenderer);
+
+    m_dbgEntity = new LUL_::DX12::DebugEntity();
 }
 
 // -----------------------------------------------------------------------------

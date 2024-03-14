@@ -7,14 +7,14 @@ using Microsoft::WRL::ComPtr;
 // Commands -------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Commands::Initialize(
+void LUL_::DX12::Commands::Initialize(
 	IRenderer const* const renderer,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> hardware,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> swapchain,
-	std::shared_ptr<LUL_::Graphics::IRendererComponent> memory)
+	std::shared_ptr<LUL_::IRendererComponent> hardware,
+	std::shared_ptr<LUL_::IRendererComponent> swapchain,
+	std::shared_ptr<LUL_::IRendererComponent> memory)
 {
 	LUL_PROFILER_TIMER_START();
-	L_LOG(L_INFO, L"Initialize LUL_::Graphics::DX12::Commands | %p", this);
+	L_LOG(L_INFO, L"Initialize LUL_::DX12::Commands | %p", this);
 
 	m_pRenderer = renderer;
 	if (hardware->GetClass() != DX12::Hardware::GetClassId())
@@ -32,10 +32,10 @@ void LUL_::Graphics::DX12::Commands::Initialize(
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Commands::InitializePipelineState()
+void LUL_::DX12::Commands::InitializePipelineState()
 {
 	LUL_PROFILER_TIMER_START();
-	L_LOG(L_INFO, L"Initialize assets LUL_::Graphics::DX12::Commands | %p", this);
+	L_LOG(L_INFO, L"Initialize assets LUL_::DX12::Commands | %p", this);
 
 	m_pPipelineState = LUL_GET_HARDWARE(m_pHardware)->CreatePipelineState();
 
@@ -50,7 +50,7 @@ void LUL_::Graphics::DX12::Commands::InitializePipelineState()
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Commands::RecordCommands()
+void LUL_::DX12::Commands::RecordCommands()
 {
 	// Command list allocators can only be reset when the associated 
 	// command lists have finished execution on the GPU; apps should use 
@@ -434,7 +434,7 @@ void LUL_::Graphics::DX12::Commands::RecordCommands()
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Commands::CloseCommandLine()
+void LUL_::DX12::Commands::CloseCommandLine()
 {
 	// Indicate that the back buffer will now be used to present.
 	auto pb = LUL_GET_SWAPCHAIN(m_pSwapChain)->GetPresentTarget();
@@ -450,7 +450,7 @@ void LUL_::Graphics::DX12::Commands::CloseCommandLine()
 }
 
 // -----------------------------------------------------------------------------
-void LUL_::Graphics::DX12::Commands::Signal(ID3D12Fence* pFence, const uint64_t uValue) const
+void LUL_::DX12::Commands::Signal(ID3D12Fence* pFence, const uint64_t uValue) const
 {
 	L_THROW_IF_FAILED(m_pMainCommandQueue->Signal(pFence, uValue));
 }

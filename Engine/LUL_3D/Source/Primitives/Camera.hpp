@@ -2,11 +2,10 @@
 
 #include "Entity.hpp"
 
-namespace LUL_::Graphics::DX12
+namespace LUL_::DX12
 {
 	class LUL_EXPORT Camera
-		: public LUL_::Graphics::DX12::Entity
+		: public LUL_::DX12::Entity
 	{
-
 	};
 }

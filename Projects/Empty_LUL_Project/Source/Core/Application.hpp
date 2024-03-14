@@ -2,6 +2,8 @@
 
 #include "EntryPoint/Win32/Entry.hpp"
 
+#include "Primitives/Entity.hpp"
+
 class Application
     : public LUL_::IApplication
 {
@@ -21,6 +23,7 @@ public:
 
 private:
 
-    std::shared_ptr<LUL_::Graphics::DX12::Renderer> m_pRenderer = std::shared_ptr<LUL_::Graphics::DX12::Renderer>(nullptr);
+    std::shared_ptr<LUL_::DX12::Renderer> m_pRenderer = std::shared_ptr<LUL_::DX12::Renderer>(nullptr);
 
+    LUL_::DX12::DebugEntity* m_dbgEntity = nullptr;
 };

@@ -333,7 +333,7 @@ Microsoft::WRL::ComPtr<ID3D12PipelineState> LUL_::DX12::Hardware::CreatePipeline
 	psoDesc.DepthStencilState.DepthEnable = FALSE;
 	psoDesc.DepthStencilState.StencilEnable = FALSE;
 	psoDesc.SampleMask = UINT_MAX;
-	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
 	psoDesc.NumRenderTargets = 1;
 	psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	psoDesc.SampleDesc.Count = 1;

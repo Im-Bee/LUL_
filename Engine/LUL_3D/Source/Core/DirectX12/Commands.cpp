@@ -80,7 +80,7 @@ void LUL_::DX12::Commands::BeginVerticesProcessing()
 	// Record commands.
 	const float clearColor[] = { 0.901660f, 0.6f, 0.082352f, 1.0f };
 	m_pMainCommandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-	m_pMainCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_pMainCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 }
 
 // -----------------------------------------------------------------------------

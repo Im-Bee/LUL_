@@ -149,11 +149,141 @@ LUL_::DX12::Vertex triangleVertices[] =
 // Mesh ------------------------------------------------------------------------
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-void LUL_::DX12::Mesh::LoadMeshFromObj(char const* const path)
+void LUL_::DX12::Mesh::LoadMeshFromObj(wchar_t const* const path)
 {
-	m_CpuBuffer = triangleVertices;
+	L_LOG(L_INFO, L"Loading mesh from file %lS", path);
+	
+	constexpr bool fromBottomToTop = true;
+	char* fileBuf = nullptr;
+	std::streamsize fileSize = 0;
+	std::ifstream objFile(
+		path, // Should be okay on windows
+		std::ios_base::in | std::ios_base::ate);
+	if (!objFile.is_open())
+	{
+		throw Exceptions::InvalidArg(LUL_EXCPT_HELPER());
+	}
+	fileSize = objFile.tellg();
+	L_LOG(L_INFO, L"File size %lld", (long long)fileSize);
+	
+	fileBuf = (char*)malloc(sizeof(char) * fileSize);
+	if (!fileBuf)
+	{
+		throw Exceptions::Internal(LUL_EXCPT_HELPER());
+	}
+	
+	objFile.seekg(std::ios_base::beg);
+	for (;!objFile.eof();)
+	{
+		objFile.read(fileBuf + objFile.tellg(), 1024);
+	}
+	
+	int_fast32_t 
+		lineSize = 0,
+		tagOffset = 0,
+		k,
+		indexOfFloatRead = 0;
+	float vertexRead[8] = {
+		0.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 0.0f, 0.0f };
+	std::string stringified = std::string();
+	for (int64_t i = (fileSize - 1); i >= 0; --i)
+	{
+		// Search for next line
+		if (fileBuf[i] != '\n')
+		{
+			lineSize++;
+			continue;
+		}
+			
+		// Check the tag at the beggining of the file
+		// Start from index 1 to skip '\n'
+		for (tagOffset = 1; tagOffset < lineSize; ++tagOffset)
+		{
+			char const* const ch = &fileBuf[i + tagOffset];
+			if (*ch == ' ')
+				break;
+	
+			stringified += *ch;
+		}
+	
+		// If it's not line with vertices skip
+		if (stringified != "v")
+		{
+			// Reset stringified
+			stringified = "";
+			lineSize = 0;
+			continue;
+		}
+		
+		// Reset stringified once before reading
+		stringified = "";
+		const char* ch = nullptr;
+		for (k = tagOffset + 1; k <= lineSize; ++k)
+		{
+			if (k < lineSize)
+			{
+				ch = &fileBuf[i + k];
+			}
+	
+			if ((*ch < '0' || *ch > '9') && *ch != '-' && *ch != '.' && *ch != ' ')
+			{
+				continue;
+			}
+			
+			if (k < lineSize &&
+				*ch != ' ')
+			{
+				stringified += *ch;
+				continue;
+			}
+			
+			vertexRead[indexOfFloatRead++] = std::stof(stringified);
+			stringified = "";
+		}
+	
+		if (indexOfFloatRead <= 3)
+		{
+			m_CpuBuffer.push_back(Vertex({
+				vertexRead[0], vertexRead[1], vertexRead[2], 1.0f,
+				0.5f, 0.5f, 0.5f, 0.5f }));
+		}
+		else if (indexOfFloatRead == 4)
+		{
+			m_CpuBuffer.push_back(Vertex({
+				vertexRead[0], vertexRead[1], vertexRead[2], vertexRead[3],
+				0.5f, 0.5f, 0.5f, 0.5f }));
+		}
+		else if (indexOfFloatRead > 4)
+		{
+			m_CpuBuffer.push_back(Vertex({
+				vertexRead[0], vertexRead[1], vertexRead[2], vertexRead[3],
+				vertexRead[4], vertexRead[5], vertexRead[6], vertexRead[7] }));
+		}
+	
+		indexOfFloatRead = 0;
+		// Reset stringified
+		stringified = "";
+		lineSize = 0;
+	}
+	
 
-	LUL_::World::Get().GetRenderer()->CreateResourcesForMesh(this, MEM_KiB(128));
+	// m_CpuBuffer.clear();
+	// for (int i = 0; i < sizeof(triangleVertices) / sizeof(Vertex); ++i)
+	// {
+	// 	m_CpuBuffer.push_back(triangleVertices[i]);
+	// }
+
+	// std::vector<Vertex> copy;
+	// for (int i = 0; i < m_CpuBuffer.size(); ++i)
+	// {
+	// 	copy.push_back(m_CpuBuffer[m_CpuBuffer.size() - i - 1]);
+	// }
+	// m_CpuBuffer = copy;
+
+	LUL_::World::Get().GetRenderer()->CreateResourcesForMesh(
+		this, 
+		m_CpuBuffer.size() * sizeof(Vertex));
 }
 
 // Entity ----------------------------------------------------------------------
@@ -161,6 +291,9 @@ void LUL_::DX12::Mesh::LoadMeshFromObj(char const* const path)
 // -----------------------------------------------------------------------------
 void LUL_::DX12::Entity::Update()
 {
+	if (m_pMesh->GetCpuBuffer().empty())
+		return;
+
 	const UINT vertexBufferSize = sizeof(triangleVertices);
 
  	using namespace DirectX;
@@ -171,23 +304,25 @@ void LUL_::DX12::Entity::Update()
  	const float fWidth = 1200.0f;
  	const float fHeight = 800.0f;
  	const float fAspectRatio = fWidth / fHeight;
- 
  	XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(
  		XMConvertToRadians(fFov),
  		fAspectRatio,
  		fNear,
  		fFar);
- 
  	// XMMATRIX projection = DirectX::XMMatrixOrthographicLH(
  	// 	vp.Width,
  	// 	vp.Height,
  	// 	fFar,
  	// 	fNear);
  
- 	static float fTheta = 1.0f;
- 	static float fThetaDirection = 0.005f;
- 	fTheta += fThetaDirection;
+ 	static float fTheta = -1.0f;
+ 	static float fThetaDirection = 0.05f;
+ 	fTheta -= fThetaDirection;
  
+	static float fqwe = 2.5f;
+	static float fqwer = 0.0005f;
+	fqwe += fqwer;
+
  	XMVECTOR 
  		v,
  		result;
@@ -197,58 +332,54 @@ void LUL_::DX12::Entity::Update()
  		rotationX,
  		rotationY,
  		offset,
+		scaled,
  		rotatedXZ,
  		rotatedXZY,
- 		offsetedAndRotated,
+		offsetedAndRotated,
+		offsetedAndRotatedAndScaled,
  		finished;
  	
- 	rotationZ = XMMatrixRotationZ(XMConvertToRadians(fTheta));
- 	rotationX = XMMatrixRotationX(XMConvertToRadians(fTheta));
- 	rotationY = XMMatrixRotationY(XMConvertToRadians(fTheta));
- 	offset = XMMatrixTranslation(0.0f, 0.0f, 5.0f);
- 
- 	// Rotate
- 	rotatedXZ = XMMatrixMultiply(rotationX, rotationZ);
- 	rotatedXZY = XMMatrixMultiply(rotatedXZ, rotationY);
- 	offsetedAndRotated = XMMatrixMultiply(rotatedXZY, offset);
- 	
- 	finished = XMMatrixMultiply(offsetedAndRotated, projection);
- 
-	Vertex* resultVer = (Vertex*)malloc(vertexBufferSize);
- 	float secondCubeOff = 0.0f;
-	Vertex* raw = m_pMesh->GetCpuBuffer();
-	memcpy_s(resultVer, vertexBufferSize, raw, vertexBufferSize);
- 	for (int i = 0; i < m_pMesh->GetRawBuffer()->GetDataCount(); ++i)
+
+	rotationX = XMMatrixRotationX(XMConvertToRadians(fTheta));
+	rotationZ = XMMatrixRotationZ(XMConvertToRadians(fTheta));
+	rotationY = XMMatrixRotationY(XMConvertToRadians(fTheta));
+	offset = XMMatrixTranslation(0.0f, 0.0f, 5.0f);
+	scaled = XMMatrixScaling(0.115f, 0.115f, 0.115f);
+
+	// Rotate
+	rotatedXZ = XMMatrixMultiply(scaled, rotationX);
+	rotatedXZY = XMMatrixMultiply(rotatedXZ, rotationZ);
+	offsetedAndRotated = XMMatrixMultiply(rotatedXZY, rotationY);
+	offsetedAndRotatedAndScaled = XMMatrixMultiply(offsetedAndRotated, offset);
+
+ 	finished = XMMatrixMultiply(offsetedAndRotatedAndScaled, projection);
+	
+	const uint64_t resultVerSize = sizeof(Vertex) * m_pMesh->GetCpuBuffer().size();
+	Vertex* resultVer = (Vertex*) malloc(resultVerSize);
+	int64_t r = 0;
+ 	for (auto& i : m_pMesh->GetCpuBuffer())
  	{
- 		if (i >= 36)
- 			secondCubeOff = -3.5f;
- 		if (i >= 72)
- 			secondCubeOff = 3.5f;
- 
- 		v.m128_f32[0] = raw[i].Position.x + secondCubeOff;
- 		v.m128_f32[1] = raw[i].Position.y + secondCubeOff;
- 		v.m128_f32[2] = raw[i].Position.z + secondCubeOff;
- 		v.m128_f32[3] = raw[i].Position.w;
+ 		v.m128_f32[0] = i.Position.x;
+ 		v.m128_f32[1] = i.Position.y;
+ 		v.m128_f32[2] = i.Position.z;
+ 		v.m128_f32[3] = i.Position.w;
  
  		// Calculate result
  		result = XMVector4Transform(v, finished);
  
-  		if (result.m128_f32[2] < 0.0f)
-  			result.m128_f32[2] = -result.m128_f32[2];
- 
- 		// Scale down
-		resultVer[i].Position.x = result.m128_f32[0];
-		resultVer[i].Position.y = result.m128_f32[1];
-		resultVer[i].Position.z = result.m128_f32[2];
-		resultVer[i].Position.w = /* 10.0f; */ result.m128_f32[3];
+		resultVer[r].Position.x = result.m128_f32[0];
+		resultVer[r].Position.y = result.m128_f32[1];
+		resultVer[r].Position.z = result.m128_f32[2];
+		resultVer[r].Position.w = result.m128_f32[3];
  		// L_LOG(L_INFO, L"%f %f %f %f", tri[0], tri[1], tri[2], tri[3]);
+		++r;
  	}
 
 	GetMesh()->GetRawBuffer()->Upload(
 		resultVer,
 		sizeof(Vertex),
-		vertexBufferSize / sizeof(Vertex),
-		4,
+		m_pMesh->GetCpuBuffer().size(),
+		std::alignment_of<Vertex>().value,
 		Begin);
 
 	free(resultVer);
@@ -259,15 +390,9 @@ void LUL_::DX12::Entity::Update()
 // -----------------------------------------------------------------------------
 LUL_::DX12::DebugEntity::DebugEntity()
 {
-	this->GetMesh()->LoadMeshFromObj("");
-
-	const UINT vertexBufferSize = sizeof(triangleVertices);
-	GetMesh()->GetRawBuffer()->Upload(
-		triangleVertices,
-		sizeof(Vertex),
-		vertexBufferSize / sizeof(Vertex),
-		4,
-		Begin);
+	this->GetMesh()->LoadMeshFromObj(LUL_::AppProperties::Get().CreatePathInKnownDir(
+		KnownDirs::CurrentProject, 
+		L"Assets\\DirectX12\\Obj\\DebugDuck.obj").c_str());
 
 	World::Get().GetRenderer()->AddEntity(this);
 }

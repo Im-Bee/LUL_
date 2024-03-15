@@ -11,6 +11,18 @@ namespace LUL_::DX12
 
     struct Vertex
     {
+        Vertex() = default;
+        Vertex(float f1, float f2, float f3, float f4, float f5, float f6, float f7, float f8)
+        {
+            Position = { f1, f2, f3, f4 };
+            Color = { f5, f6, f7, f8 };
+        }
+        Vertex(::DirectX::XMFLOAT4 p, ::DirectX::XMFLOAT4 c)
+            : Position(p), Color(c)
+        {
+        }
+        ~Vertex() = default;
+
         ::DirectX::XMFLOAT4 Position;
         ::DirectX::XMFLOAT4 Color;
 

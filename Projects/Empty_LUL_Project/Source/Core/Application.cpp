@@ -13,7 +13,10 @@ void Application::Initialize()
 {
     LUL_PROFILER_TIMER_START();
 
-    m_pRenderer = std::make_shared<LUL_::DX12::Renderer>(LUL_::CreateTarget);
+    std::shared_ptr<LUL_::EmptyWindow> ew = std::make_shared<LUL_::EmptyWindow>();
+    ew->SetDimensions(1920, 1080);
+    ew->Show();
+    m_pRenderer = std::make_shared<LUL_::DX12::Renderer>(ew);
     m_pRenderer->Initialize();
 
     LUL_::World::Get().InitializeWorld(m_pRenderer);

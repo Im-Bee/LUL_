@@ -51,6 +51,10 @@ namespace LUL_::DX12
 
         void AddEntity(Entity* e);
 
+		// Getters ---------------------------------------------------------------------
+    public:
+        const CD3DX12_VIEWPORT& GetViewPort() { return m_pHardware->GetViewport(); }
+
     private:
         void LoadPipeline();
         void InitializePipelineState();

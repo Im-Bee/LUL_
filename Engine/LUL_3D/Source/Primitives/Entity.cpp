@@ -151,6 +151,7 @@ LUL_::DX12::Vertex triangleVertices[] =
 // -----------------------------------------------------------------------------
 void LUL_::DX12::Mesh::LoadMeshFromObj(wchar_t const* const path)
 {
+	LUL_PROFILER_TIMER_START();
 	L_LOG(L_INFO, L"Loading mesh from file %lS", path);
 	
 	constexpr bool fromBottomToTop = true;
@@ -301,9 +302,9 @@ void LUL_::DX12::Entity::Update()
  	static const float fFov = 120.0f;
  	static const float fNear = 0.1f;
  	static const float fFar = 1000.0f;
- 	const float fWidth = 1200.0f;
- 	const float fHeight = 800.0f;
- 	const float fAspectRatio = fWidth / fHeight;
+ 	static const float fWidth = World::Get().GetRenderer()->GetViewPort().Width;
+	static const float fHeight = World::Get().GetRenderer()->GetViewPort().Height;
+ 	static const float fAspectRatio = fWidth / fHeight;
  	XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(
  		XMConvertToRadians(fFov),
  		fAspectRatio,
@@ -323,6 +324,9 @@ void LUL_::DX12::Entity::Update()
 	static float fqwer = 0.0005f;
 	fqwe += fqwer;
 
+	if (fqwe > 5.0f || fqwe < -5.0f)
+		fqwer = -fqwer;
+
  	XMVECTOR 
  		v,
  		result;
@@ -340,10 +344,10 @@ void LUL_::DX12::Entity::Update()
  		finished;
  	
 
-	rotationX = XMMatrixRotationX(XMConvertToRadians(fTheta));
-	rotationZ = XMMatrixRotationZ(XMConvertToRadians(fTheta));
+	rotationX = XMMatrixRotationX(XMConvertToRadians(0.0f));
+	rotationZ = XMMatrixRotationZ(XMConvertToRadians(0.0f));
 	rotationY = XMMatrixRotationY(XMConvertToRadians(fTheta));
-	offset = XMMatrixTranslation(0.0f, 0.0f, 5.0f);
+	offset = XMMatrixTranslation(fqwe, -2.5f, 5.0f);
 	scaled = XMMatrixScaling(0.115f, 0.115f, 0.115f);
 
 	// Rotate

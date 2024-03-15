@@ -3,8 +3,7 @@
 #ifdef _WIN32
 #include "LUL_.h"
 
-INT CALLBACK wWinMain(HINSTANCE hInst, HINSTANCE hInstPrev, LPWSTR cmdline, INT cmdshow)
-{
+INT CALLBACK wWinMain(HINSTANCE hInst, HINSTANCE hInstPrev, LPWSTR cmdline, INT cmdshow){
     LUL_::AppProperties::Get();
     LUL_::Logger::Get();
 

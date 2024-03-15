@@ -21,6 +21,8 @@ namespace LUL_::DX12
 		// Getters ---------------------------------------------------------------------
 	public:
 		std::vector<Vertex>& GetCpuBuffer() { return m_CpuBuffer; }
+
+		uint64_t GetVertexInstanceCount() { return m_CpuBuffer.size(); }
 	};
 
 	class LUL_EXPORT Entity
@@ -29,7 +31,10 @@ namespace LUL_::DX12
 		std::shared_ptr<Mesh> m_pMesh = std::make_shared<Mesh>();
 
 	public:
-		Entity() = default;
+		Entity()
+		{
+			World::Get().GetRenderer()->AddEntity(this);
+		}
 		Entity(const Entity&) = default;
 		Entity(Entity&&) = default;
 		~Entity() = default;

@@ -229,6 +229,8 @@ void LUL_::DX12::Mesh::LoadMeshFromObj(wchar_t const* const path)
 	
 			if ((*ch < '0' || *ch > '9') && *ch != '-' && *ch != '.' && *ch != ' ')
 			{
+				L_LOG(L_WARNING, L"Found incorect value in obj file | offset: %d", (i + k));
+				stringified += '0';
 				continue;
 			}
 			
@@ -269,12 +271,14 @@ void LUL_::DX12::Mesh::LoadMeshFromObj(wchar_t const* const path)
 	}
 	
 
+	// // Use debug buffer instead
 	// m_CpuBuffer.clear();
 	// for (int i = 0; i < sizeof(triangleVertices) / sizeof(Vertex); ++i)
 	// {
 	// 	m_CpuBuffer.push_back(triangleVertices[i]);
 	// }
 
+	// // Reverse the mesh
 	// std::vector<Vertex> copy;
 	// for (int i = 0; i < m_CpuBuffer.size(); ++i)
 	// {
@@ -358,7 +362,7 @@ void LUL_::DX12::Entity::Update()
 
  	finished = XMMatrixMultiply(offsetedAndRotatedAndScaled, projection);
 	
-	const uint64_t resultVerSize = sizeof(Vertex) * m_pMesh->GetCpuBuffer().size();
+	const uint64_t resultVerSize = sizeof(Vertex) * m_pMesh->GetVertexInstanceCount();
 	Vertex* resultVer = (Vertex*) malloc(resultVerSize);
 	int64_t r = 0;
  	for (auto& i : m_pMesh->GetCpuBuffer())
@@ -382,7 +386,7 @@ void LUL_::DX12::Entity::Update()
 	GetMesh()->GetRawBuffer()->Upload(
 		resultVer,
 		sizeof(Vertex),
-		m_pMesh->GetCpuBuffer().size(),
+		m_pMesh->GetVertexInstanceCount(),
 		std::alignment_of<Vertex>().value,
 		Begin);
 
@@ -393,10 +397,9 @@ void LUL_::DX12::Entity::Update()
 // Public ----------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 LUL_::DX12::DebugEntity::DebugEntity()
+	: Entity()
 {
 	this->GetMesh()->LoadMeshFromObj(LUL_::AppProperties::Get().CreatePathInKnownDir(
 		KnownDirs::CurrentProject, 
 		L"Assets\\DirectX12\\Obj\\DebugDuck.obj").c_str());
-
-	World::Get().GetRenderer()->AddEntity(this);
 }
